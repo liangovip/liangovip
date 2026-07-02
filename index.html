@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOORE LABS - Global Financial Layer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <style>
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes ctaBaseFlow {
+      0% { transform: translate3d(-2%, -1%, 0) scale(1.03); }
+      50% { transform: translate3d(1%, 0.6%, 0) scale(1.06); }
+      100% { transform: translate3d(3%, -0.4%, 0) scale(1.08); }
+    }
+
+    @keyframes heroBackdropShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 46% 48%; }
+      100% { background-position: 100% 52%; }
+    }
+
+    @keyframes heroStreamSweep {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    @keyframes ctaStreamFlow {
+      0% { transform: translate3d(-3%, -0.6%, 0) scale(1.04); opacity: 0.22; }
+      50% { transform: translate3d(0.5%, 0.4%, 0) scale(1.08); opacity: 0.28; }
+      100% { transform: translate3d(3%, 0.2%, 0) scale(1.1); opacity: 0.34; }
+    }
+
+    @keyframes ctaFloatA {
+      0% { transform: translate3d(-2.4%, -0.8%, 0) scale(1.02); opacity: 0.22; }
+      100% { transform: translate3d(2.8%, 0.6%, 0) scale(1.08); opacity: 0.3; }
+    }
+
+    @keyframes ctaFloatB {
+      0% { transform: translate3d(2%, -0.4%, 0) scale(1.01); opacity: 0.2; }
+      100% { transform: translate3d(-2.6%, 1.2%, 0) scale(1.07); opacity: 0.28; }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .fade-up,
+    .scenario-card,
+    .timeline-card {
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+    }
+
+    .shine-card {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .shine-card::before,
+    .shine-card::after {
+      content: '';
+      pointer-events: none;
+    }
+
+    .shine-card::before {
+      position: absolute;
+      inset: 0;
+      opacity: 0.42;
+      transition: opacity 280ms ease, filter 280ms ease;
+    }
+
+    .shine-card::after {
+      position: absolute;
+      inset-y: 0;
+      left: -140%;
+      width: 65%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+      opacity: 0;
+      transition: transform 700ms ease, opacity 280ms ease;
+    }
+
+    .shine-card:hover::before {
+      opacity: 0.88;
+      filter: brightness(1.08);
+    }
+
+    .shine-card:hover::after {
+      opacity: 1;
+      transform: translateX(300%) rotate(18deg);
+    }
+
+    .card-hover-lift {
+      cursor: pointer;
+      transition: box-shadow 280ms ease, filter 280ms ease, border-color 280ms ease;
+    }
+
+    .card-hover-lift:hover {
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 0 34px rgba(123, 164, 255, 0.18), 0 22px 60px rgba(6, 14, 30, 0.22);
+      filter: brightness(1.04);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .cap-card:hover {
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 0 28px rgba(255,255,255,0.05), 0 22px 56px rgba(0,0,0,0.22);
+      filter: brightness(1.04);
+    }
+
+    .cap-stage {
+      /* no contain needed for flow layout */
+    }
+
+    .cta-stage {
+      background: #eef0f7;
+    }
+
+    .hero-phase,
+    .cta-phase {
+      background: linear-gradient(
+        96deg,
+        rgba(32, 8, 58, 0.08) 0%,
+        rgba(64, 22, 118, 0.08) 18%,
+        rgba(0, 0, 0, 0) 44%,
+        rgba(0, 0, 0, 0) 58%,
+        rgba(80, 160, 70, 0.05) 76%,
+        rgba(164, 255, 62, 0.12) 90%,
+        rgba(210, 255, 130, 0.05) 100%
+      );
+      background-size: 180% 100%;
+      background-position: 100% 50%;
+      mix-blend-mode: soft-light;
+      filter: blur(48px) saturate(1.02);
+      opacity: 0.2;
+      will-change: opacity, transform;
+    }
+
+    .cta-base {
+      background: linear-gradient(94deg, #211043 0%, #4b31b9 12%, #6c60df 24%, #bbbaf2 38%, #ece9f6 54%, #def0ff 66%, #dcf49d 82%, #f7f3ec 100%);
+      background-size: 260% 220%;
+      animation: ctaBaseFlow 16s ease-in-out infinite alternate;
+      opacity: 1;
+      will-change: transform;
+    }
+
+    .cta-stream {
+      background: linear-gradient(
+        102deg,
+        rgba(111, 74, 255, 0.16) 0%,
+        rgba(70, 149, 255, 0.14) 16%,
+        rgba(255, 120, 210, 0.05) 30%,
+        rgba(255, 255, 255, 0.04) 46%,
+        rgba(214, 255, 110, 0.07) 62%,
+        rgba(124, 255, 214, 0.05) 78%,
+        rgba(255, 255, 255, 0.02) 100%
+      );
+      background-size: 260% 220%;
+      opacity: 0.52;
+      mix-blend-mode: soft-light;
+      filter: blur(44px) saturate(1.01);
+      animation: ctaStreamFlow 14s ease-in-out infinite alternate;
+      will-change: transform, opacity;
+    }
+
+    .cta-mesh {
+      mix-blend-mode: screen;
+      filter: blur(54px) saturate(1.01);
+      opacity: 0.52;
+      will-change: transform, opacity;
+    }
+
+    .cta-mesh-a {
+      background:
+        radial-gradient(ellipse at 14% 22%, rgba(111, 74, 255, 0.34) 0%, transparent 32%),
+        radial-gradient(ellipse at 34% 56%, rgba(77, 170, 255, 0.16) 0%, transparent 26%),
+        radial-gradient(ellipse at 70% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 18%);
+      animation: ctaFloatA 12s ease-in-out infinite alternate;
+    }
+
+    .cta-mesh-b {
+      background:
+        radial-gradient(ellipse at 82% 20%, rgba(214, 255, 100, 0.16) 0%, transparent 22%),
+        radial-gradient(ellipse at 88% 54%, rgba(255, 246, 193, 0.12) 0%, transparent 18%),
+        radial-gradient(ellipse at 54% 74%, rgba(112, 255, 218, 0.1) 0%, transparent 18%),
+        radial-gradient(ellipse at 46% 28%, rgba(196, 202, 255, 0.08) 0%, transparent 18%);
+      animation: ctaFloatB 14s ease-in-out infinite alternate;
+    }
+
+    .cta-vignette {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.03), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.008) 34%, rgba(20,24,38,0.02) 70%, rgba(10,14,24,0.04) 100%);
+    }
+
+    .hero-bg {
+      background: #eef0f7;
+    }
+
+    .hero-base {
+      background: linear-gradient(96deg, #241043 0%, #4f35bc 13%, #7368e4 26%, #dddafb 40%, #f5eff9 54%, #eaf5ff 66%, #eef8c5 80%, #f8f5ef 100%);
+      background-size: 220% 220%;
+      opacity: 1;
+      will-change: transform, background-position;
+      animation: heroBackdropShift 12s ease-in-out infinite alternate;
+    }
+
+    .hero-stream {
+      background: linear-gradient(
+        102deg,
+        rgba(111, 74, 255, 0.24) 0%,
+        rgba(70, 149, 255, 0.21) 18%,
+        rgba(255, 120, 210, 0.07) 34%,
+        rgba(255, 255, 255, 0.09) 49%,
+        rgba(214, 255, 110, 0.08) 64%,
+        rgba(124, 255, 214, 0.05) 80%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      background-size: 220% 220%;
+      opacity: 0.78;
+      mix-blend-mode: soft-light;
+      filter: blur(48px);
+      will-change: transform, opacity, background-position;
+      animation: heroStreamSweep 11s ease-in-out infinite alternate;
+    }
+
+    .hero-mesh {
+      mix-blend-mode: screen;
+      filter: blur(56px);
+      opacity: 0.62;
+      will-change: transform, opacity;
+    }
+
+    .hero-mesh-a {
+      background: radial-gradient(ellipse at 36% 34%, rgba(255, 255, 255, 0.26) 0%, transparent 28%),
+        radial-gradient(ellipse at 16% 24%, rgba(111, 74, 255, 0.22) 0%, transparent 30%),
+        radial-gradient(ellipse at 68% 26%, rgba(77, 170, 255, 0.13) 0%, transparent 24%);
+    }
+
+    .hero-mesh-b {
+      background: radial-gradient(ellipse at 56% 40%, rgba(255, 255, 255, 0.18) 0%, transparent 26%),
+        radial-gradient(ellipse at 84% 22%, rgba(214, 255, 100, 0.14) 0%, transparent 24%),
+        radial-gradient(ellipse at 74% 62%, rgba(112, 255, 218, 0.1) 0%, transparent 20%);
+    }
+
+    .hero-mesh-c {
+      background: radial-gradient(ellipse at 44% 48%, rgba(255, 255, 255, 0.16) 0%, transparent 26%),
+        radial-gradient(ellipse at 62% 42%, rgba(196, 202, 255, 0.13) 0%, transparent 22%),
+        radial-gradient(ellipse at 24% 78%, rgba(98, 130, 255, 0.1) 0%, transparent 18%),
+        radial-gradient(ellipse at 52% 26%, rgba(138, 186, 255, 0.08) 0%, transparent 20%);
+    }
+
+    .animate-marquee {
+      animation: marquee 26s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useEffect, useMemo, useRef } = React;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const backers = [
+      'Framework Ventures',
+      'Avalanche',
+      'Solana',
+      'Vaulta',
+      'Sonic',
+      'Animoca',
+      'Tencent Cloud',
+      'Unified Ventures',
+    ];
+
+    const pillars = [
+      {
+        title: 'Innovative Governance',
+        desc: 'Empower community members and institutions to participate in discussions and decision-making with speed, inclusiveness, and efficiency.',
+      },
+      {
+        title: 'Universal DID System',
+        desc: 'A decentralized identity layer that simplifies onboarding while meeting KYC and AML expectations across applications.',
+      },
+      {
+        title: 'RWAs Tokenization',
+        desc: 'Unlock tradable on-chain access to artworks, commodities, real estate, and other real-world assets.',
+      },
+      {
+        title: 'On / Off Ramp',
+        desc: 'A compliant user and institutional access layer that bridges fiat and on-chain participation more smoothly.',
+      },
+      {
+        title: 'Plug and Play',
+        desc: 'A modular architecture that gives builders a transparent, composable environment for compliant products.',
+      },
+    ];
+
+    const capabilities = [
+      'EVM Adaptation',
+      'Low Fees',
+      'Build On Trust',
+      'Linking Global Markets',
+      'Enterprise-grade Infra',
+      'Universal DID System',
+      'KYC / AML Compliant Network',
+      'Reduce Costs',
+    ];
+
+    const scenarios = [
+      'RWAs Tokenization',
+      'Compliant On/Off Ramp',
+      'Universal DID System',
+      'Yield Bearing Stable Coin',
+      'Crypto Payments and PayFi',
+    ];
+
+    const trends = [
+      'Conscious Impact',
+      'Adaptive Resilience',
+      'Seamless Digital Integration',
+      'Wellness-Centered Approach',
+    ];
+
+    const roadmap = [
+      { time: '2025 Q2', title: 'SuperNova (Testnet)', points: ['Optimistic + zkEVM', 'Decentralized Sequencers'] },
+      { time: '2025 Q4', title: 'Stella (Testnet)', points: ['zkEVM Upgrade'] },
+      { time: '2026 Q1', title: 'Stella-Extension (Testnet)', points: ['Staking', 'MOORE LABS Points Rewards'] },
+      { time: '2026 Q2', title: 'Nebula (Mainnet)', points: ['Mainnet Launch', 'Ecosystem Activation'] },
+      { time: 'Future', title: 'To be continued…', points: ['Next-generation financial primitives'] },
+    ];
+
+    const capabilityLayouts = [
+      { x: '50%', y: '38%', w: '29rem', h: '14rem', z: 3 },
+      { x: '50%', y: '38%', w: '29rem', h: '14rem', z: 3 },
+      { x: '50%', y: '38%', w: '29rem', h: '14rem', z: 3 },
+      { x: '50%', y: '38%', w: '29rem', h: '14rem', z: 3 },
+      { x: '50%', y: '38%', w: '29rem', h: '14rem', z: 3 },
+    ];
+
+    function cx(...parts) {
+      return parts.filter(Boolean).join(' ');
+    }
+
+    function getShineCardClassName({ rounded, border, background, shadow, glow }) {
+      return cx('shine-card relative overflow-hidden', rounded, border, background, shadow, glow);
+    }
+
+    function ArrowUpRight({ className }) {
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+          <path d="M7 7h10v10"/>
+          <path d="M7 17 17 7"/>
+        </svg>
+      );
+    }
+
+    function SectionTitle({ eyebrow, title, subtitle }) {
+      return (
+        <div className="max-w-3xl space-y-3">
+          {eyebrow ? <div className="text-xs uppercase tracking-[0.28em] text-white/78">{eyebrow}</div> : null}
+          <h2 className="text-3xl font-semibold tracking-tight text-white md:text-5xl">{title}</h2>
+          {subtitle ? <p className="text-sm leading-7 text-white/74 md:text-base">{subtitle}</p> : null}
+        </div>
+      );
+    }
+
+    function MooreLabsLanding() {
+      const rootRef = useRef(null);
+      const heroRef = useRef(null);
+      const marquee = useMemo(() => [...backers, ...backers], []);
+
+      useEffect(() => {
+        const interactiveCards = [];
+
+        const ctx = gsap.context(() => {
+          gsap.from('.hero-reveal', {
+            y: 28,
+            opacity: 0,
+            duration: 0.9,
+            stagger: 0.1,
+            ease: 'power3.out',
+          });
+
+          gsap.utils.toArray('.stagger-drop').forEach((group) => {
+            const items = Array.from(group.querySelectorAll('.fade-up'));
+            items.forEach((item, index) => {
+              const direction = index % 2 === 0 ? -1 : 1;
+              const fromX = direction * (16 + index * 7);
+              const fromY = 86 + index * 20;
+              const fromRotate = direction * (2.8 + index * 0.6);
+              const endRotate = direction * (0.85 + index * 0.08);
+              const endX = direction * (1.8 + index * 0.35);
+
+              gsap.fromTo(
+                item,
+                {
+                  y: fromY, x: fromX, rotateZ: fromRotate, rotateX: 2,
+                  scale: 0.988, opacity: 0.16, transformOrigin: '50% 88%', force3D: true,
+                },
+                {
+                  y: 0, x: endX, rotateZ: endRotate, rotateX: 0, scale: 1, opacity: 1, ease: 'none',
+                  scrollTrigger: {
+                    trigger: item,
+                    start: () => `top ${98 - index * 6}%`,
+                    end: () => `top ${70 - index * 4}%`,
+                    scrub: true,
+                  },
+                }
+              );
+            });
+          });
+
+          const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+          if (isDesktop) {
+            const capCards = gsap.utils.toArray('.cap-card');
+
+            capCards.forEach((card, index) => {
+              const isLeft = index % 2 === 0;
+              const entryX = isLeft ? -80 : 80;
+              const entryRot = isLeft ? -14 : 14;
+              const exitRot = isLeft ? 10 : -10;
+
+              gsap.set(card, {
+                y: 120, x: entryX, rotateZ: entryRot, scale: 0.92, autoAlpha: 0, force3D: true,
+              });
+
+              // Entry: bottom → center, tilted → straight
+              gsap.to(card, {
+                y: 0, x: 0, rotateZ: 0, scale: 1, autoAlpha: 1,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'top 105%',
+                  end: 'top 50%',
+                  scrub: 0.4,
+                },
+              });
+
+              // Exit: center → top, straight → tilted
+              gsap.to(card, {
+                rotateZ: exitRot,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'bottom 35%',
+                  end: 'bottom 0%',
+                  scrub: 0.4,
+                },
+              });
+            });
+          }
+
+          gsap.utils.toArray('.scenario-group').forEach((group) => {
+            const items = Array.from(group.querySelectorAll('.scenario-card'));
+            items.forEach((item, index) => {
+              const direction = index % 2 === 0 ? 1 : -1;
+              const fromX = direction * (18 + index * 8);
+              const fromY = 96 + index * 22;
+              const fromRotate = direction * (3 + index * 0.7);
+              const endRotate = direction * (0.95 + index * 0.1);
+              const endX = direction * (2.1 + index * 0.45);
+
+              gsap.fromTo(
+                item,
+                {
+                  y: fromY, x: fromX, rotateZ: fromRotate, rotateX: 2,
+                  scale: 0.988, opacity: 0.14, transformOrigin: '50% 88%', force3D: true,
+                },
+                {
+                  y: 0, x: endX, rotateZ: endRotate, rotateX: 0, scale: 1, opacity: 1, ease: 'none',
+                  scrollTrigger: {
+                    trigger: item,
+                    start: () => `top ${99 - index * 6}%`,
+                    end: () => `top ${72 - index * 4}%`,
+                    scrub: true,
+                  },
+                }
+              );
+            });
+          });
+
+          gsap.utils.toArray('.timeline-card').forEach((card, index) => {
+            const direction = index % 2 === 0 ? -1 : 1;
+            const endX = direction * 1.1;
+            const endRotate = direction * 0.55;
+
+            gsap.fromTo(
+              card,
+              {
+                y: 78, x: direction * 14, rotateZ: direction * 1.8, rotateX: 1.5,
+                scale: 0.992, opacity: 0.2, transformOrigin: '50% 88%', force3D: true,
+              },
+              {
+                y: 0, x: endX, rotateZ: endRotate, rotateX: 0, scale: 1, opacity: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: () => `top ${99 - index * 4}%`,
+                  end: () => `top ${74 - index * 3}%`,
+                  scrub: true,
+                },
+              }
+            );
+          });
+
+          gsap.utils.toArray('.card-interactive:not(.cap-card)').forEach((card) => {
+            const onEnter = () => { gsap.to(card, { y: -4, scale: 1.008, duration: 0.24, ease: 'power2.out', overwrite: 'auto' }); };
+            const onLeave = () => { gsap.to(card, { y: 0, scale: 1, duration: 0.28, ease: 'power2.out', overwrite: 'auto' }); };
+            const onDown = () => { gsap.to(card, { y: -2, scale: 0.994, duration: 0.12, ease: 'power2.out', overwrite: 'auto' }); };
+            const onUp = () => { gsap.to(card, { y: -4, scale: 1.008, duration: 0.16, ease: 'power2.out', overwrite: 'auto' }); };
+
+            card.addEventListener('pointerenter', onEnter);
+            card.addEventListener('pointerleave', onLeave);
+            card.addEventListener('pointerdown', onDown);
+            card.addEventListener('pointerup', onUp);
+            card.addEventListener('pointercancel', onLeave);
+
+            interactiveCards.push({ element: card, onEnter, onLeave, onDown, onUp });
+          });
+
+          if (heroRef.current) {
+            gsap.to('.hero-shell', {
+              y: 36, opacity: 0.88, ease: 'none',
+              scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: true },
+            });
+            gsap.to('.hero-content', {
+              y: 22, ease: 'none',
+              scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: true },
+            });
+            gsap.to('.hero-glow-layer', {
+              scale: 1.02, y: 8, opacity: 0.92, ease: 'none',
+              scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: true },
+            });
+          }
+
+          gsap.to('.hero-base', { xPercent: 8, yPercent: -2.2, scale: 1.22, duration: 12, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+          gsap.to('.hero-stream', { xPercent: 12, yPercent: 1.8, scale: 1.26, duration: 10, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+          gsap.to('.hero-mesh-a', { xPercent: 9, yPercent: -2.8, scale: 1.18, duration: 14, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+          gsap.to('.hero-mesh-b', { xPercent: -8.5, yPercent: 3.2, scale: 1.2, duration: 17, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+          gsap.to('.hero-mesh-c', { xPercent: 7, yPercent: 2.6, scale: 1.16, duration: 19, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+          // Brand line scroll-driven stretch
+          gsap.to('.brand-line', {
+            scaleY: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.brand-section',
+              start: 'top 60%',
+              end: 'bottom 70%',
+              scrub: true,
+            },
+          });
+
+          // Pillar rows staircase slide-in from left, scrub with scroll
+          const pillarRows = gsap.utils.toArray('.pillar-row');
+          const pillarContainer = document.querySelector('.pillar-container');
+          if (pillarContainer && pillarRows.length) {
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: pillarContainer,
+                start: 'top 90%',
+                end: 'bottom 60%',
+                scrub: 0.6,
+              },
+            });
+            pillarRows.forEach((row, i) => {
+              tl.from(row, {
+                x: -(200 + i * 100),
+                opacity: 0,
+                duration: 1,
+                ease: 'power2.out',
+              }, i * 0.3);
+            });
+          }
+
+          // Mobile capability cards - fixed title toggle + tilt entry/exit
+          if (!isDesktop) {
+            const mobileTitleEl = document.querySelector('.cap-mobile-title');
+            const mobileStageEl = document.querySelector('.cap-stage-mobile');
+
+            if (mobileTitleEl && mobileStageEl) {
+              ScrollTrigger.create({
+                trigger: mobileStageEl,
+                start: 'top top',
+                end: 'bottom 50%',
+                onEnter: () => { mobileTitleEl.style.display = 'flex'; },
+                onLeave: () => { mobileTitleEl.style.display = 'none'; },
+                onEnterBack: () => { mobileTitleEl.style.display = 'flex'; },
+                onLeaveBack: () => { mobileTitleEl.style.display = 'none'; },
+              });
+            }
+
+            const mobileCards = gsap.utils.toArray('.cap-mobile-card');
+
+            mobileCards.forEach((card, i) => {
+              const isLeft = i % 2 === 0;
+              const entryRot = isLeft ? -10 : 10;
+              const exitRot = isLeft ? 8 : -8;
+
+              gsap.set(card, {
+                y: 80, x: isLeft ? -40 : 40, rotateZ: entryRot, scale: 0.94, autoAlpha: 0, force3D: true,
+              });
+
+              gsap.to(card, {
+                y: 0, x: 0, rotateZ: 0, scale: 1, autoAlpha: 1,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'top 105%',
+                  end: 'top 55%',
+                  scrub: 0.4,
+                },
+              });
+
+              gsap.to(card, {
+                rotateZ: exitRot,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'bottom 35%',
+                  end: 'bottom 0%',
+                  scrub: 0.4,
+                },
+              });
+            });
+          }
+        }, rootRef);
+
+        return () => {
+          interactiveCards.forEach(({ element, onEnter, onLeave, onDown, onUp }) => {
+            element.removeEventListener('pointerenter', onEnter);
+            element.removeEventListener('pointerleave', onLeave);
+            element.removeEventListener('pointerdown', onDown);
+            element.removeEventListener('pointerup', onUp);
+            element.removeEventListener('pointercancel', onLeave);
+          });
+          ctx.revert();
+          ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        };
+      }, []);
+
+      const capabilityCardClassName = getShineCardClassName({
+        rounded: 'rounded-[24px]',
+        border: 'border border-white/12',
+        background: 'bg-[linear-gradient(180deg,rgba(24,36,62,0.86),rgba(13,20,36,0.9))]',
+        shadow: 'shadow-[0_14px_44px_rgba(3,8,20,0.16)]',
+        glow: 'before:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(126,172,255,0.1),transparent_38%)]',
+      });
+
+      const scenarioCardClassName = getShineCardClassName({
+        rounded: 'rounded-[30px]',
+        border: 'border border-white/12',
+        background: 'bg-[linear-gradient(180deg,rgba(26,40,66,0.84),rgba(14,21,36,0.9))]',
+        shadow: 'shadow-[0_16px_50px_rgba(3,8,20,0.18)]',
+        glow: 'before:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(118,166,255,0.1),transparent_40%)]',
+      });
+
+      const trendCardClassName = getShineCardClassName({
+        rounded: 'rounded-[28px]',
+        border: 'border border-white/12',
+        background: 'bg-[linear-gradient(180deg,rgba(25,38,64,0.84),rgba(13,20,35,0.9))]',
+        shadow: 'shadow-[0_14px_46px_rgba(3,8,20,0.16)]',
+        glow: 'before:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.11),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(120,170,255,0.1),transparent_40%)]',
+      });
+
+      return (
+        <div ref={rootRef} className="min-h-screen bg-[#0a1220] text-white selection:bg-white/25">
+          <div className="pointer-events-none fixed inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,#0b1322_0%,#0c1424_36%,#0b1220_100%)]" />
+          </div>
+
+          <header className="sticky top-0 z-50 border-b border-white/8 bg-[#1b1c20]/88 backdrop-blur-xl">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-2xl border border-white/15 bg-white/5" />
+                <div>
+                  <div className="text-sm font-medium tracking-[0.18em] text-white/92">MOORE LABS</div>
+                  <div className="text-[10px] uppercase tracking-[0.28em] text-white/62">Edition Winter '26</div>
+                </div>
+              </div>
+
+              <nav className="hidden items-center gap-8 md:flex">
+                {["Why MOORE LABS", "What's New", "Here It Is", "Backers"].map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                    className="text-sm text-white/76 transition hover:text-white"
+                  >
+                    {item}
+                  </a>
+                ))}
+              </nav>
+
+              <div className="flex items-center gap-3">
+                <a className="rounded-full border border-white/15 px-4 py-2 text-sm text-white/80 transition hover:bg-white/8" href="#">
+                  MLSD
+                </a>
+                <a className="rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:opacity-90" href="#">
+                  Launch App
+                </a>
+              </div>
+            </div>
+          </header>
+
+          <main>
+            <section ref={heroRef} className="relative isolate overflow-hidden">
+              <div className="hero-bg absolute inset-0 overflow-hidden">
+                <div className="hero-base absolute inset-[-8%]" />
+                <div className="hero-phase absolute inset-[-14%]" />
+                <div className="hero-stream absolute inset-[-16%]" />
+                <div className="hero-mesh hero-mesh-a absolute inset-[-18%]" />
+                <div className="hero-mesh hero-mesh-b absolute inset-[-20%]" />
+                <div className="hero-mesh hero-mesh-c absolute inset-[-18%]" />
+
+                <div className="hero-glow-layer absolute inset-0">
+                  <div className="hero-orb-a absolute left-[-8%] top-[-6%] h-[34rem] w-[34rem] rounded-full bg-[#7b61ff]/[0.04] blur-[120px]" />
+                  <div className="hero-orb-b absolute left-[14%] top-[12%] h-[30rem] w-[30rem] rounded-full bg-[#58b7ff]/[0.04] blur-[120px]" />
+                  <div className="hero-orb-c absolute right-[10%] top-[4%] h-[32rem] w-[32rem] rounded-full bg-[#d8defe]/[0.03] blur-[130px]" />
+                  <div className="hero-orb-d absolute right-[-4%] bottom-[8%] h-[26rem] w-[26rem] rounded-full bg-[rgba(212,255,99,0.02)] blur-[120px]" />
+                  <div className="absolute left-[28%] bottom-[0%] h-[24rem] w-[24rem] rounded-full bg-[#ff7fd1]/[0.04] blur-[110px]" />
+                  <div className="absolute right-[28%] bottom-[-8%] h-[22rem] w-[22rem] rounded-full bg-[#7cffd5]/[0.03] blur-[110px]" />
+                </div>
+
+                <div className="hero-grid absolute inset-0 opacity-[0.02]" style={{backgroundImage: 'linear-gradient(rgba(255,255,255,0.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.18) 1px,transparent 1px)', backgroundSize: '44px 44px'}} />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01)_36%,rgba(20,24,38,0.03)_74%,rgba(10,14,24,0.06)_100%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.18),transparent_30%)]" />
+              </div>
+
+              <div className="hero-shell relative mx-auto flex min-h-[100svh] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10">
+                <div className="hero-content flex flex-col items-center">
+                  <div className="max-w-5xl">
+                    <h1 className="hero-reveal max-w-4xl mx-auto text-5xl font-semibold leading-[0.98] tracking-tight text-[#17181d] drop-shadow-[0_1px_0_rgba(255,255,255,0.18)] md:text-7xl xl:text-[92px]">
+                      Global Financial Layer
+                    </h1>
+                    <p className="hero-reveal mt-8 text-lg leading-8 text-[#2f3442]/80 md:text-xl">
+                      Compliant, Inclusive and Universal
+                    </p>
+
+                    <div className="hero-reveal mt-10 flex justify-center">
+                      <svg width="56" height="32" viewBox="0 0 56 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#2f3442]/70">
+                        <path d="M20 4C11.16 4 4 11.16 4 20s7.16 16 16 16c5.3 0 9.96-2.58 12.88-6.54" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" fill="none"/>
+                        <path d="M36 28c8.84 0 16-7.16 16-16S44.84-4 36-4c-5.3 0-9.96 2.58-12.88 6.54" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" fill="none"/>
+                      </svg>
+                    </div>
+
+                    <div className="hero-reveal mt-10 flex flex-wrap justify-center gap-4">
+                      <a
+                        href="#"
+                        className="rounded-full border border-black/8 bg-white/40 px-8 py-3.5 text-sm font-medium text-[#1d2028] backdrop-blur-md transition hover:bg-white/55"
+                      >
+                        Launch App
+                      </a>
+                      <a
+                        href="#"
+                        className="rounded-full border border-[#d6c29b]/55 bg-[#e7d5ae]/82 px-8 py-3.5 text-sm font-medium text-[#22211c] transition hover:bg-[#eadab7]"
+                      >
+                        FinChain Dollar
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="brand-section relative overflow-hidden bg-[#0a1220]">
+              <div className="mx-auto flex flex-col items-center px-6 py-20 lg:py-28">
+                <div className="brand-text select-none whitespace-nowrap text-center text-[clamp(3rem,12vw,10rem)] font-medium leading-none tracking-[-0.04em]">
+                  <span className="text-white/90">FinChain</span><span className="text-[#9b8ec4]/70">2026</span>
+                </div>
+                <div className="brand-line mt-12 w-[3px] origin-top bg-gradient-to-b from-white/60 to-transparent md:mt-16" style={{height: '10rem', transform: 'scaleY(0)'}} />
+              </div>
+            </section>
+
+            <section id="backers" className="relative border-y border-white/10 bg-[#0f1624] py-10">
+              <div className="mx-auto max-w-7xl overflow-hidden px-6 lg:px-10">
+                <div className="mb-6 text-sm uppercase tracking-[0.28em] text-white/60">Backers</div>
+                <div className="relative overflow-hidden">
+                  <div className="flex min-w-max animate-marquee gap-4">
+                    {marquee.map((item, idx) => (
+                      <div
+                        key={`${item}-${idx}`}
+                        className="rounded-full border border-white/12 bg-white/6 px-6 py-3 text-sm text-white/84 backdrop-blur-md"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="why-moore-labs" className="relative bg-[#0a1220] py-24 lg:py-32">
+              <div className="mx-auto max-w-7xl px-6 lg:px-10">
+                <h2 className="text-center text-3xl font-semibold tracking-tight text-white md:text-5xl">Why FinChain?</h2>
+                <p className="mx-auto mt-6 max-w-3xl text-center text-sm leading-7 text-white/70 md:text-base">
+                  Our mission is to bring RWAs into DeFi (Decentralized Finance) to unlock trillions of dollars in value potential. We believe that internet-native currencies can make RWAs accessible to everyone, creating a more inclusive, universally permitted, and freely flowing economic system.
+                </p>
+
+                <div className="pillar-container mt-14 overflow-hidden rounded-2xl">
+                  {pillars.map((item, idx) => {
+                    const bgColors = ['bg-[#f5f2ec]', 'bg-[#ebe7dd]', 'bg-[#e0dacb]', 'bg-[#d5ccb8]', 'bg-[#c9bea5]'];
+                    const bgColor = bgColors[idx] || bgColors[bgColors.length - 1];
+                    return (
+                      <div
+                        key={item.title}
+                        className={cx(
+                          'pillar-row grid grid-cols-1 gap-4 border-b border-black/8 px-8 py-7 last:border-b-0 md:grid-cols-[1fr_1.5fr] md:gap-12 md:px-10 md:py-8',
+                          bgColor
+                        )}
+                      >
+                        <h3 className="text-xl font-bold text-[#1a1a1a] md:text-2xl">{item.title}</h3>
+                        <p className="text-sm leading-7 text-[#3a3a3a] md:text-base">{item.desc}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+
+            <section id="what-s-new" className="relative border-y border-white/10 bg-black">
+              {/* Mobile: fixed title overlay + flowing cards */}
+              <div className="cap-mobile-title lg:hidden" style={{
+                position: 'fixed', top: 0, left: 0, right: 0, height: '100vh',
+                display: 'none', alignItems: 'center', justifyContent: 'center',
+                background: '#000', zIndex: 1, pointerEvents: 'none',
+              }}>
+                <div className="text-center text-[2.2rem] font-medium leading-none tracking-[-0.04em] text-white/92">
+                  Hi~ This is FinChain
+                </div>
+              </div>
+
+              <div className="cap-stage-mobile relative bg-black lg:hidden">
+                {/* Spacer for initial title visibility */}
+                <div style={{height: '100vh'}} />
+
+                {/* Cards flowing over fixed title */}
+                <div className="relative z-10 px-4" style={{marginTop: '-55vh'}}>
+                  <div className="mx-auto max-w-md space-y-10 pb-32">
+                    {capabilities.slice(0, 5).map((item, idx) => (
+                      <div key={item} className="cap-mobile-card rounded-[26px] border border-white/14 bg-[linear-gradient(180deg,rgba(84,84,88,0.94),rgba(70,70,74,0.96))] px-6 py-5 shadow-[0_14px_34px_rgba(0,0,0,0.16)] backdrop-blur-sm">
+                        <div className="flex flex-col gap-3">
+                          <div className="text-[1.25rem] font-medium leading-tight text-white">{item}</div>
+                          <div className="flex items-start gap-3">
+                            <div className="mt-1.5 h-3 w-3 shrink-0 rounded-full bg-[#dcc89c]" />
+                            <p className="text-[0.85rem] leading-6 text-white/88">
+                              {idx === 0 && 'Enabling developers to easily build secure and powerful decentralized applications (dApps).'}
+                              {idx === 1 && 'Enjoy the advantage of low fees when settling transactions on the FinChain network.'}
+                              {idx === 2 && 'A transparent trust layer designed for reliable value transfer and ecosystem growth.'}
+                              {idx === 3 && 'Build global rails that connect ecosystems, users and institutions with less friction.'}
+                              {idx === 4 && 'Enterprise-grade infrastructure aligned for scale, compliance and operational reliability.'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Desktop: inside wrapper */}
+              <div className="mx-auto max-w-7xl bg-black px-6 lg:px-10">
+                <div className="cap-stage relative hidden bg-black lg:block">
+                  {/* Sticky title background */}
+                  <div className="sticky top-0 z-0 flex h-screen items-start justify-center bg-[#040507] pt-[6.5rem] pointer-events-none">
+                    <div className="text-center text-[6.2rem] font-medium leading-none tracking-[-0.07em] text-white/92">
+                      Hi~ This is FinChain
+                    </div>
+                  </div>
+
+                  {/* Cards flowing over sticky background, left-right alternating */}
+                  <div className="relative z-10" style={{marginTop: '-70vh'}}>
+                    <div className="mx-auto max-w-5xl px-10 pb-40">
+                      {capabilities.slice(0, 5).map((item, idx) => {
+                        const isLeft = idx % 2 === 0;
+                        return (
+                          <div key={item} className={`flex ${isLeft ? 'justify-start' : 'justify-end'} mb-16`}>
+                            <div
+                              className="cap-card w-[29rem] min-h-[14rem] rounded-[26px] border border-white/14 bg-[linear-gradient(180deg,rgba(84,84,88,0.94),rgba(70,70,74,0.96))] px-7 py-6 shadow-[0_14px_34px_rgba(0,0,0,0.16)] backdrop-blur-sm"
+                            >
+                              <div className="flex h-full flex-col justify-between">
+                                <div className="text-[2rem] font-medium leading-none text-white">{item}</div>
+                                <div className="mt-6 flex items-end gap-5">
+                                  <div className="mb-1 h-4 w-4 shrink-0 rounded-full bg-[#dcc89c]" />
+                                  <p className="max-w-[20rem] text-[1rem] leading-7 text-white/88">
+                                    {idx === 0 && 'Enabling developers to easily build secure and powerful decentralized applications (dApps).'}
+                                    {idx === 1 && 'Enjoy the advantage of low fees when settling transactions on the FinChain network.'}
+                                    {idx === 2 && 'A transparent trust layer designed for reliable value transfer and ecosystem growth.'}
+                                    {idx === 3 && 'Build global rails that connect ecosystems, users and institutions with less friction.'}
+                                    {idx === 4 && 'Enterprise-grade infrastructure aligned for scale, compliance and operational reliability.'}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* ON-CHAIN ASSETS outline text section */}
+            <section className="on-chain-section relative overflow-hidden bg-black py-24 lg:py-32">
+              <div className="mx-auto flex flex-col items-center px-6">
+                {/* Chain-link logo */}
+                <svg className="mb-10 h-12 w-12 text-white/70" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 12h-2a8 8 0 0 0 0 16h2M30 12h2a8 8 0 0 1 0 16h-2M16 20h16" />
+                </svg>
+                {/* ON-CHAIN ASSETS large outline text */}
+                <div className="on-chain-text w-full text-center">
+                  <span style={{
+                    fontSize: 'clamp(3rem, 10vw, 9rem)',
+                    fontWeight: 800,
+                    lineHeight: 1,
+                    letterSpacing: '-0.03em',
+                    WebkitTextStroke: '1.5px rgba(255,255,255,0.5)',
+                    color: 'transparent',
+                    textTransform: 'uppercase',
+                  }}>
+                    ON-CHAIN ASSETS
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <section id="here-it-is" className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+              <SectionTitle
+                eyebrow="Core Application Scenarios"
+                title="Scenario cards that enter as you scroll"
+                subtitle="This mirrors the source page's use of repeated scenario modules. The animation intentionally stays understated: fade, rise, light hover, strong spacing."
+              />
+
+              <div className="scenario-group mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {scenarios.map((item, idx) => (
+                  <div key={item} className={cx('scenario-card group card-interactive card-hover-lift p-7', scenarioCardClassName)}>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(138,170,255,0.12),transparent_35%)] opacity-0 transition duration-500 group-hover:opacity-100" />
+                    <div className="relative">
+                      <div className="mb-6 text-5xl font-semibold text-white/12">0{idx + 1}</div>
+                      <h3 className="text-2xl font-medium text-white">{item}</h3>
+                      <p className="mt-3 text-sm leading-7 text-white/70">
+                        Replace this with your actual copy. The important part is preserving spacing, reveal timing, hover luminance and the premium card silhouette.
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="border-y border-white/10 bg-white/[0.02]">
+              <div className="mx-auto max-w-7xl bg-black px-6 py-24 lg:px-10 lg:py-32">
+                <SectionTitle
+                  eyebrow="Looking Ahead"
+                  title="Key trends shaping the next cycle"
+                  subtitle="The original page includes a trend list with ordinal markers. This version rebuilds that editorial motif with cleaner visual hierarchy and more modern spacing."
+                />
+
+                <div className="stagger-drop mt-14 grid gap-4 lg:grid-cols-2">
+                  {trends.map((item, idx) => (
+                    <div key={item} className={cx('fade-up card-interactive card-hover-lift flex gap-5 p-6', trendCardClassName)}>
+                      <div className="text-4xl font-semibold text-white/12">[{idx + 1}]</div>
+                      <div>
+                        <div className="text-xl font-medium text-white">{item}</div>
+                        <p className="mt-3 text-sm leading-7 text-white/70">
+                          Keep this short and atmospheric. On the reference site, the text functions more like mood-setting support than dense explanatory copy.
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+              <SectionTitle
+                eyebrow="Last But Not Least"
+                title="Roadmap"
+                subtitle="A timeline with cinematic spacing and alternating reveal direction creates a similar narrative finish to the reference site."
+              />
+
+              <div className="relative mt-16">
+                <div className="absolute left-4 top-0 h-full w-px bg-gradient-to-b from-white/20 via-white/10 to-transparent md:left-1/2" />
+                <div className="space-y-8">
+                  {roadmap.map((item, idx) => (
+                    <div key={`${item.time}-${item.title}`} className="timeline-card card-interactive relative md:grid md:grid-cols-2 md:gap-8">
+                      <div className={idx % 2 === 0 ? 'md:pr-10' : 'md:col-start-2 md:pl-10'}>
+                        <div className="card-interactive card-hover-lift rounded-[28px] border border-white/12 bg-[linear-gradient(180deg,rgba(26,40,68,0.84),rgba(14,22,38,0.9))] p-6 shadow-[0_16px_46px_rgba(5,12,26,0.16)] backdrop-blur-xl">
+                          <div className="text-xs uppercase tracking-[0.28em] text-[#d2e2ff]/78">{item.time}</div>
+                          <div className="mt-3 text-2xl font-medium text-white">{item.title}</div>
+                          <ul className="mt-4 space-y-2 text-sm text-white/72">
+                            {item.points.map((point) => (
+                              <li key={point}>&#8226; {point}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="pointer-events-none absolute left-4 top-8 h-3 w-3 -translate-x-1/2 rounded-full border border-white/35 bg-[#1a2740] shadow-[0_0_0_6px_rgba(255,255,255,0.03)] md:left-1/2" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </main>
+
+          <section className="cta-stage relative overflow-hidden border-t border-white/10 bg-black">
+            <div className="cta-base absolute inset-0" />
+            <div className="cta-phase absolute inset-[-14%]" />
+            <div className="cta-stream absolute inset-[-10%]" />
+            <div className="cta-mesh cta-mesh-a absolute inset-[-14%]" />
+            <div className="cta-mesh cta-mesh-b absolute inset-[-16%]" />
+            <div className="cta-vignette absolute inset-0" />
+            <div className="relative mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+              <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.32em] text-white/56">MOORE LABS</div>
+                  <h2 className="mt-5 max-w-4xl text-4xl font-semibold leading-[0.95] tracking-tight text-white md:text-6xl xl:text-[88px]">
+                    Built for the next generation of compliant finance.
+                  </h2>
+                  <p className="mt-6 max-w-2xl text-base leading-8 text-white/66 md:text-lg">
+                    A modular infrastructure layer for identity, payments, tokenized real-world assets and programmable financial access.
+                  </p>
+                </div>
+
+                <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(19,26,40,0.52),rgba(10,14,24,0.68))] p-6 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+                  <div className="text-sm uppercase tracking-[0.28em] text-white/46">Start here</div>
+                  <div className="mt-6 space-y-3">
+                    {['Explore infrastructure', 'Read the docs', 'Launch app'].map((item) => (
+                      <a
+                        key={item}
+                        href="#"
+                        className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white/84 transition hover:bg-white/[0.06]"
+                      >
+                        <span>{item}</span>
+                        <ArrowUpRight className="h-4 w-4" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer className="border-t border-white/12 bg-[#0b1018]">
+            <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 lg:grid-cols-[1.2fr_0.8fr] lg:px-10">
+              <div>
+                <div className="text-lg font-medium text-white">MOORE LABS 2026</div>
+                <p className="mt-3 max-w-xl text-sm leading-7 text-white/62">
+                  Modular infrastructure for compliant finance, identity, payments and tokenized real-world assets.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm text-white/64 md:grid-cols-3">
+                {['Launch App', 'MLSD', 'Docs', 'Terms', 'Privacy', 'Contact'].map((item) => (
+                  <a key={item} href="#" className="transition hover:text-white">
+                    {item}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(MooreLabsLanding));
+  </script>
+</body>
+</html>
