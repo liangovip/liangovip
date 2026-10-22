@@ -1,0 +1,290 @@
+[
+  {
+    "id": 0,
+    "name": "ChainCatcher",
+    "slug": "chaincatcher",
+    "white_logo": "./assets/backers/backer_white_00_chaincatcher.png",
+    "width": 219,
+    "height": 95
+  },
+  {
+    "id": 1,
+    "name": "MetaEra",
+    "slug": "metaera",
+    "white_logo": "./assets/backers/backer_white_01_metaera.png",
+    "width": 133,
+    "height": 93
+  },
+  {
+    "id": 2,
+    "name": "Feixiaohao",
+    "slug": "feixiaohao",
+    "white_logo": "./assets/backers/backer_white_02_feixiaohao.png",
+    "width": 228,
+    "height": 69
+  },
+  {
+    "id": 3,
+    "name": "Odaily",
+    "slug": "odaily",
+    "white_logo": "./assets/backers/backer_white_03_odaily.png",
+    "width": 240,
+    "height": 83
+  },
+  {
+    "id": 4,
+    "name": "Foresight News",
+    "slug": "foresight_news",
+    "white_logo": "./assets/backers/backer_white_04_foresight_news.png",
+    "width": 238,
+    "height": 91
+  },
+  {
+    "id": 5,
+    "name": "PANews",
+    "slug": "panews",
+    "white_logo": "./assets/backers/backer_white_05_panews.png",
+    "width": 239,
+    "height": 70
+  },
+  {
+    "id": 6,
+    "name": "MarsBit",
+    "slug": "marsbit",
+    "white_logo": "./assets/backers/backer_white_06_marsbit.png",
+    "width": 230,
+    "height": 83
+  },
+  {
+    "id": 7,
+    "name": "Jinse Finance",
+    "slug": "jinse",
+    "white_logo": "./assets/backers/backer_white_07_jinse.png",
+    "width": 235,
+    "height": 62
+  },
+  {
+    "id": 8,
+    "name": "CoinDesk",
+    "slug": "coindesk",
+    "white_logo": "./assets/backers/backer_white_08_coindesk.png",
+    "width": 243,
+    "height": 56
+  },
+  {
+    "id": 9,
+    "name": "Bitcoin Magazine",
+    "slug": "bitcoin_magazine",
+    "white_logo": "./assets/backers/backer_white_09_bitcoin_magazine.png",
+    "width": 241,
+    "height": 63
+  },
+  {
+    "id": 10,
+    "name": "DeBox",
+    "slug": "debox",
+    "white_logo": "./assets/backers/backer_white_10_debox.png",
+    "width": 237,
+    "height": 79
+  },
+  {
+    "id": 11,
+    "name": "HK RWA Alliance",
+    "slug": "hk_rwa_alliance",
+    "white_logo": "./assets/backers/backer_white_11_hk_rwa_alliance.png",
+    "width": 242,
+    "height": 65
+  },
+  {
+    "id": 12,
+    "name": "US Post Now",
+    "slug": "us_post_now",
+    "white_logo": "./assets/backers/backer_white_12_us_post_now.png",
+    "width": 241,
+    "height": 63
+  },
+  {
+    "id": 13,
+    "name": "Crypto Briefing",
+    "slug": "crypto_briefing",
+    "white_logo": "./assets/backers/backer_white_13_crypto_briefing.png",
+    "width": 226,
+    "height": 80
+  },
+  {
+    "id": 14,
+    "name": "Ekhbariya",
+    "slug": "ekhbariya",
+    "white_logo": "./assets/backers/backer_white_14_ekhbariya.png",
+    "width": 228,
+    "height": 87
+  },
+  {
+    "id": 15,
+    "name": "Universal Guide",
+    "slug": "universal_guide",
+    "white_logo": "./assets/backers/backer_white_15_universal_guide.png",
+    "width": 238,
+    "height": 71
+  },
+  {
+    "id": 16,
+    "name": "UK Finance Day",
+    "slug": "uk_finance_day",
+    "white_logo": "./assets/backers/backer_white_16_uk_finance_day.png",
+    "width": 248,
+    "height": 71
+  },
+  {
+    "id": 17,
+    "name": "Public Shade",
+    "slug": "public_shade",
+    "white_logo": "./assets/backers/backer_white_17_public_shade.png",
+    "width": 240,
+    "height": 59
+  },
+  {
+    "id": 18,
+    "name": "Smarter Trading",
+    "slug": "smarter_trading",
+    "white_logo": "./assets/backers/backer_white_18_smarter_trading.png",
+    "width": 249,
+    "height": 102
+  },
+  {
+    "id": 19,
+    "name": "UC Riverside",
+    "slug": "uc_riverside",
+    "white_logo": "./assets/backers/backer_white_19_uc_riverside.png",
+    "width": 237,
+    "height": 90
+  },
+  {
+    "id": 20,
+    "name": "Desk Stories",
+    "slug": "desk_stories",
+    "white_logo": "./assets/backers/backer_white_20_desk_stories.png",
+    "width": 231,
+    "height": 74
+  },
+  {
+    "id": 21,
+    "name": "Chainee",
+    "slug": "chainee",
+    "white_logo": "./assets/backers/backer_white_21_chainee.png",
+    "width": 224,
+    "height": 95
+  },
+  {
+    "id": 22,
+    "name": "Education NDTV",
+    "slug": "education_ndtv",
+    "white_logo": "./assets/backers/backer_white_22_education_ndtv.png",
+    "width": 248,
+    "height": 80
+  },
+  {
+    "id": 23,
+    "name": "Finance European Post",
+    "slug": "finance_european_post",
+    "white_logo": "./assets/backers/backer_white_23_finance_european_post.png",
+    "width": 248,
+    "height": 76
+  },
+  {
+    "id": 24,
+    "name": "Budao Labs",
+    "slug": "budao_labs",
+    "white_logo": "./assets/backers/backer_white_24_budao_labs.png",
+    "width": 236,
+    "height": 71
+  },
+  {
+    "id": 25,
+    "name": "Crypto Reporters",
+    "slug": "crypto_reporters",
+    "white_logo": "./assets/backers/backer_white_25_crypto_reporters.png",
+    "width": 249,
+    "height": 102
+  },
+  {
+    "id": 26,
+    "name": "Business News",
+    "slug": "business_news",
+    "white_logo": "./assets/backers/backer_white_26_business_news.png",
+    "width": 233,
+    "height": 71
+  },
+  {
+    "id": 27,
+    "name": "UK Insider",
+    "slug": "uk_insider",
+    "white_logo": "./assets/backers/backer_white_27_uk_insider.png",
+    "width": 249,
+    "height": 102
+  },
+  {
+    "id": 28,
+    "name": "Metaverse Shan",
+    "slug": "metaverse_shan",
+    "white_logo": "./assets/backers/backer_white_28_metaverse_shan.png",
+    "width": 250,
+    "height": 76
+  },
+  {
+    "id": 29,
+    "name": "The Voice",
+    "slug": "the_voice",
+    "white_logo": "./assets/backers/backer_white_29_the_voice.png",
+    "width": 178,
+    "height": 87
+  },
+  {
+    "id": 30,
+    "name": "US Times Today",
+    "slug": "us_times_today",
+    "white_logo": "./assets/backers/backer_white_30_us_times_today.png",
+    "width": 205,
+    "height": 92
+  },
+  {
+    "id": 31,
+    "name": "Press9",
+    "slug": "press9",
+    "white_logo": "./assets/backers/backer_white_31_press9.png",
+    "width": 226,
+    "height": 88
+  },
+  {
+    "id": 32,
+    "name": "Arizona Headlines",
+    "slug": "arizona_headlines",
+    "white_logo": "./assets/backers/backer_white_32_arizona_headlines.png",
+    "width": 236,
+    "height": 74
+  },
+  {
+    "id": 33,
+    "name": "European Post",
+    "slug": "european_post",
+    "white_logo": "./assets/backers/backer_white_33_european_post.png",
+    "width": 241,
+    "height": 73
+  },
+  {
+    "id": 34,
+    "name": "Times Now",
+    "slug": "times_now",
+    "white_logo": "./assets/backers/backer_white_34_times_now.png",
+    "width": 237,
+    "height": 88
+  },
+  {
+    "id": 35,
+    "name": "Crypto Studystock",
+    "slug": "crypto_studystock",
+    "white_logo": "./assets/backers/backer_white_35_crypto_studystock.png",
+    "width": 170,
+    "height": 88
+  }
+]
