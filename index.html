@@ -369,7 +369,7 @@
         animation: mobileBorderPulse 6.5s ease-in-out infinite alternate;
       }
       .scenario-card {
-        transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease !important;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease !important;
       }
     }
 
@@ -888,8 +888,6 @@
         const interactiveCards = [];
 
         const ctx = gsap.context(() => {
-          const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
-
           gsap.from('.hero-reveal', {
             y: 28,
             opacity: 0,
@@ -898,68 +896,141 @@
             ease: 'power3.out',
           });
 
-          // --- 大廠級極致穩定呈現引擎 (Rock-Solid Motion Engine) ---
-          // 1. 未來趨勢卡片：平穩呼吸就位，絕不左右抽搐
           gsap.utils.toArray('.stagger-drop').forEach((group) => {
             const items = Array.from(group.querySelectorAll('.fade-up'));
             items.forEach((item, index) => {
+              const direction = index % 2 === 0 ? -1 : 1;
+              const fromX = direction * (16 + index * 7);
+              const fromY = 86 + index * 20;
+              const fromRotate = direction * (2.8 + index * 0.6);
+              const endRotate = direction * (0.85 + index * 0.08);
+              const endX = direction * (1.8 + index * 0.35);
+
               gsap.fromTo(
                 item,
-                { y: 20, opacity: 0.25, force3D: true },
                 {
-                  y: 0,
-                  opacity: 1,
-                  duration: 0.65,
-                  ease: 'power2.out',
+                  y: fromY, x: fromX, rotateZ: fromRotate, rotateX: 2,
+                  scale: 0.988, opacity: 0.16, transformOrigin: '50% 88%', force3D: true,
+                },
+                {
+                  y: 0, x: endX, rotateZ: endRotate, rotateX: 0, scale: 1, opacity: 1, ease: 'none',
                   scrollTrigger: {
                     trigger: item,
-                    start: 'top 92%',
-                    toggleActions: 'play none none none',
-                    once: true,
+                    start: () => `top ${98 - index * 6}%`,
+                    end: () => `top ${70 - index * 4}%`,
+                    scrub: true,
                   },
                 }
               );
             });
           });
 
-          // 2. Section 7 往期大型峰會卡片：圖片不動如山，全時穩定高清呈現，雙向流光對稱觸發
+          const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+          if (isDesktop) {
+            const capCards = gsap.utils.toArray('.cap-card');
+
+            capCards.forEach((card, index) => {
+              const isLeft = index % 2 === 0;
+              const entryX = isLeft ? -80 : 80;
+              const entryRot = isLeft ? -14 : 14;
+              const exitRot = isLeft ? 10 : -10;
+
+              gsap.set(card, {
+                y: 120, x: entryX, rotateZ: entryRot, scale: 0.92, autoAlpha: 0, force3D: true,
+              });
+
+              // Entry: bottom → center, tilted → straight
+              gsap.to(card, {
+                y: 0, x: 0, rotateZ: 0, scale: 1, autoAlpha: 1,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'top 105%',
+                  end: 'top 50%',
+                  scrub: 0.4,
+                },
+              });
+
+              // Exit: center → top, straight → tilted
+              gsap.to(card, {
+                rotateZ: exitRot,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'bottom 35%',
+                  end: 'bottom 0%',
+                  scrub: 0.4,
+                },
+              });
+            });
+          }
+
           gsap.utils.toArray('.scenario-group').forEach((group) => {
             const items = Array.from(group.querySelectorAll('.scenario-card'));
             items.forEach((item, index) => {
-              // 堅實定格：位置與圖片全時可見，徹底消除上下跳躍顛簸
-              gsap.set(item, { opacity: 1, y: 0, x: 0, rotateZ: 0, clearProps: 'transform' });
+              const direction = index % 2 === 0 ? 1 : -1;
+              const fromX = direction * (18 + index * 8);
+              const fromY = 96 + index * 22;
+              const fromRotate = direction * (3 + index * 0.7);
+              const endRotate = direction * (0.95 + index * 0.1);
+              const endX = direction * (2.1 + index * 0.45);
 
-              // 雙向對稱微光觸發 (往下滑進場、往上滑回滾，表現 100% 穩定一致)
-              ScrollTrigger.create({
-                trigger: item,
-                start: 'top 92%',
-                end: 'bottom 8%',
-                onEnter: () => item.classList.add('in-view'),
-                onEnterBack: () => item.classList.add('in-view'),
-                onLeave: () => item.classList.remove('in-view'),
-                onLeaveBack: () => item.classList.remove('in-view'),
-              });
+              gsap.fromTo(
+                item,
+                {
+                  y: fromY, x: fromX, rotateZ: fromRotate, rotateX: 2,
+                  scale: 0.988, opacity: 0.14, transformOrigin: '50% 88%', force3D: true,
+                },
+                {
+                  y: 0, x: endX, rotateZ: endRotate, rotateX: 0, scale: 1, opacity: 1, ease: 'none',
+                  scrollTrigger: {
+                    trigger: item,
+                    start: () => `top ${99 - index * 6}%`,
+                    end: () => `top ${72 - index * 4}%`,
+                    scrub: true,
+                  },
+                }
+              );
             });
           });
 
-          // 3. 路線圖卡片：平穩浮現，穩如磐石
           gsap.utils.toArray('.timeline-card').forEach((card, index) => {
+            const direction = index % 2 === 0 ? -1 : 1;
+            const endX = direction * 1.1;
+            const endRotate = direction * 0.55;
+
             gsap.fromTo(
               card,
-              { y: 20, opacity: 0.3, force3D: true },
               {
-                y: 0,
-                opacity: 1,
-                duration: 0.6,
-                ease: 'power2.out',
+                y: 78, x: direction * 14, rotateZ: direction * 1.8, rotateX: 1.5,
+                scale: 0.992, opacity: 0.2, transformOrigin: '50% 88%', force3D: true,
+              },
+              {
+                y: 0, x: endX, rotateZ: endRotate, rotateX: 0, scale: 1, opacity: 1, ease: 'none',
                 scrollTrigger: {
                   trigger: card,
-                  start: 'top 92%',
-                  toggleActions: 'play none none none',
-                  once: true,
+                  start: () => `top ${99 - index * 4}%`,
+                  end: () => `top ${74 - index * 3}%`,
+                  scrub: true,
                 },
               }
             );
+          });
+
+          gsap.utils.toArray('.card-interactive:not(.cap-card)').forEach((card) => {
+            const onEnter = () => { gsap.to(card, { y: -4, scale: 1.008, duration: 0.24, ease: 'power2.out', overwrite: 'auto' }); };
+            const onLeave = () => { gsap.to(card, { y: 0, scale: 1, duration: 0.28, ease: 'power2.out', overwrite: 'auto' }); };
+            const onDown = () => { gsap.to(card, { y: -2, scale: 0.994, duration: 0.12, ease: 'power2.out', overwrite: 'auto' }); };
+            const onUp = () => { gsap.to(card, { y: -4, scale: 1.008, duration: 0.16, ease: 'power2.out', overwrite: 'auto' }); };
+
+            card.addEventListener('pointerenter', onEnter);
+            card.addEventListener('pointerleave', onLeave);
+            card.addEventListener('pointerdown', onDown);
+            card.addEventListener('pointerup', onUp);
+            card.addEventListener('pointercancel', onLeave);
+
+            interactiveCards.push({ element: card, onEnter, onLeave, onDown, onUp });
           });
 
           if (heroRef.current) {
@@ -1038,25 +1109,34 @@
 
             mobileCards.forEach((card, i) => {
               const isLeft = i % 2 === 0;
-              const entryRot = isLeft ? -3 : 3;
-              const exitRot = isLeft ? 2 : -2;
+              const entryRot = isLeft ? -10 : 10;
+              const exitRot = isLeft ? 8 : -8;
 
               gsap.set(card, {
-                y: 50, x: isLeft ? -10 : 10, rotateZ: entryRot, scale: 0.96, autoAlpha: 0, force3D: true,
+                y: 80, x: isLeft ? -40 : 40, rotateZ: entryRot, scale: 0.94, autoAlpha: 0, force3D: true,
               });
 
               gsap.to(card, {
                 y: 0, x: 0, rotateZ: 0, scale: 1, autoAlpha: 1,
-                duration: 0.8, ease: 'none',
+                duration: 1, ease: 'none',
                 scrollTrigger: {
                   trigger: card,
-                  start: 'top 98%',
-                  end: 'top 60%',
-                  scrub: 0.3,
+                  start: 'top 105%',
+                  end: 'top 55%',
+                  scrub: 0.4,
                 },
               });
 
-              // 穩定呈現：移除多餘退出扭轉，保持平滑層疊
+              gsap.to(card, {
+                rotateZ: exitRot,
+                duration: 1, ease: 'none',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'bottom 35%',
+                  end: 'bottom 0%',
+                  scrub: 0.4,
+                },
+              });
             });
           }
         }, rootRef);
