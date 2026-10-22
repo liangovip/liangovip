@@ -531,6 +531,8 @@
         disconnect: '點擊斷開',
         launchApp: '進入應用',
         heroTag: 'MOORE LABS 摩爾資本',
+        heroCtaPrimary: '探索生態',
+        heroCtaSecondary: '往期盛會',
         heroTitle: '全球 Web3 深度孵化網絡',
         heroSub: '新加坡 ACRA 官方牌照 (UEN: 202335893Z) · 5000萬美元生態基金 · Wallet MPC 門限安全',
         backersTitle: '戰略投資與全球媒體矩陣',
@@ -663,7 +665,7 @@
         ctaTag: 'MOORE LABS',
         ctaTitle: '為下一代 Web3 全球創新而生',
         ctaDesc: '由新加坡 Moore 基金會全面賦能，整合 5000 萬美元創投資金、Wallet MPC 門限安全金庫與全球實體落地樞紐。',
-        ctaLinks: ['探索核心架構', '查閱官方白皮書', '啟動應用'],
+        ctaLinks: ['探索核心架構', '往期大型盛會', '聯絡官方合作'],
         footerText: '新加坡 MOORE FOUNDATION LTD. 官方平台（ACRA UEN: 202335893Z）。整合 5000 萬美元生態基金、Wallet MPC 門限安全金庫與 MOORE 旅運集團。',
         modalTitle: '連接 Web3 錢包',
         modalConnecting: '正在連接 Wallet MPC...',
@@ -687,6 +689,8 @@
         disconnect: 'Click to Disconnect',
         launchApp: 'Launch App',
         heroTag: 'MOORE LABS',
+        heroCtaPrimary: 'Explore Ecosystem',
+        heroCtaSecondary: 'Past Summits',
         heroTitle: 'Global Web3 Incubation Layer',
         heroSub: 'Singapore ACRA (UEN: 202335893Z) · $50M Ecosystem Fund · Wallet MPC Security',
         backersTitle: 'Backers & Global Media Partners',
@@ -819,7 +823,7 @@
         ctaTag: 'MOORE LABS',
         ctaTitle: 'Built for the next generation of Web3 innovation.',
         ctaDesc: 'A comprehensive venture & liquidity ecosystem backed by Singapore Moore Foundation, deploying $50M capital, Wallet MPC custody, and global physical landing.',
-        ctaLinks: ['Explore infrastructure', 'Read the docs', 'Launch app'],
+        ctaLinks: ['Explore Infrastructure', 'Past Mega Summits', 'Contact Us'],
         footerText: 'Official Web3 platform by MOORE FOUNDATION LTD. (Singapore ACRA UEN: 202335893Z). Integrating $50M Ecosystem Fund, Wallet MPC Custody, and MOORE Travel Group.',
         modalTitle: 'Connect Web3 Wallet',
         modalConnecting: 'Connecting to Wallet MPC...',
@@ -859,33 +863,7 @@
         } catch (e) {}
       };
 
-      // 錢包狀態 (原生 Wallet MPC)
-      const [walletAddress, setWalletAddress] = useState(null);
-      const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-      const [walletConnecting, setWalletConnecting] = useState(false);
-
-      const connectWallet = (type) => {
-        setWalletConnecting(true);
-        if (typeof window.ethereum !== 'undefined') {
-          window.ethereum.request({ method: 'eth_requestAccounts' })
-            .then(accs => {
-              if (accs && accs[0]) setWalletAddress(accs[0]);
-              setIsWalletModalOpen(false);
-              setWalletConnecting(false);
-            })
-            .catch(() => {
-              setWalletAddress('0x38b291A4F0c61D792408c7A51E5239bE88aA91');
-              setIsWalletModalOpen(false);
-              setWalletConnecting(false);
-            });
-        } else {
-          setTimeout(() => {
-            setWalletAddress('0x38b291A4F0c61D792408c7A51E5239bE88aA91');
-            setIsWalletModalOpen(false);
-            setWalletConnecting(false);
-          }, 500);
-        }
-      };
+      // 官方官網展示模式（純展示門戶，不設錢包連接與應用跳轉）
 
       useEffect(() => {
         const interactiveCards = [];
@@ -1246,64 +1224,46 @@
             <div className="absolute inset-0 bg-[linear-gradient(180deg,#0b1322_0%,#0c1424_36%,#0b1220_100%)]" />
           </div>
 
-          <header className="sticky top-0 z-50 border-b border-white/8 bg-[#1b1c20]/88 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-2xl border border-white/15 bg-white/5" />
-                <div>
-                  <div className="text-sm font-medium tracking-[0.18em] text-white/92">MOORE LABS</div>
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-white/62">Edition Winter '26</div>
+          <header className="sticky top-0 z-50 border-b border-white/10 bg-[#14161d]/90 backdrop-blur-xl">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-3.5 lg:px-10">
+              <a href="#" className="flex items-center gap-2.5 sm:gap-3 shrink-0 whitespace-nowrap group">
+                <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-2xl border border-white/15 bg-white/5 transition group-hover:border-white/30 group-hover:bg-white/10">
+                  <div className="h-3 w-3 sm:h-3.5 sm:w-3.5 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 shadow-[0_0_10px_rgba(251,191,36,0.6)]" />
                 </div>
-              </div>
+                <div className="flex flex-col text-left">
+                  <div className="text-xs sm:text-sm font-semibold tracking-[0.16em] sm:tracking-[0.18em] text-white/95">MOORE LABS</div>
+                  <div className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.24em] text-white/55">Official Portal</div>
+                </div>
+              </a>
 
               <nav className="hidden items-center gap-8 md:flex">
                 {t.navLinks.map((item) => (
                   <a
                     key={item.name}
                     href={item.href}
-                    className="text-sm text-white/76 transition hover:text-white"
+                    className="text-sm font-medium text-white/76 transition hover:text-white"
                   >
                     {item.name}
                   </a>
                 ))}
               </nav>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
                 {/* 雙語言切換膠囊 (繁體 / EN) */}
-                <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-0.5 text-xs backdrop-blur-md">
+                <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-0.5 text-xs backdrop-blur-md shadow-sm">
                   <button
                     onClick={() => toggleLang('zh')}
-                    className={`rounded-full px-2.5 py-1 transition-all ${lang === 'zh' ? 'bg-amber-500/20 text-amber-300 font-semibold shadow' : 'text-white/60 hover:text-white'}`}
+                    className={`rounded-full px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs transition-all ${lang === 'zh' ? 'bg-amber-500/20 text-amber-300 font-semibold shadow' : 'text-white/60 hover:text-white'}`}
                   >
                     繁體
                   </button>
                   <button
                     onClick={() => toggleLang('en')}
-                    className={`rounded-full px-2.5 py-1 transition-all ${lang === 'en' ? 'bg-amber-500/20 text-amber-300 font-semibold shadow' : 'text-white/60 hover:text-white'}`}
+                    className={`rounded-full px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs transition-all ${lang === 'en' ? 'bg-amber-500/20 text-amber-300 font-semibold shadow' : 'text-white/60 hover:text-white'}`}
                   >
                     EN
                   </button>
                 </div>
-
-                {walletAddress ? (
-                  <button
-                    onClick={() => setWalletAddress(null)}
-                    className="rounded-full border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-300 transition hover:bg-amber-500/20"
-                    title={t.disconnect}
-                  >
-                    {walletAddress.substring(0, 6)}...{walletAddress.substring(walletAddress.length - 4)} (MPC)
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setIsWalletModalOpen(true)}
-                    className="rounded-full border border-white/15 px-4 py-2 text-sm text-white/80 transition hover:bg-white/8"
-                  >
-                    {t.connectWallet}
-                  </button>
-                )}
-                <a className="rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:opacity-90" href="#why-moore-labs">
-                  {t.launchApp}
-                </a>
               </div>
             </div>
           </header>
@@ -1349,19 +1309,19 @@
                       </svg>
                     </div>
 
-                    <div className="hero-reveal mt-10 flex flex-wrap justify-center gap-4">
+                    <div className="hero-reveal mt-10 flex flex-wrap justify-center gap-3.5 sm:gap-4">
                       <a
                         href="#why-moore-labs"
-                        className="rounded-full border border-black/8 bg-white/40 px-8 py-3.5 text-sm font-medium text-[#1d2028] backdrop-blur-md transition hover:bg-white/55"
+                        className="rounded-full border border-black/10 bg-white/85 px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-[#1d2028] shadow-md backdrop-blur-md transition hover:bg-white hover:scale-105 active:scale-95"
                       >
-                        {t.launchApp}
+                        {t.heroCtaPrimary}
                       </a>
-                      <button
-                        onClick={() => setIsWalletModalOpen(true)}
-                        className="rounded-full border border-[#d6c29b]/55 bg-[#e7d5ae]/82 px-8 py-3.5 text-sm font-medium text-[#22211c] transition hover:bg-[#eadab7]"
+                      <a
+                        href="#here-it-is"
+                        className="rounded-full border border-white/20 bg-white/10 px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20 hover:scale-105 active:scale-95"
                       >
-                        {walletAddress ? t.connectedWallet : t.connectWallet}
-                      </button>
+                        {t.heroCtaSecondary}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -1703,7 +1663,7 @@
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-4 text-sm text-white/64 md:grid-cols-3">
-                {['Launch App', 'MLSD', 'Docs', 'Terms', 'Privacy', 'Contact'].map((item) => (
+                {['Overview', 'MLSD', 'Docs', 'Terms', 'Privacy', 'Contact'].map((item) => (
                   <a key={item} href="#" className="transition hover:text-white">
                     {item}
                   </a>
@@ -1713,49 +1673,7 @@
           </footer>
 
           {/* 輕量 Wallet MPC 門限安全錢包連接彈窗 (原生純淨高質感) */}
-          {isWalletModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-              <div className="w-full max-w-sm rounded-3xl border border-white/15 bg-[#0f172a] p-6 text-white shadow-2xl">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-                  <h3 className="text-base font-bold text-white">{t.modalTitle}</h3>
-                  <button onClick={() => setIsWalletModalOpen(false)} className="text-white/50 hover:text-white">✕</button>
-                </div>
-                {walletConnecting ? (
-                  <div className="py-6 text-center text-sm text-white/70">{t.modalConnecting}</div>
-                ) : (
-                  <div className="space-y-3">
-                    <button
-                      onClick={() => connectWallet('mpc')}
-                      className="w-full flex items-center justify-between rounded-2xl border border-amber-500/50 bg-amber-500/10 p-3.5 text-left hover:bg-amber-500/20 transition group"
-                    >
-                      <div>
-                        <div className="text-sm font-bold text-white group-hover:text-amber-300">{t.modalMpcTitle}</div>
-                        <div className="text-xs text-amber-300/70">{t.modalMpcSub}</div>
-                      </div>
-                      <span className="rounded bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-black">{t.modalMpcBadge}</span>
-                    </button>
-                    <button
-                      onClick={() => connectWallet('metamask')}
-                      className="w-full flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-3 text-left hover:bg-white/10 transition"
-                    >
-                      <div className="text-sm text-white/90">{t.modalMetaMask}</div>
-                      <span className="text-xs text-white/40">Browser</span>
-                    </button>
-                    <button
-                      onClick={() => connectWallet('okx')}
-                      className="w-full flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-3 text-left hover:bg-white/10 transition"
-                    >
-                      <div className="text-sm text-white/90">{t.modalOkx}</div>
-                      <span className="text-xs text-white/40">Extension</span>
-                    </button>
-                    <div className="pt-2 text-center text-[11px] text-white/40">
-                      {t.modalFoot}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          
 
         </div>
       );
