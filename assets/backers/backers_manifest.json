@@ -1,0 +1,290 @@
+[
+  {
+    "id": 0,
+    "name": "ChainCatcher",
+    "slug": "chaincatcher",
+    "file": "./assets/backers/backer_00_chaincatcher.png",
+    "row": 0,
+    "col": 0
+  },
+  {
+    "id": 1,
+    "name": "MetaEra",
+    "slug": "metaera",
+    "file": "./assets/backers/backer_01_metaera.png",
+    "row": 0,
+    "col": 1
+  },
+  {
+    "id": 2,
+    "name": "Feixiaohao",
+    "slug": "feixiaohao",
+    "file": "./assets/backers/backer_02_feixiaohao.png",
+    "row": 0,
+    "col": 2
+  },
+  {
+    "id": 3,
+    "name": "Odaily",
+    "slug": "odaily",
+    "file": "./assets/backers/backer_03_odaily.png",
+    "row": 0,
+    "col": 3
+  },
+  {
+    "id": 4,
+    "name": "Foresight News",
+    "slug": "foresight_news",
+    "file": "./assets/backers/backer_04_foresight_news.png",
+    "row": 0,
+    "col": 4
+  },
+  {
+    "id": 5,
+    "name": "PANews",
+    "slug": "panews",
+    "file": "./assets/backers/backer_05_panews.png",
+    "row": 0,
+    "col": 5
+  },
+  {
+    "id": 6,
+    "name": "MarsBit",
+    "slug": "marsbit",
+    "file": "./assets/backers/backer_06_marsbit.png",
+    "row": 1,
+    "col": 0
+  },
+  {
+    "id": 7,
+    "name": "Jinse Finance",
+    "slug": "jinse",
+    "file": "./assets/backers/backer_07_jinse.png",
+    "row": 1,
+    "col": 1
+  },
+  {
+    "id": 8,
+    "name": "CoinDesk",
+    "slug": "coindesk",
+    "file": "./assets/backers/backer_08_coindesk.png",
+    "row": 1,
+    "col": 2
+  },
+  {
+    "id": 9,
+    "name": "Bitcoin Magazine",
+    "slug": "bitcoin_magazine",
+    "file": "./assets/backers/backer_09_bitcoin_magazine.png",
+    "row": 1,
+    "col": 3
+  },
+  {
+    "id": 10,
+    "name": "DeBox",
+    "slug": "debox",
+    "file": "./assets/backers/backer_10_debox.png",
+    "row": 1,
+    "col": 4
+  },
+  {
+    "id": 11,
+    "name": "HK RWA Alliance",
+    "slug": "hk_rwa_alliance",
+    "file": "./assets/backers/backer_11_hk_rwa_alliance.png",
+    "row": 1,
+    "col": 5
+  },
+  {
+    "id": 12,
+    "name": "US Post Now",
+    "slug": "us_post_now",
+    "file": "./assets/backers/backer_12_us_post_now.png",
+    "row": 2,
+    "col": 0
+  },
+  {
+    "id": 13,
+    "name": "Crypto Briefing",
+    "slug": "crypto_briefing",
+    "file": "./assets/backers/backer_13_crypto_briefing.png",
+    "row": 2,
+    "col": 1
+  },
+  {
+    "id": 14,
+    "name": "Ekhbariya",
+    "slug": "ekhbariya",
+    "file": "./assets/backers/backer_14_ekhbariya.png",
+    "row": 2,
+    "col": 2
+  },
+  {
+    "id": 15,
+    "name": "Universal Guide",
+    "slug": "universal_guide",
+    "file": "./assets/backers/backer_15_universal_guide.png",
+    "row": 2,
+    "col": 3
+  },
+  {
+    "id": 16,
+    "name": "UK Finance Day",
+    "slug": "uk_finance_day",
+    "file": "./assets/backers/backer_16_uk_finance_day.png",
+    "row": 2,
+    "col": 4
+  },
+  {
+    "id": 17,
+    "name": "Public Shade",
+    "slug": "public_shade",
+    "file": "./assets/backers/backer_17_public_shade.png",
+    "row": 2,
+    "col": 5
+  },
+  {
+    "id": 18,
+    "name": "Smarter Trading",
+    "slug": "smarter_trading",
+    "file": "./assets/backers/backer_18_smarter_trading.png",
+    "row": 3,
+    "col": 0
+  },
+  {
+    "id": 19,
+    "name": "UC Riverside",
+    "slug": "uc_riverside",
+    "file": "./assets/backers/backer_19_uc_riverside.png",
+    "row": 3,
+    "col": 1
+  },
+  {
+    "id": 20,
+    "name": "Desk Stories",
+    "slug": "desk_stories",
+    "file": "./assets/backers/backer_20_desk_stories.png",
+    "row": 3,
+    "col": 2
+  },
+  {
+    "id": 21,
+    "name": "Chainee",
+    "slug": "chainee",
+    "file": "./assets/backers/backer_21_chainee.png",
+    "row": 3,
+    "col": 3
+  },
+  {
+    "id": 22,
+    "name": "Education NDTV",
+    "slug": "education_ndtv",
+    "file": "./assets/backers/backer_22_education_ndtv.png",
+    "row": 3,
+    "col": 4
+  },
+  {
+    "id": 23,
+    "name": "Finance European Post",
+    "slug": "finance_european_post",
+    "file": "./assets/backers/backer_23_finance_european_post.png",
+    "row": 3,
+    "col": 5
+  },
+  {
+    "id": 24,
+    "name": "Budao Labs",
+    "slug": "budao_labs",
+    "file": "./assets/backers/backer_24_budao_labs.png",
+    "row": 4,
+    "col": 0
+  },
+  {
+    "id": 25,
+    "name": "Crypto Reporters",
+    "slug": "crypto_reporters",
+    "file": "./assets/backers/backer_25_crypto_reporters.png",
+    "row": 4,
+    "col": 1
+  },
+  {
+    "id": 26,
+    "name": "Business News",
+    "slug": "business_news",
+    "file": "./assets/backers/backer_26_business_news.png",
+    "row": 4,
+    "col": 2
+  },
+  {
+    "id": 27,
+    "name": "UK Insider",
+    "slug": "uk_insider",
+    "file": "./assets/backers/backer_27_uk_insider.png",
+    "row": 4,
+    "col": 3
+  },
+  {
+    "id": 28,
+    "name": "Metaverse Shan",
+    "slug": "metaverse_shan",
+    "file": "./assets/backers/backer_28_metaverse_shan.png",
+    "row": 4,
+    "col": 4
+  },
+  {
+    "id": 29,
+    "name": "The Voice",
+    "slug": "the_voice",
+    "file": "./assets/backers/backer_29_the_voice.png",
+    "row": 4,
+    "col": 5
+  },
+  {
+    "id": 30,
+    "name": "US Times Today",
+    "slug": "us_times_today",
+    "file": "./assets/backers/backer_30_us_times_today.png",
+    "row": 5,
+    "col": 0
+  },
+  {
+    "id": 31,
+    "name": "Press9",
+    "slug": "press9",
+    "file": "./assets/backers/backer_31_press9.png",
+    "row": 5,
+    "col": 1
+  },
+  {
+    "id": 32,
+    "name": "Arizona Headlines",
+    "slug": "arizona_headlines",
+    "file": "./assets/backers/backer_32_arizona_headlines.png",
+    "row": 5,
+    "col": 2
+  },
+  {
+    "id": 33,
+    "name": "European Post",
+    "slug": "european_post",
+    "file": "./assets/backers/backer_33_european_post.png",
+    "row": 5,
+    "col": 3
+  },
+  {
+    "id": 34,
+    "name": "Times Now",
+    "slug": "times_now",
+    "file": "./assets/backers/backer_34_times_now.png",
+    "row": 5,
+    "col": 4
+  },
+  {
+    "id": 35,
+    "name": "Crypto Studystock",
+    "slug": "crypto_studystock",
+    "file": "./assets/backers/backer_35_crypto_studystock.png",
+    "row": 5,
+    "col": 5
+  }
+]
