@@ -553,7 +553,7 @@
         heroCtaPrimary: '探索生態',
         heroCtaSecondary: '往期盛會',
         heroTitle: '全球 Web3 深度孵化網絡',
-        heroSub: '新加坡 ACRA 官方牌照 (UEN: 202335893Z) · 5000萬美元生態基金 · Wallet MPC 門限安全',
+        heroSub: '連接全球資本、機構級門限金庫與萬人盛典交付，全週期賦能優質 Web3 項目實體落地。',
         backersTitle: '戰略投資與全球媒體矩陣',
         backersSub: '36+ 家頂級加密媒體與行業盟友（全透明純白矩陣）',
         whyTitle: '為何選擇 MOORE LABS？',
@@ -711,7 +711,7 @@
         heroCtaPrimary: 'Explore Ecosystem',
         heroCtaSecondary: 'Past Summits',
         heroTitle: 'Global Web3 Incubation Layer',
-        heroSub: 'Singapore ACRA (UEN: 202335893Z) · $50M Ecosystem Fund · Wallet MPC Security',
+        heroSub: '連接全球資本、機構級門限金庫與萬人盛典交付，全週期賦能優質 Web3 項目實體落地。',
         backersTitle: 'Backers & Global Media Partners',
         backersSub: '36+ Strategic Media & Tier-1 Crypto Allies (Color-Unified & Transparent)',
         whyTitle: 'Why MOORE LABS?',
@@ -1313,8 +1313,22 @@
 
               <div className="hero-shell relative mx-auto flex min-h-[100svh] max-w-7xl flex-col items-center justify-center px-6 py-24 text-center lg:px-10">
                 <div className="hero-content flex flex-col items-center">
-                  <div className="max-w-5xl">
-                    <h1 className="hero-reveal max-w-4xl mx-auto text-[2.15rem] font-bold leading-[1.12] tracking-tight text-[#17181d] drop-shadow-[0_1px_0_rgba(255,255,255,0.18)] sm:text-5xl md:text-7xl xl:text-[88px] px-2">
+                  <div className="max-w-4xl mx-auto flex flex-col items-center">
+                    {/* 頂部官方合規認證微光膠囊 (權威、克制、大廠質感) */}
+                    <div className="hero-reveal mb-5 inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/75 px-3.5 py-1 text-xs font-medium text-[#1e2330] shadow-sm backdrop-blur-md">
+                      <span className="relative flex h-2 w-2">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                      </span>
+                      <span className="tracking-wide">
+                        {lang === 'zh' ? '新加坡 ACRA 官方註冊' : 'Singapore ACRA Registered'}
+                      </span>
+                      <span className="text-black/20">|</span>
+                      <span className="font-mono text-[11px] text-[#475569]">UEN: 202335893Z</span>
+                    </div>
+
+                    {/* 主標題 */}
+                    <h1 className="hero-reveal text-[2.25rem] sm:text-5xl md:text-7xl font-bold tracking-tight text-[#0f172a] leading-[1.12] drop-shadow-[0_1px_0_rgba(255,255,255,0.2)] px-2">
                       {lang === 'zh' ? (
                         <>
                           <span className="inline-block">全球 Web3</span>{' '}
@@ -1327,45 +1341,39 @@
                         </>
                       )}
                     </h1>
-                    <p className="hero-reveal mt-6 text-sm leading-relaxed text-[#2f3442]/85 sm:text-base md:text-lg max-w-2xl mx-auto px-3">
-                      {lang === 'zh' ? (
-                        <>
-                          <span className="inline-block">新加坡 ACRA 官方牌照</span>{' '}
-                          <span className="inline-block font-mono">(UEN: 202335893Z)</span>{' '}
-                          <span className="hidden sm:inline">·</span>{' '}
-                          <span className="inline-block">5000萬美元生態基金</span>{' '}
-                          <span className="hidden sm:inline">·</span>{' '}
-                          <span className="inline-block">Wallet MPC 門限安全</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="inline-block">Singapore ACRA</span>{' '}
-                          <span className="inline-block font-mono">(UEN: 202335893Z)</span>{' '}
-                          <span className="hidden sm:inline">·</span>{' '}
-                          <span className="inline-block">$50M Ecosystem Fund</span>{' '}
-                          <span className="hidden sm:inline">·</span>{' '}
-                          <span className="inline-block">Wallet MPC Security</span>
-                        </>
-                      )}
+
+                    {/* 簡練大氣的願景副標題 (擺脫繁瑣堆砌) */}
+                    <p className="hero-reveal mt-5 text-sm sm:text-base md:text-lg text-[#334155]/85 leading-relaxed max-w-xl mx-auto px-4 font-normal">
+                      {t.heroSub}
                     </p>
 
-                    <div className="hero-reveal mt-10 flex justify-center">
-                      <svg width="56" height="32" viewBox="0 0 56 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#2f3442]/70">
-                        <path d="M20 4C11.16 4 4 11.16 4 20s7.16 16 16 16c5.3 0 9.96-2.58 12.88-6.54" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" fill="none"/>
-                        <path d="M36 28c8.84 0 16-7.16 16-16S44.84-4 36-4c-5.3 0-9.96 2.58-12.88 6.54" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" fill="none"/>
-                      </svg>
+                    {/* 三聯核心能力微質感標籤條 */}
+                    <div className="hero-reveal mt-6 flex flex-wrap justify-center gap-2 sm:gap-2.5 px-2">
+                      <span className="inline-flex items-center rounded-full border border-black/6 bg-white/55 px-3 py-1 text-xs font-medium text-[#1e293b] backdrop-blur-sm shadow-xs">
+                        <span className="mr-1.5 text-amber-500 font-bold">&#10022;</span>
+                        {lang === 'zh' ? '$5000萬 生態基金' : '$50M Ecosystem Fund'}
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-black/6 bg-white/55 px-3 py-1 text-xs font-medium text-[#1e293b] backdrop-blur-sm shadow-xs">
+                        <span className="mr-1.5 text-sky-500 font-bold">&#10022;</span>
+                        {lang === 'zh' ? 'Wallet MPC 門限安全' : 'Wallet MPC Security'}
+                      </span>
+                      <span className="inline-flex items-center rounded-full border border-black/6 bg-white/55 px-3 py-1 text-xs font-medium text-[#1e293b] backdrop-blur-sm shadow-xs">
+                        <span className="mr-1.5 text-emerald-500 font-bold">&#10022;</span>
+                        {lang === 'zh' ? '萬人國際盛會交付' : '10,000+ Summit Delivery'}
+                      </span>
                     </div>
 
-                    <div className="hero-reveal mt-10 flex flex-wrap justify-center gap-3.5 sm:gap-4">
+                    {/* 官方行動按鈕 */}
+                    <div className="hero-reveal mt-8 sm:mt-10 flex flex-wrap justify-center gap-3.5 sm:gap-4">
                       <a
                         href="#why-moore-labs"
-                        className="rounded-full border border-black/10 bg-white/85 px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-[#1d2028] shadow-md backdrop-blur-md transition hover:bg-white hover:scale-105 active:scale-95"
+                        className="rounded-full border border-black/10 bg-[#0f172a] px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-white shadow-md backdrop-blur-md transition hover:bg-[#1e293b] hover:scale-105 active:scale-95"
                       >
                         {t.heroCtaPrimary}
                       </a>
                       <a
                         href="#here-it-is"
-                        className="rounded-full border border-white/20 bg-white/10 px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/20 hover:scale-105 active:scale-95"
+                        className="rounded-full border border-black/12 bg-white/80 px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-[#0f172a] shadow-sm backdrop-blur-md transition hover:bg-white hover:scale-105 active:scale-95"
                       >
                         {t.heroCtaSecondary}
                       </a>
