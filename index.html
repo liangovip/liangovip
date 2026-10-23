@@ -70,6 +70,11 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-x: clip;
+    }
+
+    body, main {
+      overflow-x: clip;
     }
 
     .fade-up,
@@ -323,11 +328,6 @@
       80%, 100% { transform: scale(2.8); opacity: 0; }
     }
 
-    @keyframes photoShimmer {
-      0% { transform: translateX(-150%) skewX(-15deg); }
-      100% { transform: translateX(250%) skewX(-15deg); }
-    }
-
     .radar-ring {
       position: absolute;
       inset: -2px;
@@ -335,27 +335,6 @@
       background-color: rgba(52, 211, 153, 0.55);
       animation: radarPing 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
       pointer-events: none;
-    }
-
-    .photo-shimmer-sweep {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .photo-shimmer-sweep::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 60%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
-      transform: translateX(-150%) skewX(-15deg);
-      pointer-events: none;
-    }
-
-    .in-view .photo-shimmer-sweep::after {
-      animation: photoShimmer 1.5s ease-out forwards;
     }
 
     /* 移动端触摸屏专属微触觉与常态微流动光晕 */
@@ -1141,7 +1120,71 @@
           }
         }, rootRef);
 
+        // 修復 SPA 異步渲染導致的外部直達錨點失效：在 React 掛載後監聽 window.location.hash 並平滑執行 scrollIntoView
+        const scrollToHashTarget = () => {
+          const hash = window.location.hash;
+          if (!hash || hash === '#') return;
+          const targetId = decodeURIComponent(hash.slice(1));
+          const targetEl = document.getElementById(targetId) || document.querySelector(hash);
+          if (!targetEl) return;
+
+          const mobileTitleEl = document.querySelector('.cap-mobile-title');
+          if (mobileTitleEl && targetId !== 'what-s-new') {
+            mobileTitleEl.style.display = 'none';
+          }
+          ScrollTrigger.refresh();
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+          // 基於真實時鐘與定時器的雙重平滑滾動兜底，確保在各類設備、無頭瀏覽器與合成器下均能 100% 平滑精準落位到 scroll-mt 補償處
+          const scrollMarginTop = parseFloat(window.getComputedStyle(targetEl).scrollMarginTop) || 0;
+          const startY = window.scrollY;
+          const targetY = Math.max(0, startY + targetEl.getBoundingClientRect().top - scrollMarginTop);
+          const startTime = performance.now();
+          const duration = 360;
+
+          const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(1, elapsed / duration);
+            const ease = 1 - Math.pow(1 - progress, 3);
+            window.scrollTo(0, startY + (targetY - startY) * ease);
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            }
+          };
+          requestAnimationFrame(step);
+          setTimeout(() => {
+            targetEl.scrollIntoView({ behavior: 'instant', block: 'start' });
+            ScrollTrigger.update();
+          }, duration + 20);
+        };
+
+        let hashTimer1 = null;
+        if (window.location.hash && window.location.hash !== '#') {
+          hashTimer1 = setTimeout(scrollToHashTarget, 80);
+        }
+        window.addEventListener('hashchange', scrollToHashTarget);
+
+        const handleAnchorClick = (e) => {
+          const anchor = e.target.closest('a[href^="#"]');
+          if (!anchor) return;
+          const href = anchor.getAttribute('href');
+          if (!href || href === '#') return;
+          const targetId = decodeURIComponent(href.slice(1));
+          const targetEl = document.getElementById(targetId) || document.querySelector(href);
+          if (targetEl) {
+            e.preventDefault();
+            if (window.location.hash !== href) {
+              history.pushState(null, '', href);
+            }
+            scrollToHashTarget();
+          }
+        };
+        document.addEventListener('click', handleAnchorClick);
+
         return () => {
+          if (hashTimer1) clearTimeout(hashTimer1);
+          window.removeEventListener('hashchange', scrollToHashTarget);
+          document.removeEventListener('click', handleAnchorClick);
           interactiveCards.forEach(({ element, onEnter, onLeave, onDown, onUp }) => {
             element.removeEventListener('pointerenter', onEnter);
             element.removeEventListener('pointerleave', onLeave);
@@ -1167,7 +1210,7 @@
         border: 'border border-white/12',
         background: 'bg-[linear-gradient(180deg,rgba(26,40,66,0.84),rgba(14,21,36,0.9))]',
         shadow: 'shadow-[0_16px_50px_rgba(3,8,20,0.18)]',
-        glow: 'before:bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(118,166,255,0.1),transparent_40%)]',
+        glow: 'before:bg-[radial-gradient(circle_at_bottom_right,rgba(118,166,255,0.1),transparent_42%)]',
       });
 
       const trendCardClassName = getShineCardClassName({
@@ -1333,7 +1376,7 @@
               </div>
             </section>
 
-            <section id="backers" className="relative border-y border-white/10 bg-[#0f1624] py-14">
+            <section id="backers" className="scroll-mt-20 relative border-y border-white/10 bg-[#0f1624] py-14">
               <div className="mx-auto max-w-7xl overflow-hidden px-6 lg:px-10">
                 <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="text-sm uppercase tracking-[0.28em] text-white/60">{t.backersTitle}</div>
@@ -1379,7 +1422,7 @@
               </div>
             </section>
 
-            <section id="why-moore-labs" className="relative bg-[#0a1220] py-24 lg:py-32">
+            <section id="why-moore-labs" className="scroll-mt-20 relative bg-[#0a1220] py-24 lg:py-32">
               <div className="mx-auto max-w-7xl px-6 lg:px-10">
                 <h2 className="text-center text-3xl font-semibold tracking-tight text-white md:text-5xl">{t.whyTitle}</h2>
                 <p className="mx-auto mt-6 max-w-3xl text-center text-sm leading-7 text-white/70 md:text-base">
@@ -1506,21 +1549,21 @@
               </div>
             </section>
 
-            <section id="here-it-is" className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+            <section id="here-it-is" className="relative z-10 scroll-mt-24 mx-auto max-w-7xl px-5 py-12 sm:px-6 sm:py-20 lg:px-10 lg:py-28">
               <SectionTitle
                 eyebrow={t.scenariosEyebrow}
                 title={t.scenariosTitle}
                 subtitle={t.scenariosDesc}
               />
 
-              <div className="scenario-group mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              <div className="scenario-group mt-8 sm:mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                 {t.scenarios.map((item, idx) => (
-                  <div key={item.title || item} className={cx('scenario-card group card-interactive card-hover-lift p-6 md:p-7 flex flex-col', scenarioCardClassName)}>
-                    <div className="absolute inset-0 rounded-[30px] bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(138,170,255,0.12),transparent_35%)] opacity-0 transition duration-500 group-hover:opacity-100 pointer-events-none" />
+                  <div key={item.title || item} className={cx('scenario-card group card-interactive card-hover-lift p-5 sm:p-6 md:p-7 flex flex-col', scenarioCardClassName)}>
+                    <div className="absolute inset-0 rounded-[30px] bg-[radial-gradient(circle_at_bottom_right,rgba(138,170,255,0.12),transparent_40%)] opacity-0 transition duration-500 group-hover:opacity-100 pointer-events-none" />
                     <div className="relative flex flex-col flex-1">
                       {/* 會議實況高清照片 */}
                       {item.image && (
-                        <div className="relative mb-5 w-full h-48 md:h-52 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-inner group/img photo-shimmer-sweep">
+                        <div className="relative mb-5 w-full h-48 md:h-52 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-inner group/img">
                           <img
                             src={item.image}
                             alt={item.title}
@@ -1581,7 +1624,7 @@
               </div>
             </section>
 
-            <section id="roadmap" className="mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
+            <section id="roadmap" className="scroll-mt-20 mx-auto max-w-7xl px-6 py-24 lg:px-10 lg:py-32">
               <SectionTitle
                 eyebrow={t.roadmapEyebrow}
                 title={t.roadmapTitle}
@@ -1637,10 +1680,10 @@
                 <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(19,26,40,0.52),rgba(10,14,24,0.68))] p-6 shadow-[0_22px_60px_rgba(0,0,0,0.24)] backdrop-blur-xl">
                   <div className="text-sm uppercase tracking-[0.28em] text-white/46">Start here</div>
                   <div className="mt-6 space-y-3">
-                    {t.ctaLinks.map((item) => (
+                    {t.ctaLinks.map((item, idx) => (
                       <a
                         key={item}
-                        href="#why-moore-labs"
+                        href={idx === 0 ? '#why-moore-labs' : idx === 1 ? '#here-it-is' : '#backers'}
                         className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white/84 transition hover:bg-white/[0.06]"
                       >
                         <span>{item}</span>
