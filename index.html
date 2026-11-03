@@ -837,20 +837,27 @@
 
     // ==========================================
     // =========================================================================
-    // MOORE LABS 大師級雙端獨立架構個人控制台 (Aesthetic Dual-Engine ConsoleView)
-    // 嚴格落實用戶指令：
-    // 1. 桌面端 (PC)：高盛/幣安級 Web3 專業控制台中台 (寬幅左右佈局、數據儀表盤)
-    // 2. 移動端 (Mobile)：原生 iOS 級 DApp 體驗 (單手大拇指盲操、動態展開 Dock)
-    // 3. 全量告別廉價 Emoji，全面升級為高定矢量 SVG 線條與香檳金環境光微光
+    // MOORE LABS 大師級雙端獨立架構個人控制台 (Aesthetic Dual-Engine 7-Module ConsoleView)
+    // 嚴格落實最新指令：新增【圖片翻譯】板塊，形成 7 大獨立業務中台
+    // 1. 錢包安全  2. 創意工坊  3. 電報群管  4. 引流打粉  5. 聚合聊天  6. PPT製作  7. 圖片翻譯
+    // 桌面端 (PC)：高盛/幣安級 Web3 專業控制台中台 (左右分欄、7大中台業務)
+    // 移動端 (Mobile)：原生 iOS 級 DApp 體驗 (單手大拇指盲操、動態展開 Dock 7膠囊)
     // =========================================================================
     function ConsoleView({ lang, toggleLang, onBack }) {
-      const [activeTab, setActiveTab] = useState('wallet'); // 'wallet' | 'media' | 'bot' | 'growth' | 'chat'
+      const [activeTab, setActiveTab] = useState('wallet'); // 'wallet'|'media'|'bot'|'growth'|'chat'|'ppt'|'translate'
       const [aiEngine, setAiEngine] = useState('poster'); // 'poster' | 'video' | 'avatar'
       const [trafficChannel, setTrafficChannel] = useState('telegram'); // 'telegram' | 'whatsapp'
       const [chatFilter, setChatFilter] = useState('all'); // 'all' | 'tg' | 'whatsapp' | 'web'
       const [activeChatId, setActiveChatId] = useState(1);
       const [aiAutoReply, setAiAutoReply] = useState(true);
       const [toast, setToast] = useState(null);
+
+      // PPT 製作狀態
+      const [pptPreset, setPptPreset] = useState('keynote');
+
+      // 圖片翻譯狀態
+      const [targetLang, setTargetLang] = useState('en'); // 'en' | 'ja' | 'ko' | 'ar' | 'ru' | 'es'
+      const [transGenerating, setTransGenerating] = useState(false);
 
       // 群管開關
       const [botSettings, setBotSettings] = useState({
@@ -870,7 +877,7 @@
 
       const isZh = lang === 'zh';
 
-      // 5大板塊元數據與高定 SVG 矢量圖標
+      // 7大板塊元數據與高定 SVG 矢量圖標
       const tabs = [
         {
           id: 'wallet',
@@ -938,6 +945,30 @@
             </svg>
           ),
         },
+        {
+          id: 'ppt',
+          nameZh: 'PPT製作',
+          nameEn: 'AI Deck',
+          descZh: '路演 Keynote · 萬人盛典幻燈片',
+          descEn: 'Pitch Deck & 6K Slides',
+          icon: (
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.25 2.25L15 7.5" />
+            </svg>
+          ),
+        },
+        {
+          id: 'translate',
+          nameZh: '圖片翻譯',
+          nameEn: 'Img Translate',
+          descZh: '一鍵多國語言 · 矢量無痕替換',
+          descEn: 'Multi-lingual Visual Translation',
+          icon: (
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896 3.06 2.477 5.86 4.666 8.24M13 11.25c-1.32.964-2.83 1.764-4.5 2.378" />
+            </svg>
+          ),
+        },
       ];
 
       // 聚合聊天數據
@@ -982,7 +1013,7 @@
       return (
         <div className="min-h-screen bg-[#070c18] text-white selection:bg-amber-400/25 animate-console-fade relative overflow-x-hidden">
           
-          {/* 背景大廠級微光環境 (Ambient Lighting Gradients) */}
+          {/* 背景微光環境 */}
           <div className="fixed inset-0 pointer-events-none z-0">
             <div className="absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-amber-500/5 blur-[120px]"></div>
             <div className="absolute top-1/3 -right-40 h-[600px] w-[600px] rounded-full bg-sky-600/5 blur-[150px]"></div>
@@ -996,7 +1027,7 @@
             </div>
           )}
 
-          {/* 頂部全端通用導航 (大廠克制感) */}
+          {/* 頂部全端通用導航 */}
           <header className="sticky top-0 z-40 border-b border-white/8 bg-[#080d1b]/85 backdrop-blur-2xl">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
               {/* 返回官網 */}
@@ -1048,15 +1079,15 @@
           </header>
 
           {/* ========================================================================= */}
-          {/* 🖥️ 網頁端設計 (Desktop Layout - 寬幅專業控制台中台) */}
+          {/* 🖥️ 網頁端設計 (Desktop Layout - 寬幅專業控制台中台 7大業務) */}
           {/* ========================================================================= */}
           <div className="hidden md:block mx-auto max-w-7xl px-6 py-8 relative z-10">
             <div className="grid grid-cols-12 gap-8 items-start">
               
-              {/* 左側：專業中台導航欄 (4列，固定質感) */}
-              <div className="col-span-4 lg:col-span-3 space-y-2 sticky top-24">
+              {/* 左側：專業中台導航欄 (4列 / 3列) */}
+              <div className="col-span-4 lg:col-span-3 space-y-1.5 sticky top-24">
                 <div className="text-[11px] font-mono tracking-widest text-amber-400/80 uppercase px-3 mb-2">
-                  WORKSTATION · 業務板塊
+                  WORKSTATION · 7大業務板塊
                 </div>
 
                 {tabs.map((tab) => {
@@ -1065,36 +1096,35 @@
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full text-left p-3.5 rounded-2xl border transition-all duration-300 flex items-center justify-between group cursor-pointer ${
+                      className={`w-full text-left p-2.5 rounded-2xl border transition-all duration-300 flex items-center justify-between group cursor-pointer ${
                         isActive
                           ? 'border-amber-400/50 bg-[linear-gradient(135deg,rgba(245,158,11,0.12),rgba(255,255,255,0.02))] shadow-[0_4px_24px_rgba(245,158,11,0.15)] -translate-x-0.5'
                           : 'border-white/8 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2.5 rounded-xl transition-all duration-300 ${isActive ? 'bg-amber-500/20 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]' : 'bg-white/5 text-white/50 group-hover:text-white'}`}>
+                      <div className="flex items-center gap-2.5">
+                        <div className={`p-2 rounded-xl transition-all duration-300 ${isActive ? 'bg-amber-500/20 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]' : 'bg-white/5 text-white/50 group-hover:text-white'}`}>
                           {tab.icon}
                         </div>
                         <div>
-                          <div className={`text-sm font-bold tracking-tight transition ${isActive ? 'text-white' : 'text-white/70 group-hover:text-white'}`}>
+                          <div className={`text-xs font-bold tracking-tight transition ${isActive ? 'text-white' : 'text-white/70 group-hover:text-white'}`}>
                             {isZh ? tab.nameZh : tab.nameEn}
                           </div>
-                          <div className="text-[11px] text-white/40 line-clamp-1 mt-0.5">
+                          <div className="text-[10px] text-white/40 line-clamp-1">
                             {isZh ? tab.descZh : tab.descEn}
                           </div>
                         </div>
                       </div>
 
-                      {/* 激活指示光標 */}
                       {isActive && (
-                        <div className="h-6 w-1 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_0_8px_#f59e0b]"></div>
+                        <div className="h-5 w-1 rounded-full bg-gradient-to-b from-amber-400 to-amber-600 shadow-[0_0_8px_#f59e0b]"></div>
                       )}
                     </button>
                   );
                 })}
 
                 {/* 底部權威認證徽標 */}
-                <div className="pt-4 px-3 text-[10px] text-white/40 space-y-1">
+                <div className="pt-3 px-3 text-[10px] text-white/40 space-y-1">
                   <div className="flex items-center gap-1.5 text-emerald-400 font-mono">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
                     <span>SINGAPORE MAS AUDITED</span>
@@ -1103,7 +1133,7 @@
                 </div>
               </div>
 
-              {/* 右側：寬幅沉浸業務舞台 (8列 / 9列) */}
+              {/* 右側：寬幅沉浸業務舞台 */}
               <div className="col-span-8 lg:col-span-9">
                 <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(145deg,rgba(18,28,48,0.7),rgba(9,15,28,0.85))] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.4)] backdrop-blur-2xl relative overflow-hidden">
                   
@@ -1123,7 +1153,7 @@
                     </div>
                   </div>
 
-                  {/* 渲染具體業務卡片 (5選1) */}
+                  {/* 渲染具體業務卡片 (7選1) */}
                   {renderModuleContent(activeTab)}
                 </div>
               </div>
@@ -1131,13 +1161,13 @@
           </div>
 
           {/* ========================================================================= */}
-          {/* 📱 手機端設計 (Mobile Layout - 原生 DApp 大拇指黃金體驗) */}
+          {/* 📱 手機端設計 (Mobile Layout - 原生 DApp 大拇指黃金體驗 7膠囊) */}
           {/* ========================================================================= */}
           <div className="block md:hidden px-4 pt-5 pb-32 relative z-10">
             {/* 頂部輕量板塊指示標題 */}
             <div className="mb-4">
               <div className="text-[10px] font-mono tracking-widest text-amber-400 uppercase">
-                MOORE MOBILE SUITE
+                MOORE MOBILE SUITE · 7 MODULES
               </div>
               <h2 className="text-xl font-bold tracking-tight text-white mt-0.5">
                 {isZh ? tabs.find(t => t.id === activeTab)?.nameZh : tabs.find(t => t.id === activeTab)?.nameEn}
@@ -1149,9 +1179,9 @@
               {renderModuleContent(activeTab)}
             </div>
 
-            {/* 📱 手機專屬 Max 懸浮動態展開 Dock 膠囊 (iOS 級單手盲操) */}
-            <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[94vw] max-w-md">
-              <div className="flex items-center justify-around rounded-full border border-white/18 bg-[#0a1222]/90 p-1.5 backdrop-blur-2xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] ring-1 ring-white/10">
+            {/* 📱 手機專屬 Max 懸浮動態展開 Dock 7膠囊 (iOS 級單手盲操) */}
+            <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[96vw] max-w-lg">
+              <div className="flex items-center justify-between rounded-full border border-white/18 bg-[#0a1222]/90 p-1.5 backdrop-blur-2xl shadow-[0_16px_48px_rgba(0,0,0,0.7)] ring-1 ring-white/10">
                 {tabs.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (
@@ -1160,14 +1190,13 @@
                       onClick={() => setActiveTab(tab.id)}
                       className={`capsule-dock-btn relative flex items-center justify-center transition-all duration-300 cursor-pointer ${
                         isActive
-                          ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 font-bold px-4 py-2 rounded-full shadow-[0_0_20px_rgba(245,158,11,0.5)] -translate-y-1'
-                          : 'text-white/50 hover:text-white p-2.5 rounded-full hover:bg-white/5'
+                          ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-full shadow-[0_0_20px_rgba(245,158,11,0.5)] -translate-y-1'
+                          : 'text-white/50 hover:text-white p-2 rounded-full hover:bg-white/5'
                       }`}
                     >
-                      <span className="w-5 h-5 flex items-center justify-center">{tab.icon}</span>
-                      {/* 激活項優雅展開文字，未激活項保持極簡大圖標 */}
+                      <span className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">{tab.icon}</span>
                       {isActive && (
-                        <span className="ml-1.5 text-xs tracking-tight whitespace-nowrap animate-fadeIn">
+                        <span className="ml-1 text-[10px] sm:text-xs tracking-tight whitespace-nowrap animate-fadeIn">
                           {isZh ? tab.nameZh : tab.nameEn}
                         </span>
                       )}
@@ -1181,7 +1210,7 @@
       );
 
       // =========================================================================
-      // 模塊內容渲染函數 (統一管理，雙端自適應渲染，杜絕代碼冗餘)
+      // 模塊內容渲染函數 (統一管理，雙端自適應渲染，7大獨立業務)
       // =========================================================================
       function renderModuleContent(tabId) {
         if (tabId === 'wallet') {
@@ -1191,9 +1220,7 @@
                 {isZh ? '多重簽名碎片協管，無單點私鑰洩露風險，保障實體合規金流絕對安全' : 'Threshold Signature Scheme, Multi-party custody, zero single point of failure'}
               </p>
 
-              {/* 核心卡片網格 */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* 地址卡 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-2">
                   <div className="text-xs text-white/40">{isZh ? '當前連接錢包' : 'Connected Wallet'}</div>
                   <div className="text-sm sm:text-base font-mono font-bold text-amber-300 flex items-center justify-between">
@@ -1208,7 +1235,6 @@
                   <div className="text-[11px] text-emerald-400 font-mono">● Ethereum Mainnet (Chain ID: 1)</div>
                 </div>
 
-                {/* MPC 門限分片狀態 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-2">
                   <div className="text-xs text-white/40">{isZh ? 'MPC 門限密鑰分片' : 'Key Shard Distribution'}</div>
                   <div className="text-sm sm:text-base font-bold text-white flex items-center justify-between">
@@ -1221,12 +1247,11 @@
                 </div>
               </div>
 
-              {/* 算力資產餘額卡 */}
               <div className="rounded-2xl border border-amber-400/25 bg-[linear-gradient(135deg,rgba(245,158,11,0.08),rgba(255,255,255,0.01))] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="text-xs font-semibold text-amber-300 uppercase tracking-wider">{isZh ? '可用算力點數' : 'Compute Credits'}</div>
                   <div className="text-2xl sm:text-3xl font-bold font-mono text-white mt-1">1,500 <span className="text-sm font-normal text-white/50">⚡ Credits</span></div>
-                  <div className="text-xs text-white/60 mt-1">{isZh ? '可用於生成 1,500 張 6K 矢量海報 或 150 條商業宣傳片' : 'Good for 1,500 6K posters or 150 promo videos'}</div>
+                  <div className="text-xs text-white/60 mt-1">{isZh ? '可用於生成 1,500 張 6K 矢量海報、PPT 或 150 條商業宣傳片' : 'Good for 1,500 6K posters/decks or 150 promo videos'}</div>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -1254,7 +1279,6 @@
                 {isZh ? '裝載 PWA 全棧技能，一站式生成 6K 矢量海報、商業視頻與竹子風真人唇形口播' : 'Generate 6K posters, marketing videos and realistic avatars in one studio'}
               </p>
 
-              {/* 3個小切換膠囊 */}
               <div className="flex items-center justify-center gap-1.5 p-1 bg-black/40 rounded-2xl max-w-md mx-auto border border-white/8">
                 <button
                   onClick={() => setAiEngine('poster')}
@@ -1276,7 +1300,6 @@
                 </button>
               </div>
 
-              {/* 1. 6K 矢量海報工坊 */}
               {aiEngine === 'poster' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
                   <div className="space-y-4">
@@ -1310,7 +1333,6 @@
                     </button>
                   </div>
 
-                  {/* 預覽海報卡片 */}
                   <div className="space-y-3">
                     <div className="relative rounded-2xl border border-amber-400/30 bg-gradient-to-br from-[#121c2d] to-[#0a101a] p-6 text-center shadow-[0_12px_36px_rgba(0,0,0,0.5)] overflow-hidden">
                       <div className="absolute top-2 right-3 text-[10px] font-mono text-amber-400">6K ULTRA HD</div>
@@ -1348,7 +1370,6 @@
                 </div>
               )}
 
-              {/* 2. 商業視頻工坊 */}
               {aiEngine === 'video' && (
                 <div className="max-w-xl mx-auto space-y-4">
                   <div>
@@ -1384,7 +1405,6 @@
                 </div>
               )}
 
-              {/* 3. 竹子風知性數字人 */}
               {aiEngine === 'avatar' && (
                 <div className="max-w-xl mx-auto space-y-4">
                   <div className="grid grid-cols-2 gap-3">
@@ -1424,9 +1444,7 @@
                 {isZh ? 'Bot 一鍵託管、智慧防釣魚垃圾廣告、新客迎賓高清卡片、定時宣發廣播' : 'Bot token bind, anti-spam shields, welcome cards & auto-broadcasting'}
               </p>
 
-              {/* 核心配置兩欄卡片 */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* 左側：Token 綁定與授權 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-4">
                   <div className="text-xs font-semibold text-amber-300 uppercase tracking-wider">{isZh ? 'Bot 令牌綁定與授權' : 'Bot Token & Authorization'}</div>
                   <div>
@@ -1447,7 +1465,6 @@
                     <p className="text-[11px] text-emerald-400 font-mono mt-1.5">● @moore_official_guard_bot (Admin Active)</p>
                   </div>
 
-                  {/* 定時宣發海報配置 */}
                   <div className="border-t border-white/8 pt-3 space-y-2">
                     <div className="text-xs font-semibold text-white/80 flex items-center justify-between">
                       <span>{isZh ? '定時宣發海報任務 (全自動廣播)' : 'Auto Scheduled Broadcast'}</span>
@@ -1467,7 +1484,6 @@
                   </div>
                 </div>
 
-                {/* 右側：群管安全防護三大開關 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-3.5">
                   <div className="text-xs font-semibold text-amber-300 uppercase tracking-wider">{isZh ? '群管安防三大開關' : 'Security Guard Controls'}</div>
 
@@ -1529,7 +1545,6 @@
                 {isZh ? 'Telegram 競對群定向打粉、WhatsApp 裂變獲客、AI 防封話術與毫秒級頻控' : 'Telegram target scraping, WhatsApp mass outreach, AI anti-ban'}
               </p>
 
-              {/* 渠道切換：Telegram 打粉 vs WhatsApp 獲客 */}
               <div className="flex items-center justify-center gap-2 p-1 bg-black/40 rounded-2xl max-w-sm mx-auto border border-white/8">
                 <button
                   onClick={() => setTrafficChannel('telegram')}
@@ -1545,9 +1560,7 @@
                 </button>
               </div>
 
-              {/* 打粉配置核心兩欄 */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* 左側：目標池與提取 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-4">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-semibold text-amber-300 uppercase tracking-wider">
@@ -1573,7 +1586,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     />
                   </div>
 
-                  {/* 安全頻控設置 */}
                   <div className="border-t border-white/8 pt-3 space-y-2">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-semibold text-white/80">{isZh ? '安全打粉頻控 (毫秒防封)' : 'Rate Limiting (Anti-Ban)'}</span>
@@ -1588,7 +1600,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                   </div>
                 </div>
 
-                {/* 右側：文案與 AI 防封變體 + 實時進粉看板 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
@@ -1607,7 +1618,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     />
                   </div>
 
-                  {/* 實時進粉數據看板 */}
                   <div className="rounded-xl border border-sky-400/25 bg-sky-500/10 p-3 grid grid-cols-3 gap-2 text-center">
                     <div>
                       <div className="text-[10px] text-sky-300/80">{isZh ? '今日進粉' : 'Today Leads'}</div>
@@ -1651,7 +1661,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                 {isZh ? 'Telegram、WhatsApp、官網直聊統一聚合，AI 智能代回與人工無縫接管' : 'Unified Messenger for Telegram, WhatsApp & Web, powered by AI auto-reply'}
               </p>
 
-              {/* 渠道狀態微光條 */}
               <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-2xl bg-black/40 border border-white/8 text-xs">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-white/50">{isZh ? '已聚合渠道：' : 'Aggregated:'}</span>
@@ -1676,11 +1685,8 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                 </label>
               </div>
 
-              {/* 雙欄消息工作台 */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[440px]">
-                {/* 左欄：統一收件箱列表 (5列) */}
                 <div className="lg:col-span-5 rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 flex flex-col space-y-3">
-                  {/* 篩選標籤 */}
                   <div className="flex items-center gap-1 p-1 bg-black/30 rounded-xl text-xs">
                     <button
                       onClick={() => setChatFilter('all')}
@@ -1708,7 +1714,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     </button>
                   </div>
 
-                  {/* 消息對話卡片列表 */}
                   <div className="space-y-2 flex-1 overflow-y-auto max-h-[360px] pr-1">
                     {chatList
                       .filter((c) => chatFilter === 'all' || c.channel === chatFilter)
@@ -1737,9 +1742,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                   </div>
                 </div>
 
-                {/* 右欄：當前對話工作台 (7列) */}
                 <div className="lg:col-span-7 rounded-2xl border border-white/8 bg-white/[0.02] p-4 flex flex-col justify-between space-y-3">
-                  {/* 對話頭部 */}
                   <div className="flex items-center justify-between border-b border-white/8 pb-3">
                     <div className="flex items-center gap-2.5">
                       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30">
@@ -1762,7 +1765,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     </button>
                   </div>
 
-                  {/* 聊天氣泡歷史 */}
                   <div className="space-y-3 flex-1 overflow-y-auto max-h-[220px] p-2 bg-black/20 rounded-xl">
                     <div className="flex items-start gap-2">
                       <div className="h-6 w-6 rounded-full bg-sky-500/30 flex items-center justify-center text-[10px]">客</div>
@@ -1782,7 +1784,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     )}
                   </div>
 
-                  {/* 快捷發送工具與輸入框 */}
                   <div className="space-y-2 pt-2 border-t border-white/8">
                     <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                       <span className="text-white/40">{isZh ? '快捷發送：' : 'Send:'}</span>
@@ -1821,6 +1822,359 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (tabId === 'ppt') {
+          return (
+            <div className="space-y-6 animate-console-fade">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-white/8 pb-4">
+                <p className="text-xs text-white/60">
+                  {isZh ? '基於 PPTEval 矢量排版引擎，一鍵生成機構級路演 PPT、萬人峰會 Keynote 與 6K 展板' : 'AI-driven vector Keynote and Pitch Deck generator powered by PPTEval'}
+                </p>
+                <span className="rounded-full bg-amber-500/20 border border-amber-400/30 px-3 py-1 text-xs font-semibold text-amber-300 inline-flex items-center gap-1.5 w-fit">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                  <span>{isZh ? '● 6K 矢量渲染引擎就緒' : '● 6K Vector Engine Ready'}</span>
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button
+                  onClick={() => setPptPreset('keynote')}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer ${
+                    pptPreset === 'keynote'
+                      ? 'border-amber-400/60 bg-[linear-gradient(135deg,rgba(245,158,11,0.15),rgba(255,255,255,0.02))] shadow-[0_4px_20px_rgba(245,158,11,0.2)]'
+                      : 'border-white/8 bg-white/[0.02] hover:border-white/15'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold text-white">{isZh ? '萬人盛典發布會 Keynote' : 'Keynote Deck'}</span>
+                    <span className="text-[10px] text-amber-400 font-mono">16:9</span>
+                  </div>
+                  <p className="text-[11px] text-white/50">{isZh ? '尊貴黑金 · 官方生態戰略升級大會' : 'Black Gold theme, 24 slides'}</p>
+                </button>
+
+                <button
+                  onClick={() => setPptPreset('pitch')}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer ${
+                    pptPreset === 'pitch'
+                      ? 'border-amber-400/60 bg-[linear-gradient(135deg,rgba(245,158,11,0.15),rgba(255,255,255,0.02))] shadow-[0_4px_20px_rgba(245,158,11,0.2)]'
+                      : 'border-white/8 bg-white/[0.02] hover:border-white/15'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold text-white">{isZh ? '機構融資商業計劃書 (Pitch)' : 'Investor Pitch Deck'}</span>
+                    <span className="text-[10px] text-sky-400 font-mono">12 Slides</span>
+                  </div>
+                  <p className="text-[11px] text-white/50">{isZh ? '合規金融 · 萬億實體資產量化' : 'MAS Compliance, financial model'}</p>
+                </button>
+
+                <button
+                  onClick={() => setPptPreset('onepager')}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer ${
+                    pptPreset === 'onepager'
+                      ? 'border-amber-400/60 bg-[linear-gradient(135deg,rgba(245,158,11,0.15),rgba(255,255,255,0.02))] shadow-[0_4px_20px_rgba(245,158,11,0.2)]'
+                      : 'border-white/8 bg-white/[0.02] hover:border-white/15'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold text-white">{isZh ? '一圖讀懂 (One-Pager 展板)' : 'One-Pager 6K Slide'}</span>
+                    <span className="text-[10px] text-emerald-400 font-mono">6K Vector</span>
+                  </div>
+                  <p className="text-[11px] text-white/50">{isZh ? '單頁全景 · 高清卡片式排版' : 'High density vector layout'}</p>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div className="lg:col-span-5 rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-4">
+                  <div className="text-xs font-semibold text-amber-300 uppercase tracking-wider">
+                    {isZh ? '路演主題與大綱規格' : 'Presentation Specification'}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-white/80 mb-1.5">{isZh ? 'PPT 主題 / 發布會名稱' : 'Deck Title / Topic'}</label>
+                    <input
+                      type="text"
+                      defaultValue={isZh ? 'MOORE LABS 2026 全球萬人峰會 · 實體合規金流與生態戰略發布' : 'MOORE LABS 2026 Global Summit Keynote'}
+                      className="w-full rounded-xl border border-white/12 bg-black/40 px-3.5 py-2.5 text-xs text-white focus:border-amber-400 focus:outline-none font-medium"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <label className="block font-semibold text-white/80 mb-1">{isZh ? '幻燈片規格' : 'Deck Length'}</label>
+                      <select className="w-full rounded-xl border border-white/12 bg-slate-900 px-3 py-2 text-xs text-white">
+                        <option>{isZh ? '標準路演 (12 頁)' : 'Standard (12 Slides)'}</option>
+                        <option>{isZh ? '完整大會 (24 頁)' : 'Full Keynote (24 Slides)'}</option>
+                        <option>{isZh ? '精簡匯報 (6 頁)' : 'Executive (6 Slides)'}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-white/80 mb-1">{isZh ? '視覺配色' : 'Theme Tone'}</label>
+                      <select className="w-full rounded-xl border border-white/12 bg-slate-900 px-3 py-2 text-xs text-white">
+                        <option>{isZh ? '官方尊貴黑金 (Black Gold)' : 'Official Black Gold'}</option>
+                        <option>{isZh ? '極簡科技深藍 (Cyber Blue)' : 'Cyber Deep Blue'}</option>
+                        <option>{isZh ? '純粹瑞士白 (Swiss Minimal)' : 'Swiss Clean White'}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-white/80 mb-1.5">{isZh ? '核心亮點數據 (每行一項)' : 'Key Metrics / Bullet Points'}</label>
+                    <textarea
+                      rows="3"
+                      defaultValue={`• $5000萬 美元全球生態激勵基金
+• Wallet MPC 門限安全金庫 3/3 分片託管
+• 新加坡 MAS 合規持牌實體金流清算
+• 萬人盛典大會統籌與全球節點交付`}
+                      className="w-full rounded-xl border border-white/12 bg-black/40 p-2.5 text-xs font-mono text-white focus:border-amber-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      showToast(isZh ? '⚡ 矢量排版引擎已在 0.8s 內生成整套 PPT 幻燈片！' : 'PPTEval generated full deck in 0.8s!');
+                    }}
+                    className="w-full rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_20px_rgba(245,158,11,0.3)]"
+                  >
+                    {isZh ? '⚡ 0.8s 快速生成全套 PPT (Fast-Vector Engine)' : '⚡ Generate Full PPT Deck (0.8s)'}
+                  </button>
+                </div>
+
+                <div className="lg:col-span-7 rounded-2xl border border-white/8 bg-white/[0.03] p-4 sm:p-5 space-y-4">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-amber-300 uppercase tracking-wider">{isZh ? '幻燈片卡片預覽 (Slide Deck 6K)' : 'Slide Deck Preview'}</span>
+                    <span className="text-[11px] font-mono text-white/50">{isZh ? '已就緒 12 頁 · 矢量文字無損' : '12 Slides Ready · Lossless'}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-amber-400/40 bg-[linear-gradient(135deg,#121c2e,#0a111c)] p-3 text-center space-y-1.5 shadow-lg relative overflow-hidden">
+                      <div className="text-[9px] font-mono text-amber-400 flex justify-between">
+                        <span>SLIDE 01</span>
+                        <span>COVER</span>
+                      </div>
+                      <div className="h-6 w-6 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center mx-auto text-xs border border-amber-400/30">⚡</div>
+                      <div className="text-[11px] font-bold text-white tracking-tight">MOORE LABS 2026</div>
+                      <div className="text-[9px] text-white/50">{isZh ? '全球萬人峰會 · 實體金流發布' : 'Global Summit Keynote'}</div>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-3 text-center space-y-1.5 shadow-lg">
+                      <div className="text-[9px] font-mono text-sky-400 flex justify-between">
+                        <span>SLIDE 02</span>
+                        <span>MARKET</span>
+                      </div>
+                      <div className="h-6 w-6 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center mx-auto text-xs border border-sky-400/30">📈</div>
+                      <div className="text-[11px] font-bold text-white tracking-tight">{isZh ? '萬億實體資產流動性' : 'Trillion RWA Market'}</div>
+                      <div className="text-[9px] text-white/50">{isZh ? '合規跨鏈結算與機構准入' : 'MAS compliant framework'}</div>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-3 text-center space-y-1.5 shadow-lg">
+                      <div className="text-[9px] font-mono text-emerald-400 flex justify-between">
+                        <span>SLIDE 03</span>
+                        <span>VAULT</span>
+                      </div>
+                      <div className="h-6 w-6 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center mx-auto text-xs border border-emerald-400/30">🛡️</div>
+                      <div className="text-[11px] font-bold text-white tracking-tight">{isZh ? 'Wallet MPC 門限安全' : '3/3 MPC Key Custody'}</div>
+                      <div className="text-[9px] text-white/50">{isZh ? '零單點洩露 · 多方簽名' : 'Zero single point risk'}</div>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-3 text-center space-y-1.5 shadow-lg">
+                      <div className="text-[9px] font-mono text-amber-400 flex justify-between">
+                        <span>SLIDE 04</span>
+                        <span>FUND</span>
+                      </div>
+                      <div className="h-6 w-6 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center mx-auto text-xs border border-amber-400/30">💰</div>
+                      <div className="text-[11px] font-bold text-white tracking-tight">{isZh ? '$5000萬 生態扶持基金' : '$50M Ecosystem Fund'}</div>
+                      <div className="text-[9px] text-white/50">{isZh ? '激勵萬人盛典全球量化節點' : 'Global node incentives'}</div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-white/8 space-y-2">
+                    <div className="text-[11px] text-white/50">{isZh ? '多格式無損導出 (含微軟 PowerPoint 原生可編輯文件)：' : 'Lossless Export Options:'}</div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        onClick={() => showToast(isZh ? '✓ .PPTX 可編輯幻燈片已準備就緒，開始下載！' : '.PPTX file ready!')}
+                        className="rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-semibold text-white hover:bg-white/10 transition active:scale-95 cursor-pointer text-center"
+                      >
+                        {isZh ? '⬇ .PPTX 幻燈片' : '⬇ .PPTX'}
+                      </button>
+                      <button
+                        onClick={() => showToast(isZh ? '✓ 6K 矢量 PDF 已導出！' : '6K Vector PDF exported!')}
+                        className="rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-semibold text-white hover:bg-white/10 transition active:scale-95 cursor-pointer text-center"
+                      >
+                        {isZh ? '⬇ 6K 矢量 PDF' : '⬇ 6K PDF'}
+                      </button>
+                      <button
+                        onClick={() => showToast(isZh ? '✓ 已一鍵廣播至 Telegram 投資人官方群！' : 'Broadcast to TG Investors!')}
+                        className="rounded-xl bg-amber-500/20 border border-amber-400/40 py-2.5 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition active:scale-95 cursor-pointer text-center"
+                      >
+                        {isZh ? '🚀 一鍵發到 TG 群' : '🚀 Push TG'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        // =====================================================================
+        // 【全新第 7 板塊】：圖片翻譯 (AI Visual Translator)
+        // 嚴格落實最新追加指令：一鍵把圖片翻譯成各個國家語言
+        // 採用 Card-Level 矢量文字無痕替換技術，100% 保持海報頂級黑金質感
+        // =====================================================================
+        if (tabId === 'translate') {
+          return (
+            <div className="space-y-6 animate-console-fade">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-white/8 pb-4">
+                <p className="text-xs text-white/60">
+                  {isZh ? 'Card-Level 矢量文字無痕替換技術，保留海報高光與立體質感，一鍵生成多語種宣發圖包' : 'Card-level zero-trace image translation across global languages'}
+                </p>
+                <span className="rounded-full bg-sky-500/20 border border-sky-400/30 px-3 py-1 text-xs font-semibold text-sky-300 inline-flex items-center gap-1.5 w-fit">
+                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-ping"></span>
+                  <span>{isZh ? '● 8 國語言 OCR 翻譯引擎就緒' : '● 8 Languages OCR Ready'}</span>
+                </span>
+              </div>
+
+              {/* 目標語言快捷切換膠囊 */}
+              <div className="space-y-2">
+                <div className="text-xs font-semibold text-white/80 flex items-center justify-between">
+                  <span>{isZh ? '選擇目標翻譯語言 (出海社群本地化)：' : 'Target Localization Language:'}</span>
+                  <span className="text-[11px] text-amber-400 font-mono">ZERO-TRACE OCR</span>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs">
+                  {[
+                    { id: 'en', flag: '🇺🇸', name: isZh ? '英語 (EN)' : 'English' },
+                    { id: 'ja', flag: '🇯🇵', name: isZh ? '日語 (JA)' : 'Japanese' },
+                    { id: 'ko', flag: '🇰🇷', name: isZh ? '韓語 (KO)' : 'Korean' },
+                    { id: 'ar', flag: '🇦🇪', name: isZh ? '阿語 (AR)' : 'Arabic' },
+                    { id: 'ru', flag: '🇷🇺', name: isZh ? '俄語 (RU)' : 'Russian' },
+                    { id: 'es', flag: '🇪🇸', name: isZh ? '西語 (ES)' : 'Spanish' },
+                  ].map((l) => (
+                    <button
+                      key={l.id}
+                      onClick={() => {
+                        setTargetLang(l.id);
+                        showToast(isZh ? `已切換至目標語言：${l.name}` : `Switched to ${l.name}`);
+                      }}
+                      className={`p-2.5 rounded-xl border transition cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                        targetLang === l.id
+                          ? 'border-amber-400/60 bg-amber-500/15 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.2)] font-bold'
+                          : 'border-white/8 bg-white/[0.02] text-white/60 hover:text-white hover:border-white/20'
+                      }`}
+                    >
+                      <span className="text-base">{l.flag}</span>
+                      <span className="text-[11px] whitespace-nowrap">{l.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 圖片雙欄對比工作台 (Before 中文原圖 vs After 目標語言翻譯圖) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                {/* 原圖卡片 */}
+                <div className="rounded-2xl border border-white/10 bg-black/40 p-5 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-white/70">{isZh ? '中文源海報 (Source Image)' : 'Source Poster (ZH)'}</span>
+                    <span className="text-[10px] text-white/40 font-mono">ORIGINAL 6K</span>
+                  </div>
+
+                  <div className="relative rounded-xl border border-white/10 bg-gradient-to-br from-[#121c2d] to-[#0a101a] p-5 text-center shadow-inner overflow-hidden">
+                    <div className="text-[10px] font-mono text-amber-400 mb-1">MOORE LABS 2026</div>
+                    <h4 className="text-base sm:text-lg font-bold text-white tracking-tight">全球生態戰略升級 · 實體合規金流</h4>
+                    <div className="mt-2 flex flex-wrap justify-center gap-1 text-[9px]">
+                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-white/90">$5000萬 生態基金</span>
+                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-white/90">Wallet MPC 門限安全</span>
+                    </div>
+                    <div className="mt-3 text-[9px] text-white/40 font-mono border-t border-white/10 pt-1.5">
+                      HTTPS://AI.APG.MOM/WEBSIDE
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => showToast(isZh ? '正在調起本地文件上傳...' : 'Opening file picker...')}
+                    className="w-full rounded-xl border border-white/12 bg-white/5 py-2 text-xs text-white/80 hover:bg-white/10 transition cursor-pointer"
+                  >
+                    {isZh ? '📁 上傳其他自定義海報' : '📁 Upload Custom Poster'}
+                  </button>
+                </div>
+
+                {/* 翻譯成果卡片 */}
+                <div className="rounded-2xl border border-amber-400/40 bg-[linear-gradient(145deg,rgba(245,158,11,0.06),rgba(0,0,0,0.4))] p-5 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-amber-300 flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping"></span>
+                      <span>{isZh ? '矢量無痕翻譯成果 (Translated Preview)' : 'Translated Preview'}</span>
+                    </span>
+                    <span className="text-[10px] text-emerald-400 font-mono">100% LOSSLESS</span>
+                  </div>
+
+                  {/* 根據 targetLang 動態展示翻譯後的文字 */}
+                  <div className="relative rounded-xl border border-amber-400/30 bg-gradient-to-br from-[#152033] to-[#0c1320] p-5 text-center shadow-[0_8px_30px_rgba(245,158,11,0.15)] overflow-hidden">
+                    <div className="absolute top-2 right-2 text-[9px] font-mono text-amber-400">
+                      {targetLang.toUpperCase()} LOCALIZED
+                    </div>
+                    <div className="text-[10px] font-mono text-amber-400 mb-1">MOORE LABS 2026</div>
+                    
+                    <h4 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                      {targetLang === 'en' && 'GLOBAL STRATEGY UPGRADE · COMPLIANT LIQUIDITY'}
+                      {targetLang === 'ja' && 'グローバル戦略アップグレード · コンプライアンス金融'}
+                      {targetLang === 'ko' && '글로벌 전략 업그레이드 · 규제 준수 RWA 유동성'}
+                      {targetLang === 'ar' && 'ترقية الاستراتيجية العالمية · السيولة المتوافقة'}
+                      {targetLang === 'ru' && 'ГЛОБАЛЬНОЕ ОБНОВЛЕНИЕ · ЛИКВИДНОСТЬ RWA'}
+                      {targetLang === 'es' && 'ACTUALIZACIÓN ESTRATÉGICA · LIQUIDEZ RWA'}
+                    </h4>
+
+                    <div className="mt-2 flex flex-wrap justify-center gap-1 text-[9px]">
+                      <span className="rounded-full bg-amber-500/20 border border-amber-400/30 px-2 py-0.5 text-amber-200">
+                        {targetLang === 'en' && '$50M Ecosystem Fund'}
+                        {targetLang === 'ja' && '5000万ドル 生態基金'}
+                        {targetLang === 'ko' && '$50M 생태계 펀드'}
+                        {targetLang === 'ar' && 'صندوق بيئي بقيمة 50 مليون دولار'}
+                        {targetLang === 'ru' && '$50M Экосистемный фонд'}
+                        {targetLang === 'es' && '$50M Fondo del Ecosistema'}
+                      </span>
+                      <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2 py-0.5 text-emerald-200">
+                        Wallet MPC 3/3 Vault
+                      </span>
+                    </div>
+
+                    <div className="mt-3 text-[9px] text-white/40 font-mono border-t border-white/10 pt-1.5">
+                      HTTPS://AI.APG.MOM/WEBSIDE
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => showToast(isZh ? `已生成 ${targetLang.toUpperCase()} 高清 6K 海報並開始下載！` : 'Downloading translated image...')}
+                      className="flex-1 rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer text-center shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
+                    >
+                      {isZh ? '⬇ 下載翻譯海報' : '⬇ Download'}
+                    </button>
+                    <button
+                      onClick={() => showToast(isZh ? '已一鍵發送至海外對應語種 Telegram 官方群！' : 'Sent to localized TG!')}
+                      className="flex-1 rounded-xl border border-white/15 bg-white/5 py-2.5 text-xs font-semibold text-white hover:bg-white/10 active:scale-95 transition cursor-pointer text-center"
+                    >
+                      {isZh ? '🚀 發到海外群' : '🚀 Push to TG'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* 全球多語種一鍵打包出海 */}
+              <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs font-bold text-white">{isZh ? '🌍 全球 8 國語言海報全套一鍵導出' : 'Global 8-Language Pack Export'}</div>
+                  <div className="text-[11px] text-white/50">{isZh ? '包含英、日、韓、阿、俄、西等全語種 6K 矢量無痕海報 ZIP 壓縮包' : 'Download all 8 languages high-res vector posters in one ZIP'}</div>
+                </div>
+                <button
+                  onClick={() => showToast(isZh ? '✓ 全球 8 國語言 6K 海報全量打包完成，開始下載！' : '8-Language pack downloaded!')}
+                  className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-4 py-2 text-xs font-bold text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition active:scale-95 cursor-pointer whitespace-nowrap"
+                >
+                  {isZh ? '📦 一鍵打包下載全部語言 (.ZIP)' : '📦 Download All (.ZIP)'}
+                </button>
               </div>
             </div>
           );
