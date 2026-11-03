@@ -844,167 +844,8 @@
     // 移動端 (Mobile)：原生 iOS 級 DApp 體驗 (單手大拇指盲操、動態展開 Dock 7膠囊)
     // =========================================================================
     
-    // =========================================================================
-    // 2026 非小號曼谷峰會 · 傳統企業招商 PPT 獨立詳情瀏覽器 (SummitDeckViewer)
-    // 點擊首頁紅框「萬人國際盛會交付 / 非小號峰會」直接打開本頁，無需生成步驟，直接瀏覽全套 22 頁傳統企業招商 PPT 詳情
-    // 支持：1. 16:9 交互式大屏幻燈片翻頁  2. 單列超清長圖連讀模式  3. 全頁畫冊網格一覽  4. 點擊全屏放大與 PDF 原件下載
-    // =========================================================================
-    const SUMMIT_DECK_SLIDES = [
-      { id: 1, section: 'overview', tag: 'COVER', title: '峰會主視覺封面', titleEn: 'Summit Keynote Cover', file: './assets/fxh_deck/01_cover_clean.webp', desc: '2026非小號旗艦先導峰會暨鏈接納斯達克AI與股票代幣化研討會 · HOST: 非小號 (NASDAQ: FXHO) ｜ CO-HOST: Moore Labs' },
-      { id: 2, section: 'overview', tag: 'OVERVIEW', title: '峰會總覽與核心背景', titleEn: 'Summit Overview & Background', file: './assets/fxh_deck/02_summit_overview_clean.webp', desc: '幣安區塊鏈周曼谷站先導峰會 · 打通華爾街合規資本、傳統實體企業轉型與鏈上流動性樞紐' },
-      { id: 3, section: 'organizer', tag: 'HOST INTRO', title: '主辦方介紹：非小號 (Feixiaohao)', titleEn: 'Host Intro: Feixiaohao', file: './assets/fxh_deck/03_fxh_intro_photos_clean.webp', desc: '全球領先的數字資產數據與生態平台 · 攜手聯合主辦方 Moore Labs 打造萬人級國際盛典' },
-      { id: 4, section: 'organizer', tag: 'NASDAQ: FXHO', title: '納斯達克上市與幣安生態佈局', titleEn: 'NASDAQ Listing & Ecosystem', file: './assets/fxh_deck/03b_fxh_nasdaq_fxho_clean.webp', desc: 'Feixiaohao Inc. (NASDAQ: FXHO) 合規上市實體背書 · 深度接入頂級公鏈與全球合規金融網絡' },
-      { id: 5, section: 'organizer', tag: '9 YEARS METRICS', title: '非小號九年深耕十大核心指標', titleEn: '9 Years of Core Metrics', file: './assets/fxh_deck/04_fxh_metrics_clean.webp', desc: '累計覆蓋 3,000萬+ 用戶、5,000+ 全球 KOL、600+ 合作媒體、9年零中斷安全穩定運行' },
-      { id: 6, section: 'organizer', tag: 'MEDIA MATRIX', title: '全球宣發與 600+ 合作媒體矩陣', titleEn: 'Global Media Matrix', file: './assets/fxh_deck/04b_media_matrix_clean.webp', desc: '600+ 權威財經與 Web3 媒體聯合宣發 · 13大主流直播平台全球同步推流，千萬級品牌曝光' },
-      { id: 7, section: 'organizer', tag: 'CO-HOST', title: '聯合主辦方：Moore Labs 機構介紹', titleEn: 'Co-Host: Moore Labs', file: './assets/fxh_deck/04c_moore_labs_intro_clean.webp', desc: '新加坡 ACRA 官方註冊深度孵化網絡 · $5,000萬生態基金、MPC 門限金庫與曼谷實體基地' },
-      { id: 8, section: 'value', tag: 'AUDIENCE', title: '峰會參會對象與適合企業', titleEn: 'Target Enterprises & Audience', file: './assets/fxh_deck/05_target_audience_clean.webp', desc: '精準面向傳統實體企業轉型、上市公司代表、股票代幣化與 RWA 資產方、AI 科技企業及頂級 VC' },
-      { id: 9, section: 'value', tag: 'CORE VALUE', title: '為什麼傳統企業不能錯過這場峰會', titleEn: 'Why Attend This Summit', file: './assets/fxh_deck/05b_why_attend_clean.webp', desc: '華爾街合規資本 × 東盟政商資源 × 幣安周先導流量 · 為傳統企業提供一站式出海與資本對接閉環' },
-      { id: 10, section: 'value', tag: 'VENUE & TIME', title: '活動時間與曼谷核心場館座標', titleEn: 'Date, Time & Bangkok Venue', file: './assets/fxh_deck/06_time_location_clean.webp', desc: '2026年11月27日 13:00-21:30 · 泰國曼谷中華總商會宴會廳 (Thai CC Banquet Hall)' },
-      { id: 11, section: 'value', tag: 'GOLDEN WINDOW', title: '曼谷 Web3 黃金檔期全覽 (11.21-12.05)', titleEn: 'Bangkok Summit Circuit', file: './assets/fxh_deck/09_bangkok_bbw_track_clean.webp', desc: '處於幣安區塊鏈周開幕前 1 天黃金 C 位檔期，全球機構抵泰首站聚焦，商務轉化率最高' },
-      { id: 12, section: 'sponsor', tag: 'DIAMOND · 10,000U', title: '鑽石贊助方案 (10,000 USDT)', titleEn: 'Diamond Sponsorship (10,000 USDT)', file: './assets/fxh_deck/07_sponsor_diamond_clean.webp', desc: '含 10分鐘獨立主題演講、10分鐘官方專訪、VIP晚宴主桌席位+10張門票、首頁廣告2周及幣安生態閉門對接' },
-      { id: 13, section: 'sponsor', tag: 'GOLD · 3,000U', title: '黃金贊助方案 (3,000 USDT)', titleEn: 'Gold Sponsorship (3,000 USDT)', file: './assets/fxh_deck/08_sponsor_gold_clean.webp', desc: '含現場授牌頒獎、VIP席位+2張門票、官方新聞稿2篇+快訊3條、首頁廣告1周及專場 Space 圓桌' },
-      { id: 14, section: 'sponsor', tag: 'SILVER · 1,000U', title: '白銀贊助方案 (1,000 USDT)', titleEn: 'Silver Sponsorship (1,000 USDT)', file: './assets/fxh_deck/09_sponsor_silver_clean.webp', desc: '含大會VIP門票、主視覺背景板與宣傳物料品牌 LOGO 露出、600+ 媒體矩陣聯合宣發報導' },
-      { id: 15, section: 'sponsor', tag: 'COMPARISON', title: '三檔贊助方案核心權益對比總表', titleEn: 'Sponsorship Packages Comparison', file: './assets/fxh_deck/09b_sponsor_comparison_clean.webp', desc: '鑽石 (10,000U) / 黃金 (3,000U) / 白銀 (1,000U) 四大維度 18 項核心招商權益一覽對照' },
-      { id: 16, section: 'highlights', tag: 'HIGHLIGHTS 01', title: '往期活動集錦 (01)：千人主會場與 RWA 論壇', titleEn: 'Past Highlights 01: Main Stage', file: './assets/fxh_deck/10_rwa_events_1_clean.webp', desc: '往期全球千人峰會主會場爆滿實況與 RWA 實體資產代幣化專題演講現場' },
-      { id: 17, section: 'highlights', tag: 'HIGHLIGHTS 02', title: '往期活動集錦 (02)：全球峰會足跡與國際展台', titleEn: 'Past Highlights 02: Global Footprint', file: './assets/fxh_deck/11_rwa_events_2_clean.webp', desc: '香港 Web3 嘉年華、Bitcoin 2024 國際展台與全球參展企業深度商務洽談實拍' },
-      { id: 18, section: 'highlights', tag: 'HIGHLIGHTS 03', title: '往期活動集錦 (03)：VIP 晚宴與年度頒獎盛典', titleEn: 'Past Highlights 03: VIP Gala & Awards', file: './assets/fxh_deck/16_rwa_events_4_clean.webp', desc: '高規格閉門資本晚宴、傳統企業家與加密基金創始人面對面授牌頒獎榮耀時刻' },
-      { id: 19, section: 'highlights', tag: 'HIGHLIGHTS 04', title: '往期活動集錦 (04)：圓桌論壇與行業領袖碰撞', titleEn: 'Past Highlights 04: Roundtable Panels', file: './assets/fxh_deck/17_rwa_events_5_clean.webp', desc: '匯聚納斯達克上市公司高管、知名學者與頂級 KOL 的深度圓桌思想交鋒' },
-      { id: 20, section: 'highlights', tag: 'HIGHLIGHTS 05', title: '往期活動集錦 (05)：全球戰略簽約與授牌儀式', titleEn: 'Past Highlights 05: Signing Ceremony', file: './assets/fxh_deck/15_rwa_events_6_clean.webp', desc: '多國傳統實體企業、合規金流機構與生態基金現場達成戰略合作簽約實景' },
-      { id: 21, section: 'highlights', tag: 'HIGHLIGHTS 06', title: '往期活動集錦 (06)：曼谷 IMPACT 峰會與全球社區', titleEn: 'Past Highlights 06: Bangkok Community', file: './assets/fxh_deck/18_rwa_events_6b_clean.webp', desc: '泰國曼谷本地政商資源聯動、東南亞萬人社區共識盛典現場實錄' },
-      { id: 22, section: 'highlights', tag: 'CLOSING', title: '峰會封底主視覺：2026.11.27 曼谷見', titleEn: 'Closing Keynote: See You in Bangkok', file: './assets/fxh_deck/19_closing_clean.webp', desc: '鏈動全球資本 · 煥新價值生態 —— 誠邀全球傳統企業與合作夥伴共赴曼谷盛會' }
-    ];
-
-    function SummitDeckViewer({ lang, toggleLang, onBack }) {
-      const isZh = lang === 'zh';
-      const [fullscreenIdx, setFullscreenIdx] = useState(null);
-
-      // 鍵盤左右翻頁與 ESC 退出全屏
-      useEffect(() => {
-        const handleKeyDown = (e) => {
-          if (fullscreenIdx === null) return;
-          if (e.key === 'Escape') setFullscreenIdx(null);
-          if (e.key === 'ArrowLeft') {
-            setFullscreenIdx((prev) => (prev > 0 ? prev - 1 : SUMMIT_DECK_SLIDES.length - 1));
-          }
-          if (e.key === 'ArrowRight') {
-            setFullscreenIdx((prev) => (prev < SUMMIT_DECK_SLIDES.length - 1 ? prev + 1 : 0));
-          }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-      }, [fullscreenIdx]);
-
-      const activeFsSlide = fullscreenIdx !== null ? SUMMIT_DECK_SLIDES[fullscreenIdx] : null;
-
-      return (
-        <div className="min-h-screen bg-[#050811] text-white selection:bg-amber-400/30 relative">
-          {/* 點擊單頁時的全屏幻燈片演播燈箱 */}
-          {activeFsSlide && (
-            <div
-              className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-6 animate-fadeIn"
-              onClick={() => setFullscreenIdx(null)}
-            >
-              <div className="flex items-center justify-between max-w-7xl w-full mx-auto pb-3 border-b border-white/10" onClick={(e) => e.stopPropagation()}>
-                <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 font-mono text-xs font-extrabold">
-                    {activeFsSlide.id < 10 ? `0${activeFsSlide.id}` : activeFsSlide.id} / 22
-                  </span>
-                  <span className="text-sm sm:text-base font-bold text-white truncate max-w-[200px] sm:max-w-xl">
-                    {isZh ? activeFsSlide.title : activeFsSlide.titleEn}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setFullscreenIdx((prev) => (prev > 0 ? prev - 1 : SUMMIT_DECK_SLIDES.length - 1))}
-                    className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
-                  >
-                    ← {isZh ? '上一頁' : 'Prev'}
-                  </button>
-                  <button
-                    onClick={() => setFullscreenIdx((prev) => (prev < SUMMIT_DECK_SLIDES.length - 1 ? prev + 1 : 0))}
-                    className="rounded-xl bg-amber-400 hover:bg-amber-300 px-3 py-1.5 text-xs font-bold text-slate-950 cursor-pointer transition"
-                  >
-                    {isZh ? '下一頁' : 'Next'} →
-                  </button>
-                  <button
-                    onClick={() => setFullscreenIdx(null)}
-                    className="rounded-xl bg-white/15 hover:bg-rose-500 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
-                  >
-                    ✕ {isZh ? '關閉' : 'Close'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="my-auto max-w-7xl w-full mx-auto flex items-center justify-center relative py-2" onClick={(e) => e.stopPropagation()}>
-                <img
-                  src={activeFsSlide.file}
-                  alt={activeFsSlide.title}
-                  className="max-h-[82vh] w-auto object-contain rounded-xl shadow-[0_0_60px_rgba(0,0,0,0.9)]"
-                />
-              </div>
-
-              <div className="max-w-7xl w-full mx-auto flex items-center justify-between border-t border-white/10 pt-3 text-xs text-white/60" onClick={(e) => e.stopPropagation()}>
-                <span className="truncate">{activeFsSlide.desc}</span>
-                <span className="font-mono text-amber-300 shrink-0 ml-2">2026 FEIXIAOHAO × MOORE LABS</span>
-              </div>
-            </div>
-          )}
-
-          {/* 極簡頂部導航條：返回首頁 + 標題 + 下載 PDF 原件 */}
-          <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050811]/90 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-2.5 sm:px-6">
-              <button
-                onClick={onBack}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-white/20 transition active:scale-95 cursor-pointer"
-              >
-                <span>←</span>
-                <span>{isZh ? '返回首頁' : 'Back'}</span>
-              </button>
-
-              <div className="text-center min-w-0 px-2">
-                <h1 className="text-xs sm:text-sm md:text-base font-bold text-white truncate">
-                  {isZh ? '2026 非小號曼谷峰會 · 傳統企業招商 PPT (共 22 頁)' : '2026 Feixiaohao Bangkok Summit Pitch Deck (22 Slides)'}
-                </h1>
-              </div>
-
-              <a
-                href="./assets/fxh_deck/2026_feixiaohao_bangkok_summit_enterprise_deck.pdf"
-                target="_blank"
-                download="2026非小號曼谷峰會_傳統企業招商PPT.pdf"
-                className="rounded-full bg-amber-400 hover:bg-amber-300 px-3.5 py-1.5 text-xs font-extrabold text-slate-950 transition shadow-md inline-flex items-center gap-1 shrink-0"
-              >
-                <span>⬇</span>
-                <span>{isZh ? '下載 PDF' : 'PDF'}</span>
-              </a>
-            </div>
-          </header>
-
-          {/* 直接展示非小號傳統企業招商 PPT 全部 22 頁高清原圖（無任何多餘外殼，像直接打開 PPT 一樣從第 1 頁滑到第 22 頁） */}
-          <main className="mx-auto max-w-5xl px-2 sm:px-6 py-4 sm:py-6 space-y-3 sm:space-y-6">
-            {SUMMIT_DECK_SLIDES.map((slide, index) => (
-              <div
-                key={slide.id}
-                onClick={() => setFullscreenIdx(index)}
-                className="group relative rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 bg-black shadow-[0_12px_40px_rgba(0,0,0,0.6)] cursor-zoom-in"
-              >
-                {/* 左下角極簡透明頁碼角標（100% 避開右上角雙 Logo 與標題） */}
-                <div className="absolute bottom-2 right-2.5 z-10 rounded-full bg-black/65 border border-white/15 px-2 py-0.5 text-[10px] font-mono font-bold text-white/80 backdrop-blur-md pointer-events-none">
-                  {slide.id < 10 ? `0${slide.id}` : slide.id} / 22
-                </div>
-
-                {/* 16:9 高清 PPT 幻燈片畫面本體 */}
-                <img
-                  src={slide.file}
-                  alt={slide.title}
-                  className="w-full h-auto block"
-                  loading={index < 4 ? 'eager' : 'lazy'}
-                />
-              </div>
-            ))}
-          </main>
-        </div>
-      );
-    }
+    // 2026 非小號曼谷峰會 · 傳統企業極簡版 DECK 原件直連路徑
+    const FXH_SUMMIT_PDF_URL = './assets/fxh_deck/2026非小号曼谷峰会_传统企业极简版_DECK.pdf';
 
     function ConsoleView({ lang, toggleLang, onBack }) {
       const [activeTab, setActiveTab] = useState('wallet'); // 'wallet'|'media'|'bot'|'growth'|'chat'|'ppt'|'translate'
@@ -2381,12 +2222,15 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
       const marqueeRow1 = useMemo(() => [...backers.slice(0, 18), ...backers.slice(0, 18)], []);
       const marqueeRow2 = useMemo(() => [...backers.slice(18), ...backers.slice(18)], []);
 
-      // 二級頁面路由狀態 ('home' | 'console' | 'deck')
+      // 二級頁面路由狀態 ('home' | 'console')
       const [view, setView] = useState(() => {
         try {
           if (typeof window !== 'undefined') {
             const h = window.location.hash || '';
-            if (h.startsWith('#/summit-deck') || h.includes('preset=fxh')) return 'deck';
+            if (h.startsWith('#/summit-deck') || h.includes('preset=fxh')) {
+              window.location.replace(FXH_SUMMIT_PDF_URL);
+              return 'home';
+            }
             if (h.startsWith('#/console')) return 'console';
           }
           return 'home';
@@ -2401,12 +2245,6 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
 
-      const openSummitDeck = () => {
-        window.location.hash = '#/summit-deck';
-        setView('deck');
-        window.scrollTo({ top: 0, behavior: 'instant' });
-      };
-
       const backToHome = () => {
         window.location.hash = '#/';
         setView('home');
@@ -2417,7 +2255,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
         const handleHashChange = () => {
           const h = window.location.hash || '';
           if (h.startsWith('#/summit-deck') || h.includes('preset=fxh')) {
-            setView('deck');
+            window.location.replace(FXH_SUMMIT_PDF_URL);
           } else if (h.startsWith('#/console')) {
             setView('console');
           } else {
@@ -2814,16 +2652,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
 
       return (
         <div ref={rootRef} className="min-h-screen bg-[#0a1220] text-white selection:bg-white/25">
-          {/* 二級頁面 1：非小號曼谷峰會 · 傳統企業招商 PPT 獨立詳情瀏覽頁 */}
-          {view === 'deck' && (
-            <SummitDeckViewer
-              lang={lang}
-              toggleLang={toggleLang}
-              onBack={backToHome}
-            />
-          )}
-
-          {/* 二級頁面 2：個人控制台 (ConsoleView) */}
+          {/* 二級頁面：個人控制台 (ConsoleView) */}
           {view === 'console' && (
             <ConsoleView
               lang={lang}
@@ -2964,17 +2793,14 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                         <span className="mr-1.5 text-sky-500 font-bold">&#10022;</span>
                         {lang === 'zh' ? 'Wallet MPC 門限安全' : 'Wallet MPC Security'}
                       </span>
-                      <button
-                        onClick={openSummitDeck}
-                        title={lang === 'zh' ? '點擊直接打開：2026 非小號曼谷峰會 · 傳統企業招商 PPT 詳情' : 'Click to open Feixiaohao Summit Traditional Enterprise Pitch Deck'}
+                      <a
+                        href={FXH_SUMMIT_PDF_URL}
+                        title={lang === 'zh' ? '點擊直接打開：2026非小號曼谷峰會_傳統企業極簡版_DECK.pdf' : 'Click to open 2026 Feixiaohao Bangkok Summit Pitch Deck PDF'}
                         className="inline-flex items-center rounded-full border border-emerald-500/45 bg-white/90 hover:bg-emerald-50 text-[#0f172a] hover:text-emerald-950 px-3.5 py-1 text-xs font-semibold backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
                       >
                         <span className="mr-1.5 text-emerald-600 font-bold group-hover:scale-125 transition-transform">&#10022;</span>
                         <span>{lang === 'zh' ? '萬人國際盛會交付' : '10,000+ Summit Delivery'}</span>
-                        <span className="ml-1.5 rounded-full bg-emerald-500/15 text-emerald-800 text-[10px] px-1.5 py-0.2 font-mono group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                          {lang === 'zh' ? '查看招商 PPT ↗' : 'View PPT ↗'}
-                        </span>
-                      </button>
+                      </a>
                     </div>
 
                     {/* 官方行動按鈕 */}
