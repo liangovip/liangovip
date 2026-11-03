@@ -876,473 +876,131 @@
 
     function SummitDeckViewer({ lang, toggleLang, onBack }) {
       const isZh = lang === 'zh';
-      const [currentIndex, setCurrentIndex] = useState(0);
-      const [displayMode, setDisplayMode] = useState('both'); // 'slide' | 'scroll' | 'grid' | 'both'
-      const [activeSection, setActiveSection] = useState('all');
-      const [fullscreenSlide, setFullscreenSlide] = useState(null);
+      const [fullscreenIdx, setFullscreenIdx] = useState(null);
 
-      const currentSlide = SUMMIT_DECK_SLIDES[currentIndex] || SUMMIT_DECK_SLIDES[0];
-
-      const goPrev = () => {
-        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : SUMMIT_DECK_SLIDES.length - 1));
-      };
-
-      const goNext = () => {
-        setCurrentIndex((prev) => (prev < SUMMIT_DECK_SLIDES.length - 1 ? prev + 1 : 0));
-      };
-
-      const jumpToSlide = (idx) => {
-        setCurrentIndex(idx);
-        const stageEl = document.getElementById('deck-main-stage');
-        if (stageEl) {
-          stageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      };
-
-      // 鍵盤左右方向鍵翻頁支持
+      // 鍵盤左右翻頁與 ESC 退出全屏
       useEffect(() => {
         const handleKeyDown = (e) => {
-          if (fullscreenSlide) {
-            if (e.key === 'Escape') setFullscreenSlide(null);
-            if (e.key === 'ArrowLeft') {
-              const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
-              const nextIdx = idx > 0 ? idx - 1 : SUMMIT_DECK_SLIDES.length - 1;
-              setFullscreenSlide(SUMMIT_DECK_SLIDES[nextIdx]);
-            }
-            if (e.key === 'ArrowRight') {
-              const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
-              const nextIdx = idx < SUMMIT_DECK_SLIDES.length - 1 ? idx + 1 : 0;
-              setFullscreenSlide(SUMMIT_DECK_SLIDES[nextIdx]);
-            }
-            return;
+          if (fullscreenIdx === null) return;
+          if (e.key === 'Escape') setFullscreenIdx(null);
+          if (e.key === 'ArrowLeft') {
+            setFullscreenIdx((prev) => (prev > 0 ? prev - 1 : SUMMIT_DECK_SLIDES.length - 1));
           }
-          if (e.key === 'ArrowLeft') goPrev();
-          if (e.key === 'ArrowRight') goNext();
+          if (e.key === 'ArrowRight') {
+            setFullscreenIdx((prev) => (prev < SUMMIT_DECK_SLIDES.length - 1 ? prev + 1 : 0));
+          }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-      }, [fullscreenSlide]);
+      }, [fullscreenIdx]);
 
-      const sections = [
-        { id: 'all', labelZh: '全部章節 (22頁)', labelEn: 'All Slides (22)', startIdx: 0 },
-        { id: 'overview', labelZh: '🔥 峰會總覽 (P01-02)', labelEn: 'Overview (P01-02)', startIdx: 0 },
-        { id: 'organizer', labelZh: '🏛️ 主辦方與上市實力 (P03-07)', labelEn: 'Organizers (P03-07)', startIdx: 2 },
-        { id: 'value', labelZh: '🎯 傳統企業參會價值 (P08-11)', labelEn: 'Enterprise Value (P08-11)', startIdx: 7 },
-        { id: 'sponsor', labelZh: '💎 招商贊助方案 (P12-15)', labelEn: 'Sponsorship (P12-15)', startIdx: 11 },
-        { id: 'highlights', labelZh: '📸 往期千人峰會實況 (P16-22)', labelEn: 'Past Highlights (P16-22)', startIdx: 15 },
-      ];
-
-      const filteredSlides = activeSection === 'all'
-        ? SUMMIT_DECK_SLIDES
-        : SUMMIT_DECK_SLIDES.filter((s) => s.section === activeSection);
+      const activeFsSlide = fullscreenIdx !== null ? SUMMIT_DECK_SLIDES[fullscreenIdx] : null;
 
       return (
-        <div className="min-h-screen bg-[#060b16] text-white selection:bg-amber-400/30 relative overflow-x-hidden pb-20">
-          {/* 背景環境光 */}
-          <div className="fixed inset-0 pointer-events-none z-0">
-            <div className="absolute -top-32 left-1/4 h-[480px] w-[480px] rounded-full bg-indigo-600/10 blur-[140px]"></div>
-            <div className="absolute top-1/3 right-10 h-[520px] w-[520px] rounded-full bg-amber-500/8 blur-[150px]"></div>
-          </div>
-
-          {/* 全屏超清放大燈箱 (Fullscreen Lightbox) */}
-          {fullscreenSlide && (
+        <div className="min-h-screen bg-[#050811] text-white selection:bg-amber-400/30 relative">
+          {/* 點擊單頁時的全屏幻燈片演播燈箱 */}
+          {activeFsSlide && (
             <div
               className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-6 animate-fadeIn"
-              onClick={() => setFullscreenSlide(null)}
+              onClick={() => setFullscreenIdx(null)}
             >
-              <div className="flex items-center justify-between max-w-7xl w-full mx-auto border-b border-white/10 pb-3" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between max-w-7xl w-full mx-auto pb-3 border-b border-white/10" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-bold">
-                    PAGE {fullscreenSlide.id < 10 ? `0${fullscreenSlide.id}` : fullscreenSlide.id} / 22
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 font-mono text-xs font-extrabold">
+                    {activeFsSlide.id < 10 ? `0${activeFsSlide.id}` : activeFsSlide.id} / 22
                   </span>
-                  <span className="text-sm sm:text-base font-bold text-white truncate max-w-[220px] sm:max-w-lg">
-                    {isZh ? fullscreenSlide.title : fullscreenSlide.titleEn}
+                  <span className="text-sm sm:text-base font-bold text-white truncate max-w-[200px] sm:max-w-xl">
+                    {isZh ? activeFsSlide.title : activeFsSlide.titleEn}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => {
-                      const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
-                      const prevIdx = idx > 0 ? idx - 1 : SUMMIT_DECK_SLIDES.length - 1;
-                      setFullscreenSlide(SUMMIT_DECK_SLIDES[prevIdx]);
-                    }}
+                    onClick={() => setFullscreenIdx((prev) => (prev > 0 ? prev - 1 : SUMMIT_DECK_SLIDES.length - 1))}
                     className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
                   >
                     ← {isZh ? '上一頁' : 'Prev'}
                   </button>
                   <button
-                    onClick={() => {
-                      const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
-                      const nextIdx = idx < SUMMIT_DECK_SLIDES.length - 1 ? idx + 1 : 0;
-                      setFullscreenSlide(SUMMIT_DECK_SLIDES[nextIdx]);
-                    }}
-                    className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
+                    onClick={() => setFullscreenIdx((prev) => (prev < SUMMIT_DECK_SLIDES.length - 1 ? prev + 1 : 0))}
+                    className="rounded-xl bg-amber-400 hover:bg-amber-300 px-3 py-1.5 text-xs font-bold text-slate-950 cursor-pointer transition"
                   >
                     {isZh ? '下一頁' : 'Next'} →
                   </button>
                   <button
-                    onClick={() => setFullscreenSlide(null)}
-                    className="rounded-xl bg-rose-500/20 border border-rose-400/40 hover:bg-rose-500 hover:text-white px-3.5 py-1.5 text-xs font-bold text-rose-200 cursor-pointer transition"
+                    onClick={() => setFullscreenIdx(null)}
+                    className="rounded-xl bg-white/15 hover:bg-rose-500 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
                   >
-                    ✕ {isZh ? '退出全屏' : 'Close'}
+                    ✕ {isZh ? '關閉' : 'Close'}
                   </button>
                 </div>
               </div>
 
               <div className="my-auto max-w-7xl w-full mx-auto flex items-center justify-center relative py-2" onClick={(e) => e.stopPropagation()}>
                 <img
-                  src={fullscreenSlide.file}
-                  alt={fullscreenSlide.title}
-                  className="max-h-[78vh] w-auto object-contain rounded-2xl border border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.8)]"
+                  src={activeFsSlide.file}
+                  alt={activeFsSlide.title}
+                  className="max-h-[82vh] w-auto object-contain rounded-xl shadow-[0_0_60px_rgba(0,0,0,0.9)]"
                 />
               </div>
 
-              <div className="max-w-7xl w-full mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-white/10 pt-3 text-xs text-white/70" onClick={(e) => e.stopPropagation()}>
-                <p>{fullscreenSlide.desc}</p>
-                <span className="font-mono text-amber-300 shrink-0">HOST: 非小號 (NASDAQ: FXHO) ｜ CO-HOST: Moore Labs</span>
+              <div className="max-w-7xl w-full mx-auto flex items-center justify-between border-t border-white/10 pt-3 text-xs text-white/60" onClick={(e) => e.stopPropagation()}>
+                <span className="truncate">{activeFsSlide.desc}</span>
+                <span className="font-mono text-amber-300 shrink-0 ml-2">2026 FEIXIAOHAO × MOORE LABS</span>
               </div>
             </div>
           )}
 
-          {/* 頂部固定導航欄 */}
-          <header className="sticky top-0 z-50 border-b border-white/10 bg-[#080e1d]/90 backdrop-blur-2xl">
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-6 gap-2">
-              <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
-                <button
-                  onClick={onBack}
-                  className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white hover:border-amber-400/60 hover:bg-white/10 transition active:scale-95 cursor-pointer shrink-0"
-                >
-                  <span className="text-amber-400 font-bold">←</span>
-                  <span>{isZh ? '返回首頁' : 'Back Home'}</span>
-                </button>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
-                    <h1 className="text-xs sm:text-sm md:text-base font-bold tracking-tight text-white truncate">
-                      {isZh ? '2026 非小號曼谷峰會 · 傳統企業招商 PPT 詳情' : '2026 Feixiaohao Bangkok Summit · Enterprise Pitch Deck'}
-                    </h1>
-                    <span className="hidden md:inline-flex items-center rounded-full bg-amber-500/15 border border-amber-400/30 px-2.5 py-0.5 text-[11px] font-mono font-semibold text-amber-300">
-                      22 SLIDES FULL DECK
-                    </span>
-                  </div>
-                </div>
+          {/* 極簡頂部導航條：返回首頁 + 標題 + 下載 PDF 原件 */}
+          <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050811]/90 backdrop-blur-xl">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-3 py-2.5 sm:px-6">
+              <button
+                onClick={onBack}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-white/20 transition active:scale-95 cursor-pointer"
+              >
+                <span>←</span>
+                <span>{isZh ? '返回首頁' : 'Back'}</span>
+              </button>
+
+              <div className="text-center min-w-0 px-2">
+                <h1 className="text-xs sm:text-sm md:text-base font-bold text-white truncate">
+                  {isZh ? '2026 非小號曼谷峰會 · 傳統企業招商 PPT (共 22 頁)' : '2026 Feixiaohao Bangkok Summit Pitch Deck (22 Slides)'}
+                </h1>
               </div>
 
-              {/* 右側視圖切換與下載操作 */}
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="hidden sm:flex items-center rounded-full border border-white/12 bg-white/[0.03] p-0.5 text-xs">
-                  <button
-                    onClick={() => setDisplayMode('both')}
-                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${displayMode === 'both' ? 'bg-amber-400 text-slate-950' : 'text-white/70 hover:text-white'}`}
-                  >
-                    {isZh ? '🎞️ 演播 + 全頁詳情' : 'Stage + Full'}
-                  </button>
-                  <button
-                    onClick={() => setDisplayMode('scroll')}
-                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${displayMode === 'scroll' ? 'bg-amber-400 text-slate-950' : 'text-white/70 hover:text-white'}`}
-                  >
-                    {isZh ? '📜 長圖連讀' : 'Vertical Scroll'}
-                  </button>
-                  <button
-                    onClick={() => setDisplayMode('grid')}
-                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${displayMode === 'grid' ? 'bg-amber-400 text-slate-950' : 'text-white/70 hover:text-white'}`}
-                  >
-                    {isZh ? '⊞ 畫冊網格' : 'Grid View'}
-                  </button>
-                </div>
-
-                <a
-                  href="./assets/fxh_deck/2026_feixiaohao_bangkok_summit_enterprise_deck.pdf"
-                  target="_blank"
-                  download="2026非小號曼谷峰會_傳統企業招商PPT_完整版.pdf"
-                  className="rounded-full bg-gradient-to-r from-amber-500 to-amber-400 px-3.5 py-1.5 text-xs font-bold text-slate-950 hover:brightness-110 transition shadow-[0_4px_16px_rgba(245,158,11,0.3)] inline-flex items-center gap-1"
-                >
-                  <span>⬇</span>
-                  <span>{isZh ? '下載 PDF' : 'PDF'}</span>
-                </a>
-
-                <button
-                  onClick={toggleLang}
-                  className="rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-semibold text-white/80 hover:text-white cursor-pointer"
-                >
-                  {isZh ? 'EN' : '繁'}
-                </button>
-              </div>
-            </div>
-
-            {/* 章節快速跳轉導航欄 */}
-            <div className="border-t border-white/6 bg-[#060a15]/80">
-              <div className="mx-auto max-w-7xl px-3 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
-                {sections.map((sec) => {
-                  const isActive = activeSection === sec.id;
-                  return (
-                    <button
-                      key={sec.id}
-                      onClick={() => {
-                        setActiveSection(sec.id);
-                        setCurrentIndex(sec.startIdx);
-                      }}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
-                        isActive
-                          ? 'bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
-                          : 'border border-white/8 bg-white/[0.02] text-white/65 hover:text-white hover:border-white/20'
-                      }`}
-                    >
-                      {isZh ? sec.labelZh : sec.labelEn}
-                    </button>
-                  );
-                })}
-              </div>
+              <a
+                href="./assets/fxh_deck/2026_feixiaohao_bangkok_summit_enterprise_deck.pdf"
+                target="_blank"
+                download="2026非小號曼谷峰會_傳統企業招商PPT.pdf"
+                className="rounded-full bg-amber-400 hover:bg-amber-300 px-3.5 py-1.5 text-xs font-extrabold text-slate-950 transition shadow-md inline-flex items-center gap-1 shrink-0"
+              >
+                <span>⬇</span>
+                <span>{isZh ? '下載 PDF' : 'PDF'}</span>
+              </a>
             </div>
           </header>
 
-          {/* 主體內容區 */}
-          <main className="relative z-10 mx-auto max-w-7xl px-3 sm:px-6 pt-5 space-y-8">
-            {/* 移動端視圖模式快速切換條 */}
-            <div className="flex sm:hidden items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-1 text-xs">
-              <button
-                onClick={() => setDisplayMode('both')}
-                className={`flex-1 py-1.5 rounded-xl font-bold transition ${displayMode === 'both' ? 'bg-amber-400 text-slate-950' : 'text-white/70'}`}
+          {/* 直接展示非小號傳統企業招商 PPT 全部 22 頁高清原圖（無任何多餘外殼，像直接打開 PPT 一樣從第 1 頁滑到第 22 頁） */}
+          <main className="mx-auto max-w-5xl px-2 sm:px-6 py-4 sm:py-6 space-y-3 sm:space-y-6">
+            {SUMMIT_DECK_SLIDES.map((slide, index) => (
+              <div
+                key={slide.id}
+                onClick={() => setFullscreenIdx(index)}
+                className="group relative rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 bg-black shadow-[0_12px_40px_rgba(0,0,0,0.6)] cursor-zoom-in"
               >
-                {isZh ? '🎞️ 幻燈片翻頁' : 'Slide'}
-              </button>
-              <button
-                onClick={() => setDisplayMode('scroll')}
-                className={`flex-1 py-1.5 rounded-xl font-bold transition ${displayMode === 'scroll' ? 'bg-amber-400 text-slate-950' : 'text-white/70'}`}
-              >
-                {isZh ? '📜 長圖連讀 (22頁)' : 'Scroll All'}
-              </button>
-              <button
-                onClick={() => setDisplayMode('grid')}
-                className={`flex-1 py-1.5 rounded-xl font-bold transition ${displayMode === 'grid' ? 'bg-amber-400 text-slate-950' : 'text-white/70'}`}
-              >
-                {isZh ? '⊞ 縮略網格' : 'Grid'}
-              </button>
-            </div>
-
-            {/* 第一部分：16:9 高清交互式幻燈片主舞台 (當處於 both 或 slide 模式時顯示) */}
-            {(displayMode === 'both' || displayMode === 'slide') && (
-              <section id="deck-main-stage" className="rounded-3xl border border-white/12 bg-[linear-gradient(180deg,rgba(15,24,42,0.92),rgba(8,13,25,0.96))] p-3.5 sm:p-6 shadow-[0_24px_80px_rgba(0,0,0,0.65)] space-y-4">
-                {/* 舞台頂部頁碼與標題欄 */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/8 pb-3.5">
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="rounded-lg bg-amber-500/20 border border-amber-400/40 px-2.5 py-1 font-mono text-xs font-bold text-amber-300">
-                      SLIDE {currentSlide.id < 10 ? `0${currentSlide.id}` : currentSlide.id} / 22
-                    </span>
-                    <span className="rounded-md bg-emerald-500/15 border border-emerald-400/30 px-2 py-0.5 font-mono text-[11px] font-semibold text-emerald-300">
-                      {currentSlide.tag}
-                    </span>
-                    <h2 className="text-base sm:text-lg font-bold text-white">
-                      {isZh ? currentSlide.title : currentSlide.titleEn}
-                    </h2>
-                  </div>
-
-                  {/* 翻頁與全屏按鈕組 */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={goPrev}
-                      className="rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 px-3.5 py-1.5 text-xs font-bold text-white transition active:scale-95 cursor-pointer"
-                    >
-                      ← {isZh ? '上一頁' : 'Prev'}
-                    </button>
-                    <button
-                      onClick={goNext}
-                      className="rounded-xl bg-amber-400 hover:bg-amber-300 px-4 py-1.5 text-xs font-bold text-slate-950 transition active:scale-95 cursor-pointer shadow-[0_4px_14px_rgba(245,158,11,0.3)]"
-                    >
-                      {isZh ? '下一頁' : 'Next'} →
-                    </button>
-                    <button
-                      onClick={() => setFullscreenSlide(currentSlide)}
-                      className="rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/90 transition cursor-pointer"
-                      title={isZh ? '全屏放大查看' : 'Fullscreen'}
-                    >
-                      ⛶ {isZh ? '全屏放大' : 'Fullscreen'}
-                    </button>
-                  </div>
+                {/* 左下角極簡透明頁碼角標（100% 避開右上角雙 Logo 與標題） */}
+                <div className="absolute bottom-2 right-2.5 z-10 rounded-full bg-black/65 border border-white/15 px-2 py-0.5 text-[10px] font-mono font-bold text-white/80 backdrop-blur-md pointer-events-none">
+                  {slide.id < 10 ? `0${slide.id}` : slide.id} / 22
                 </div>
 
-                {/* 16:9 幻燈片高清主畫面 + 左右懸浮切換熱區 */}
-                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl group">
-                  <img
-                    src={currentSlide.file}
-                    alt={currentSlide.title}
-                    onClick={() => setFullscreenSlide(currentSlide)}
-                    className="w-full h-full object-contain cursor-zoom-in transition-transform duration-300"
-                  />
-
-                  {/* 左側上一頁大按鈕 */}
-                  <button
-                    onClick={goPrev}
-                    aria-label="Previous Slide"
-                    className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-white/20 bg-slate-950/75 text-white hover:bg-amber-400 hover:text-slate-950 hover:border-amber-300 transition flex items-center justify-center text-lg font-bold shadow-xl backdrop-blur-md cursor-pointer"
-                  >
-                    ‹
-                  </button>
-
-                  {/* 右側下一頁大按鈕 */}
-                  <button
-                    onClick={goNext}
-                    aria-label="Next Slide"
-                    className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-white/20 bg-slate-950/70 text-white hover:bg-amber-400 hover:text-slate-950 hover:border-amber-300 transition flex items-center justify-center text-lg font-bold shadow-xl backdrop-blur-md cursor-pointer"
-                  >
-                    ›
-                  </button>
-                </div>
-
-                {/* 畫框外部下方：當前頁核心看點解讀條（100% 零遮擋 PPT 畫面） */}
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed">
-                    {currentSlide.desc}
-                  </p>
-                  <span className="text-[11px] font-mono text-amber-300 shrink-0">
-                    {isZh ? '🔍 點擊 PPT 畫面可全屏放大 · 支持 ← → 鍵翻頁' : '🔍 Click slide to zoom · Use ← → keys'}
-                  </span>
-                </div>
-
-                {/* 底部 22 頁橫向膠片縮略圖導航條 (Filmstrip) */}
-                <div className="space-y-2 pt-1">
-                  <div className="flex items-center justify-between text-xs text-white/50">
-                    <span>{isZh ? '🎞️ 全套 22 頁 PPT 縮略導航（點擊任意頁秒級切換）' : '🎞️ 22-Slide Filmstrip Navigation'}</span>
-                    <span className="font-mono text-amber-300">PAGE {currentSlide.id} OF 22</span>
-                  </div>
-                  <div className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar">
-                    {SUMMIT_DECK_SLIDES.map((s, idx) => {
-                      const active = idx === currentIndex;
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => setCurrentIndex(idx)}
-                          className={`group relative shrink-0 w-28 sm:w-36 rounded-xl overflow-hidden border transition-all duration-200 cursor-pointer text-left ${
-                            active
-                              ? 'border-amber-400 ring-2 ring-amber-400/50 scale-[1.03] shadow-[0_4px_20px_rgba(245,158,11,0.3)]'
-                              : 'border-white/10 opacity-65 hover:opacity-100 hover:border-white/30'
-                          }`}
-                        >
-                          <div className="aspect-[16/9] w-full bg-black">
-                            <img src={s.file} alt={s.title} className="w-full h-full object-cover" loading="lazy" />
-                          </div>
-                          <div className={`px-2 py-1 text-[10px] font-mono truncate ${active ? 'bg-amber-400 text-slate-950 font-bold' : 'bg-slate-900/90 text-white/80'}`}>
-                            P{s.id < 10 ? `0${s.id}` : s.id} · {s.title}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* 第二部分：全套 22 頁 PPT 詳情完整瀏覽區（長圖連讀模式 或 畫冊網格模式） */}
-            <section className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                    <span className="text-amber-400">✦</span>
-                    <span>{isZh ? '非小號曼谷峰會 · 傳統企業招商 PPT 全頁詳情一覽' : 'Full 22-Slide Enterprise Pitch Deck Details'}</span>
-                    <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-400/30 px-2 py-0.5 rounded-full">
-                      {filteredSlides.length} {isZh ? '頁' : 'Slides'}
-                    </span>
-                  </h3>
-                  <p className="text-xs text-white/60 mt-0.5">
-                    {isZh ? '以下為傳統企業招商 PPT 完整頁面詳情，可直接上下滑動瀏覽，或點擊任意頁面全屏高清查看' : 'Scroll down to read all slides in detail, or click any slide to view in fullscreen HD'}
-                  </p>
-                </div>
+                {/* 16:9 高清 PPT 幻燈片畫面本體 */}
+                <img
+                  src={slide.file}
+                  alt={slide.title}
+                  className="w-full h-auto block"
+                  loading={index < 4 ? 'eager' : 'lazy'}
+                />
               </div>
-
-              {/* 根據視圖模式渲染：若為 scroll 則單列大圖長卷連讀；否則為高清雙列詳情畫冊 */}
-              {displayMode === 'scroll' ? (
-                <div className="space-y-6 max-w-5xl mx-auto">
-                  {filteredSlides.map((slide) => (
-                    <div
-                      key={slide.id}
-                      className="rounded-3xl border border-white/12 bg-[#0b1324] p-3 sm:p-5 shadow-xl space-y-3"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-bold">
-                            PAGE {slide.id < 10 ? `0${slide.id}` : slide.id} / 22
-                          </span>
-                          <span className="text-sm sm:text-base font-bold text-white">
-                            {isZh ? slide.title : slide.titleEn}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => setFullscreenSlide(slide)}
-                          className="text-xs text-amber-300 hover:underline font-mono cursor-pointer"
-                        >
-                          🔍 {isZh ? '全屏查看' : 'Zoom'}
-                        </button>
-                      </div>
-
-                      <div
-                        onClick={() => setFullscreenSlide(slide)}
-                        className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/10 bg-black cursor-zoom-in"
-                      >
-                        <img src={slide.file} alt={slide.title} className="w-full h-full object-contain" loading="lazy" />
-                      </div>
-
-                      <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
-                        {slide.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {filteredSlides.map((slide) => (
-                    <div
-                      key={slide.id}
-                      className="group rounded-3xl border border-white/12 bg-[linear-gradient(145deg,#0d1629,#080e1c)] p-4 space-y-3 shadow-lg hover:border-amber-400/50 hover:shadow-[0_8px_32px_rgba(245,158,11,0.18)] transition-all duration-300"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-bold">
-                            P{slide.id < 10 ? `0${slide.id}` : slide.id}
-                          </span>
-                          <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-mono text-[10px] border border-emerald-400/30">
-                            {slide.tag}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => jumpToSlide(slide.id - 1)}
-                            className="text-[11px] text-white/60 hover:text-amber-300 font-mono cursor-pointer"
-                          >
-                            {isZh ? '在主舞台打開 ↗' : 'Open in Stage ↗'}
-                          </button>
-                        </div>
-                      </div>
-
-                      <div
-                        onClick={() => setFullscreenSlide(slide)}
-                        className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/10 bg-black cursor-pointer"
-                      >
-                        <img
-                          src={slide.file}
-                          alt={slide.title}
-                          className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                          <span className="rounded-full bg-slate-950/90 border border-amber-400/60 px-3.5 py-1.5 text-xs font-bold text-amber-300 shadow-lg">
-                            🔍 {isZh ? '點擊全屏高清查看此頁 PPT' : 'Click for Fullscreen HD'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <h4 className="text-sm sm:text-base font-bold text-white">
-                          {isZh ? slide.title : slide.titleEn}
-                        </h4>
-                        <p className="text-xs text-white/65 leading-relaxed">
-                          {slide.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
+            ))}
           </main>
         </div>
       );
@@ -2727,8 +2385,9 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
       const [view, setView] = useState(() => {
         try {
           if (typeof window !== 'undefined') {
-            if (window.location.hash.startsWith('#/summit-deck')) return 'deck';
-            if (window.location.hash.startsWith('#/console')) return 'console';
+            const h = window.location.hash || '';
+            if (h.startsWith('#/summit-deck') || h.includes('preset=fxh')) return 'deck';
+            if (h.startsWith('#/console')) return 'console';
           }
           return 'home';
         } catch (e) {
@@ -2756,9 +2415,10 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
 
       useEffect(() => {
         const handleHashChange = () => {
-          if (window.location.hash.startsWith('#/summit-deck')) {
+          const h = window.location.hash || '';
+          if (h.startsWith('#/summit-deck') || h.includes('preset=fxh')) {
             setView('deck');
-          } else if (window.location.hash.startsWith('#/console')) {
+          } else if (h.startsWith('#/console')) {
             setView('console');
           } else {
             setView('home');
