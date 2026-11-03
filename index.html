@@ -1329,7 +1329,7 @@
                       onClick={() => showToast(isZh ? '✓ 6K 矢量海報已於 0.4s 秒級完成渲染！' : '6K Poster rendered in 0.4s!')}
                       className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_20px_rgba(245,158,11,0.3)]"
                     >
-                      {isZh ? '⚡ 0.4s 快速出圖 (PPTEval 矢量渲染)' : '⚡ Generate 6K Vector Poster'}
+                      {isZh ? '⚡ 0.4s 快速出圖 (MOORE 矢量渲染)' : '⚡ Generate 6K Vector Poster'}
                     </button>
                   </div>
 
@@ -1397,7 +1397,7 @@
                     </div>
                   </div>
                   <button
-                    onClick={() => showToast(isZh ? '已提交至 Colab Pro+ A100 GPU 渲染隊列！' : 'Submitted to Colab Pro+ A100 GPU!')}
+                    onClick={() => showToast(isZh ? '已提交至 MOORE 超算渲染集群！' : 'Submitted to MOORE Cloud Render Cluster!')}
                     className="w-full rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 py-3 text-xs font-bold text-white hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_20px_rgba(56,189,248,0.3)]"
                   >
                     {isZh ? '🚀 雲端 A100 渲染輸出 (AI Video Factory)' : '🚀 Render on Cloud A100 GPU'}
@@ -1836,16 +1836,16 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-ping"></span>
                     <span className="text-xs font-bold text-white tracking-wide">
-                      {isZh ? 'GEMINI NOTEBOOK 深度知識庫引擎已連線' : 'GEMINI NOTEBOOK ENGINE ONLINE'}
+                      {isZh ? 'MOORE 智庫大腦深度排版引擎已連線' : 'MOORE INTELLIGENCE DECK ENGINE ONLINE'}
                     </span>
                   </div>
                   <p className="text-xs text-white/60 mt-1">
-                    {isZh ? '直接關聯 Gemini 筆記本與真實項目文檔，拒絕 AI 虛假空話，秒級提煉生成機構級幻燈片初稿' : 'Connect real Gemini Notebooks & project docs to generate factual pitch decks'}
+                    {isZh ? '直接關聯 MOORE 官方戰略文檔與智庫中樞，秒級提煉生成機構級商業幻燈片初稿' : 'Directly connect MOORE strategic repositories to generate institutional pitch decks'}
                   </p>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 px-3 py-1 text-xs font-semibold text-amber-300 w-fit">
                   <span>⚡</span>
-                  <span>{isZh ? 'PPTEval 矢量排版 · 0.8s 渲染' : 'PPTEval 0.8s Render'}</span>
+                  <span>{isZh ? 'MOORE 矢量排版 · 0.8s 渲染' : 'MOORE Vector 0.8s Render'}</span>
                 </div>
               </div>
 
@@ -1856,10 +1856,10 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] text-amber-400 border border-amber-400/40">1</span>
                     <span>{isZh ? '提交/關聯項目知識庫來源 (Sources)' : 'Select / Connect Knowledge Source'}</span>
                   </span>
-                  <span className="text-white/40 text-[11px] font-mono">{isZh ? '支援 Gemini Notebook / PDF 白皮書' : 'NotebookLM / PDF'}</span>
+                  <span className="text-white/40 text-[11px] font-mono">{isZh ? 'MOORE 官方智庫 / 商業白皮書' : 'MOORE VAULT / WHITEPAPER'}</span>
                 </div>
 
-                {/* 預置/已綁定 Gemini 筆記本卡片 (嚴格還原用戶截圖真實筆記本) */}
+                {/* 3大 MOORE 官方自研智庫卡片 (100% MOORE 詮釋，無任何第三方痕跡) */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="rounded-2xl border border-amber-400/50 bg-[linear-gradient(135deg,rgba(245,158,11,0.15),rgba(255,255,255,0.02))] p-3.5 space-y-1.5 shadow-[0_4px_20px_rgba(245,158,11,0.15)] relative overflow-hidden cursor-pointer">
                     <div className="absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
@@ -1867,35 +1867,35 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-base">🏛️</span>
-                      <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? '摩爾基金：引領Web3與區塊鏈' : 'Moore Fund: Web3 RWA'}</span>
+                      <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? 'MOORE 官方生態基金戰略' : 'MOORE Ecosystem Strategy'}</span>
                     </div>
-                    <div className="text-[10px] text-white/50">{isZh ? '4 個來源文檔 · 包含實體合規與金流章程' : '4 sources · Compliance & Vault'}</div>
+                    <div className="text-[10px] text-white/50">{isZh ? '官方核心文檔 · 包含實體合規與金流章程' : 'Official documentation & MAS rails'}</div>
                   </div>
 
                   <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 space-y-1.5 hover:border-white/20 transition cursor-pointer">
                     <div className="flex items-center gap-2">
                       <span className="text-base">📈</span>
-                      <span className="text-xs font-bold text-white truncate max-w-[150px]">Omnilink AI Quant Comprehensive</span>
+                      <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? 'MOORE 量化風控核心模型' : 'MOORE Quant & Risk Model'}</span>
                     </div>
-                    <div className="text-[10px] text-white/50">{isZh ? '2 個來源文檔 · 量化策略模型與風控' : '2 sources · Quant & Risk Engine'}</div>
+                    <div className="text-[10px] text-white/50">{isZh ? '官方核心文檔 · 微觀訂單流與對沖架構' : 'Official quant engine manual'}</div>
                   </div>
 
                   <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 space-y-1.5 hover:border-white/20 transition cursor-pointer">
                     <div className="flex items-center gap-2">
                       <span className="text-base">🌐</span>
-                      <span className="text-xs font-bold text-white truncate max-w-[150px]">VALOR AI Blockchain Inter...</span>
+                      <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? 'MOORE 全球節點生態治理' : 'MOORE Global Node Governance'}</span>
                     </div>
-                    <div className="text-[10px] text-white/50">{isZh ? '2 個來源文檔 · 節點生態治理手冊' : '2 sources · Ecosystem Governance'}</div>
+                    <div className="text-[10px] text-white/50">{isZh ? '官方核心文檔 · 萬人盛典協同手冊' : 'Official node governance manual'}</div>
                   </div>
                 </div>
 
-                {/* 手動輸入 Gemini Notebook 鏈接或上傳自定義文檔 */}
+                {/* 手動輸入 MOORE 智庫鏈接或項目識別碼 */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div>
-                    <label className="block text-[11px] font-semibold text-white/70 mb-1">{isZh ? '或粘貼 Gemini Notebook 筆記本 URL' : 'Or Paste Gemini Notebook URL'}</label>
+                    <label className="block text-[11px] font-semibold text-white/70 mb-1">{isZh ? '輸入 MOORE 智庫鏈接 / 官方項目識別碼 (MOORE ID)' : 'Enter MOORE Vault Link or Project ID'}</label>
                     <input
                       type="text"
-                      defaultValue="https://notebook.google.com/notebook/2bf9b4ba-7803-4e64-9366-2b22e7236606"
+                      defaultValue="moore://vault/ecosystem-fund-2026-keynote"
                       className="w-full rounded-xl border border-white/12 bg-black/40 px-3 py-2 text-xs font-mono text-white focus:border-amber-400 focus:outline-none"
                     />
                   </div>
@@ -1944,12 +1944,12 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                 <button
                   onClick={() => {
                     setPptGenerating(true);
-                    showToast(isZh ? '✓ Gemini Notebook 知識庫已提煉完成，幻燈片初稿已生成！' : 'Gemini Notebook extracted & deck generated!');
+                    showToast(isZh ? '✓ MOORE 智庫大腦提煉完成，商業幻燈片初稿已生成！' : 'MOORE Vault extracted & deck generated!');
                   }}
                   className="w-full rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_24px_rgba(245,158,11,0.35)] flex items-center justify-center gap-2"
                 >
                   <span className="text-base">⚡</span>
-                  <span>{isZh ? '調用 Gemini Notebook 知識庫 · 一鍵生成幻燈片初稿' : 'Generate Pitch Deck from Gemini Notebook'}</span>
+                  <span>{isZh ? '調用 MOORE 智庫大腦 · 一鍵生成商業幻燈片初稿' : 'Generate Pitch Deck with MOORE Intelligence'}</span>
                 </button>
               </div>
 
@@ -1960,7 +1960,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] text-amber-400 border border-amber-400/40">3</span>
                     <span>{isZh ? '幻燈片初稿即時大屏預覽 (12 頁全套就緒)' : 'Generated Deck Draft Preview'}</span>
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-mono">FACT-CHECKED BY GEMINI NOTEBOOK</span>
+                  <span className="text-[10px] text-emerald-400 font-mono">VERIFIED BY MOORE INTELLIGENCE</span>
                 </div>
 
                 {/* 幻燈片初稿 4 頁核心卡片網格展示 */}
@@ -1975,7 +1975,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <div className="text-sm font-bold text-white tracking-tight">MOORE LABS 2026</div>
                     <div className="text-[11px] text-amber-300">{isZh ? '全球萬人峰會 · 實體合規金流' : 'Global Summit Keynote'}</div>
                     <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                      {isZh ? '來源: 摩爾基金白皮書 第1章' : 'Source: Moore Fund Doc #1'}
+                      MOORE 戰略綱要 · CHAPTER 01
                     </div>
                   </div>
 
@@ -1989,7 +1989,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <div className="text-sm font-bold text-white tracking-tight">{isZh ? '萬億實體資產躍遷' : 'Trillion RWA Shift'}</div>
                     <div className="text-[11px] text-sky-200">{isZh ? '傳統合規金流與去中心化流動性樞紐' : 'Compliant liquidity rails'}</div>
                     <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                      {isZh ? '來源: 新加坡金流政策研究' : 'Source: MAS Sandbox #2'}
+                      MOORE 金流架構 · CHAPTER 02
                     </div>
                   </div>
 
@@ -2003,7 +2003,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <div className="text-sm font-bold text-white tracking-tight">{isZh ? 'Wallet MPC 門限安全' : 'Threshold MPC Custody'}</div>
                     <div className="text-[11px] text-emerald-200">{isZh ? '3/3 密鑰分片在線協管 · 零單點風險' : '3/3 key shares online'}</div>
                     <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                      {isZh ? '來源: 安全審計技術白皮書' : 'Source: Security Audit #3'}
+                      MOORE 門限安全 · CHAPTER 03
                     </div>
                   </div>
 
@@ -2017,7 +2017,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <div className="text-sm font-bold text-white tracking-tight">{isZh ? '$5000萬 生態基金' : '$50M Ecosystem Fund'}</div>
                     <div className="text-[11px] text-amber-200">{isZh ? '激勵全球萬人盛典量化與合規節點' : 'Incentivize global nodes'}</div>
                     <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                      {isZh ? '來源: 生態基金預算分配案' : 'Source: Ecosystem Budget #4'}
+                      MOORE 生態激勵 · CHAPTER 04
                     </div>
                   </div>
                 </div>
