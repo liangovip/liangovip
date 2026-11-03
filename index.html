@@ -837,17 +837,20 @@
 
     // ==========================================
     // =========================================================================
-    // MOORE LABS 4大獨立膠囊個人控制台組件 (Four-Capsule Dedicated ConsoleView)
-    // 嚴格依據用戶指令重構：錢包安全、創意工坊、電報群管、引流打粉 4大獨立板塊
-    // 點哪個膠囊 100% 僅呈現該功能，極簡、純粹、絕無混雜，手機/電腦全適配
+    // MOORE LABS 5大獨立板塊 + 底部 Max 懸浮微光膠囊 (Bottom Dock Capsule Console)
+    // 嚴格依據最新指令：錢包安全、創意工坊、電報群管、引流打粉、聚合聊天 5大板塊
+    // 底部 Max 懸浮膠囊常駐，單手盲操秒切；100% 獨立呈現單一板塊，絕無混雜
     // =========================================================================
     function ConsoleView({ lang, toggleLang, onBack }) {
-      const [activeTab, setActiveTab] = useState('wallet'); // 'wallet' | 'media' | 'bot' | 'growth'
+      const [activeTab, setActiveTab] = useState('wallet'); // 'wallet' | 'media' | 'bot' | 'growth' | 'chat'
       const [aiEngine, setAiEngine] = useState('poster'); // 'poster' | 'video' | 'avatar'
       const [trafficChannel, setTrafficChannel] = useState('telegram'); // 'telegram' | 'whatsapp'
+      const [chatFilter, setChatFilter] = useState('all'); // 'all' | 'tg' | 'whatsapp' | 'web'
+      const [activeChatId, setActiveChatId] = useState(1);
+      const [aiAutoReply, setAiAutoReply] = useState(true);
       const [toast, setToast] = useState(null);
 
-      // 群管開關狀態
+      // 群管開關
       const [botSettings, setBotSettings] = useState({
         antiSpam: true,
         welcomeCard: true,
@@ -865,8 +868,47 @@
 
       const isZh = lang === 'zh';
 
+      // 聚合聊天列表模擬數據
+      const chatList = [
+        {
+          id: 1,
+          name: '@web3_trader_sg',
+          channel: 'tg',
+          channelName: 'Telegram',
+          badge: isZh ? '高意向' : 'High Intent',
+          badgeColor: 'border-amber-400/40 bg-amber-500/10 text-amber-300',
+          lastMsg: isZh ? '請問量化策略最低起投門檻是多少？' : 'What is the minimum threshold for quant?',
+          time: '2m',
+          unread: 1,
+        },
+        {
+          id: 2,
+          name: '+65 8920 1123',
+          channel: 'whatsapp',
+          channelName: 'WhatsApp',
+          badge: isZh ? '機構客資' : 'Institutional',
+          badgeColor: 'border-emerald-400/40 bg-emerald-500/10 text-emerald-300',
+          lastMsg: isZh ? '已提交 MPC 門限託管申請，請核驗' : 'MPC custody request submitted, please verify',
+          time: '15m',
+          unread: 0,
+        },
+        {
+          id: 3,
+          name: isZh ? '官網訪客 #8902' : 'Web Visitor #8902',
+          channel: 'web',
+          channelName: 'Web Portal',
+          badge: isZh ? '在線諮詢' : 'Live Query',
+          badgeColor: 'border-sky-400/40 bg-sky-500/10 text-sky-300',
+          lastMsg: isZh ? '諮詢萬人峰會門票與金流合規' : 'Inquiring summit pass & financial compliance',
+          time: '1h',
+          unread: 0,
+        },
+      ];
+
+      const activeChat = chatList.find((c) => c.id === activeChatId) || chatList[0];
+
       return (
-        <div className="min-h-screen bg-[#0a1220] text-white selection:bg-amber-400/25 animate-console-fade pb-28">
+        <div className="min-h-screen bg-[#0a1220] text-white selection:bg-amber-400/25 animate-console-fade pb-36">
           {/* Toast 提示條 */}
           {toast && (
             <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 rounded-full border border-emerald-400/40 bg-slate-900/95 px-5 py-2.5 text-xs sm:text-sm font-semibold text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.3)] backdrop-blur-xl animate-bounce">
@@ -875,7 +917,7 @@
             </div>
           )}
 
-          {/* 頂部大廠極簡導航 */}
+          {/* 頂部大廠極簡導航 (通透輕量) */}
           <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0c1424]/90 backdrop-blur-xl">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-3.5">
               {/* 返回官網 */}
@@ -894,7 +936,7 @@
               </div>
 
               {/* 右側錢包與算力狀態 */}
-              <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {/* 算力膠囊 */}
                 <div className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold text-amber-300">
                   <span>⚡</span>
@@ -926,105 +968,40 @@
             </div>
           </header>
 
-          <main className="mx-auto max-w-5xl px-4 pt-6 sm:px-6 sm:pt-10">
-            {/* 標題與指引 (極簡克制) */}
-            <div className="mb-6 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono text-amber-400 mb-2.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-ping"></span>
-                <span>CONTROL PANEL · 4大獨立板塊</span>
+          {/* 主體內容展示區：100% 僅展示當前選中的單一板塊 */}
+          <main className="mx-auto max-w-5xl px-4 pt-6 sm:px-6 sm:pt-8">
+            {/* 標題與當前板塊指示 (極簡大廠感) */}
+            <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 pb-4">
+              <div>
+                <div className="inline-flex items-center gap-2 text-xs font-mono text-amber-400 mb-1">
+                  <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping"></span>
+                  <span>CONTROL PANEL · 5大獨立業務架構</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                  {activeTab === 'wallet' && (isZh ? '🛡️ Wallet MPC 門限安全金庫' : '🛡️ Wallet MPC Institutional Vault')}
+                  {activeTab === 'media' && (isZh ? '🎨 AI 創意多媒體工坊' : '🎨 AI Media Studio (PWA Full Skills)')}
+                  {activeTab === 'bot' && (isZh ? '🤖 Telegram 機器人與群管矩陣' : '🤖 Telegram Bot & Group Guard')}
+                  {activeTab === 'growth' && (isZh ? '🚀 全網精準引流與打粉中台' : '🚀 Traffic & Group Infiltration Engine')}
+                  {activeTab === 'chat' && (isZh ? '💬 全渠道聚合通訊中台' : '💬 Omni-Channel Chat Hub')}
+                </h1>
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
-                {isZh ? '個人控制台' : 'Personal Workspace'}
-              </h1>
-              <p className="mt-1.5 text-xs sm:text-sm text-white/60">
-                {isZh ? '點選切換下方 4 個獨立膠囊，每次 100% 專注呈現單一業務功能，清晰直觀' : 'Select a capsule below to focus 100% on a single dedicated module'}
-              </p>
-            </div>
-
-            {/* ========================================================================= */}
-            {/* 4大專屬滑動膠囊按鈕 (4-Capsule Segmented Switcher) */}
-            {/* 電腦端居中自適應，手機端 2x2 網格或橫向滑動，單手秒級操作 */}
-            {/* ========================================================================= */}
-            <div className="flex justify-center mb-8">
-              <div className="grid grid-cols-2 sm:flex sm:items-center rounded-2xl sm:rounded-full border border-white/15 bg-[#0e172a]/95 p-1.5 backdrop-blur-xl shadow-[0_12px_36px_rgba(0,0,0,0.4)] gap-1 sm:gap-1.5 w-full sm:w-auto">
-                {/* 膠囊 1: 錢包安全 */}
-                <button
-                  onClick={() => setActiveTab('wallet')}
-                  className={`capsule-btn relative z-10 flex items-center justify-center gap-2 rounded-xl sm:rounded-full px-3.5 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
-                    activeTab === 'wallet'
-                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-[1.02] sm:scale-105'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span className="text-sm sm:text-base">🛡️</span>
-                  <span>{isZh ? '錢包安全' : 'Wallet MPC'}</span>
-                </button>
-
-                {/* 膠囊 2: 創意工坊 */}
-                <button
-                  onClick={() => setActiveTab('media')}
-                  className={`capsule-btn relative z-10 flex items-center justify-center gap-2 rounded-xl sm:rounded-full px-3.5 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
-                    activeTab === 'media'
-                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-[1.02] sm:scale-105'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span className="text-sm sm:text-base">🎨</span>
-                  <span>{isZh ? '創意工坊' : 'AI Studio'}</span>
-                </button>
-
-                {/* 膠囊 3: 電報群管 */}
-                <button
-                  onClick={() => setActiveTab('bot')}
-                  className={`capsule-btn relative z-10 flex items-center justify-center gap-2 rounded-xl sm:rounded-full px-3.5 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
-                    activeTab === 'bot'
-                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-[1.02] sm:scale-105'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span className="text-sm sm:text-base">🤖</span>
-                  <span>{isZh ? '電報群管' : 'Bot Guard'}</span>
-                </button>
-
-                {/* 膠囊 4: 引流打粉 */}
-                <button
-                  onClick={() => setActiveTab('growth')}
-                  className={`capsule-btn relative z-10 flex items-center justify-center gap-2 rounded-xl sm:rounded-full px-3.5 sm:px-6 py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
-                    activeTab === 'growth'
-                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-[1.02] sm:scale-105'
-                      : 'text-white/60 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <span className="text-sm sm:text-base">🚀</span>
-                  <span>{isZh ? '引流打粉' : 'Traffic Growth'}</span>
-                </button>
+              <div className="text-xs text-white/50">
+                {isZh ? '底部 Max 懸浮膠囊輕觸切換 · 100% 獨立呈現' : 'Bottom Max Dock · 100% Focused View'}
               </div>
             </div>
 
-            {/* ========================================================================= */}
-            {/* 主體展示區：100% 僅展示當前選中的單一膠囊板塊 (純粹、清晰、絕不混雜) */}
-            {/* ========================================================================= */}
-            <div className="rounded-[32px] border border-white/14 bg-[linear-gradient(180deg,rgba(20,32,54,0.9),rgba(10,16,28,0.96))] p-6 sm:p-9 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
+            {/* 板塊容器卡片 */}
+            <div className="rounded-[32px] border border-white/14 bg-[linear-gradient(180deg,rgba(20,32,54,0.9),rgba(10,16,28,0.96))] p-5 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
               
-              {/* ----------------------------------------------------------------------- */}
-              {/* 【膠囊 1】：錢包安全 (Wallet MPC 金庫) */}
-              {/* ----------------------------------------------------------------------- */}
+              {/* ======================================================================= */}
+              {/* 【板塊 1】：錢包安全 (Wallet MPC 金庫) */}
+              {/* ======================================================================= */}
               {activeTab === 'wallet' && (
                 <div className="space-y-6 animate-console-fade">
                   <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                        🛡️
-                      </div>
-                      <div>
-                        <h2 className="text-lg sm:text-xl font-bold text-white">
-                          {isZh ? 'Wallet MPC 門限安全金庫' : 'Wallet MPC Institutional Vault'}
-                        </h2>
-                        <p className="text-xs text-white/50">
-                          {isZh ? '多重簽名碎片協管，無單點私鑰洩露風險' : 'Threshold Signature Scheme, Multi-party custody'}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-xs text-white/60">
+                      {isZh ? '多重簽名碎片協管，無單點私鑰洩露風險，保障實體合規金流絕對安全' : 'Threshold Signature Scheme, Multi-party custody, zero single point of failure'}
+                    </p>
                     <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-xs font-semibold text-emerald-300">
                       {isZh ? '● 運行正常' : '● Vault Secured'}
                     </span>
@@ -1085,25 +1062,15 @@
                 </div>
               )}
 
-              {/* ----------------------------------------------------------------------- */}
-              {/* 【膠囊 2】：創意工坊 (AI 創意多媒體) */}
-              {/* ----------------------------------------------------------------------- */}
+              {/* ======================================================================= */}
+              {/* 【板塊 2】：創意工坊 (AI 創意多媒體) */}
+              {/* ======================================================================= */}
               {activeTab === 'media' && (
                 <div className="space-y-6 animate-console-fade">
                   <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                        🎨
-                      </div>
-                      <div>
-                        <h2 className="text-lg sm:text-xl font-bold text-white">
-                          {isZh ? 'AI 創意多媒體工坊 (裝載 PWA 全棧技能)' : 'AI Media Studio (PWA Full Skills)'}
-                        </h2>
-                        <p className="text-xs text-white/50">
-                          {isZh ? '6K 矢量海報、商業視頻工廠、真人神態知性口播' : '6K Vector Infographics, Promo Video, AI Talking-head'}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-xs text-white/60">
+                      {isZh ? '裝載 PWA 全棧技能，一站式生成 6K 矢量海報、商業視頻與竹子風真人唇形口播' : 'Generate 6K posters, marketing videos and realistic avatars in one studio'}
+                    </p>
                     <span className="rounded-full bg-amber-500/20 border border-amber-400/30 px-3 py-1 text-xs font-semibold text-amber-300">
                       {isZh ? '● GPU 算力就緒 (A100)' : '● A100 GPU Ready'}
                     </span>
@@ -1159,7 +1126,6 @@
                         </div>
                         <button
                           onClick={() => {
-                            setPosterGenerated(true);
                             showToast(isZh ? '✓ 6K 矢量海報已於 0.4s 秒級完成渲染！' : '6K Poster rendered in 0.4s!');
                           }}
                           className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer"
@@ -1274,25 +1240,15 @@
                 </div>
               )}
 
-              {/* ----------------------------------------------------------------------- */}
-              {/* 【膠囊 3】：電報群管 (Telegram Bot Guard 矩陣) */}
-              {/* ----------------------------------------------------------------------- */}
+              {/* ======================================================================= */}
+              {/* 【板塊 3】：電報群管 (Telegram Bot Guard 矩陣) */}
+              {/* ======================================================================= */}
               {activeTab === 'bot' && (
                 <div className="space-y-6 animate-console-fade">
                   <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                        🤖
-                      </div>
-                      <div>
-                        <h2 className="text-lg sm:text-xl font-bold text-white">
-                          {isZh ? 'Telegram 機器人與群管安防矩陣' : 'Telegram Bot & Group Guard'}
-                        </h2>
-                        <p className="text-xs text-white/50">
-                          {isZh ? 'Bot 一鍵託管、智慧防廣告、新客迎賓、定時任務宣發' : 'Bot token bind, anti-spam shields, welcome cards & auto-broadcasting'}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-xs text-white/60">
+                      {isZh ? 'Bot 一鍵託管、智慧防釣魚垃圾廣告、新客迎賓高清卡片、定時宣發廣播' : 'Bot token bind, anti-spam shields, welcome cards & auto-broadcasting'}
+                    </p>
                     <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-xs font-semibold text-emerald-300">
                       {isZh ? '● 機器人在線託管' : '● Bot Guard Active'}
                     </span>
@@ -1395,25 +1351,15 @@
                 </div>
               )}
 
-              {/* ----------------------------------------------------------------------- */}
-              {/* 【膠囊 4】：引流打粉 (Traffic & Leads Growth 中台) */}
-              {/* ----------------------------------------------------------------------- */}
+              {/* ======================================================================= */}
+              {/* 【板塊 4】：引流打粉 (Traffic & Leads Growth 中台) */}
+              {/* ======================================================================= */}
               {activeTab === 'growth' && (
                 <div className="space-y-6 animate-console-fade">
                   <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                        🚀
-                      </div>
-                      <div>
-                        <h2 className="text-lg sm:text-xl font-bold text-white">
-                          {isZh ? '全網精準引流與打粉中台 (Traffic & Leads)' : 'Traffic & Group Infiltration Engine'}
-                        </h2>
-                        <p className="text-xs text-white/50">
-                          {isZh ? 'Telegram 競對群定向打粉、WhatsApp 裂變獲客、AI 防封風控' : 'Telegram target scraping, WhatsApp mass outreach, AI anti-ban'}
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-xs text-white/60">
+                      {isZh ? 'Telegram 競對群定向打粉、WhatsApp 裂變獲客、AI 防封話術與毫秒級頻控' : 'Telegram target scraping, WhatsApp mass outreach, AI anti-ban'}
+                    </p>
                     <span className="rounded-full bg-sky-500/20 border border-sky-400/30 px-3 py-1 text-xs font-semibold text-sky-300">
                       {isZh ? '● 拓客引擎就緒' : '● Growth Engine Ready'}
                     </span>
@@ -1532,8 +1478,277 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                   </div>
                 </div>
               )}
+
+              {/* ======================================================================= */}
+              {/* 【板塊 5】：聚合聊天 (Omni-Chat Hub 全渠道通訊中台) */}
+              {/* ======================================================================= */}
+              {activeTab === 'chat' && (
+                <div className="space-y-6 animate-console-fade">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <p className="text-xs text-white/60">
+                      {isZh ? 'Telegram、WhatsApp、官網直聊統一聚合，AI 智能代回與人工無縫接管' : 'Unified Messenger for Telegram, WhatsApp & Web, powered by AI auto-reply'}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                      <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-xs font-semibold text-emerald-300">
+                        {isZh ? '● 消息通道在線' : '● Live Channels (3)'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 渠道狀態微光條 */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl bg-black/40 border border-white/10 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/60">{isZh ? '已聚合渠道：' : 'Aggregated:'}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/15 border border-sky-400/30 px-2 py-0.5 text-[11px] text-sky-300">
+                        ✈️ Telegram (2群+私聊)
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 px-2 py-0.5 text-[11px] text-emerald-300">
+                        💬 WhatsApp (已連線)
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-400/30 px-2 py-0.5 text-[11px] text-amber-300">
+                        🌐 官網客服 (在線)
+                      </span>
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <span className="text-xs text-white/80">{isZh ? '🤖 AI 客服自動代回' : 'AI Auto-reply'}</span>
+                      <input
+                        type="checkbox"
+                        checked={aiAutoReply}
+                        onChange={(e) => setAiAutoReply(e.target.checked)}
+                        className="h-4 w-4 accent-amber-400 cursor-pointer"
+                      />
+                    </label>
+                  </div>
+
+                  {/* 雙欄消息工作台 (桌面端左右雙欄，手機端垂直流) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-[440px]">
+                    {/* 左欄：統一收件箱列表 (5列) */}
+                    <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-white/5 p-3.5 flex flex-col space-y-3">
+                      {/* 篩選標籤 */}
+                      <div className="flex items-center gap-1 p-1 bg-black/30 rounded-xl text-xs">
+                        <button
+                          onClick={() => setChatFilter('all')}
+                          className={`flex-1 py-1 text-[11px] font-semibold rounded-lg transition ${chatFilter === 'all' ? 'bg-amber-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          {isZh ? '全部' : 'All'}
+                        </button>
+                        <button
+                          onClick={() => setChatFilter('tg')}
+                          className={`flex-1 py-1 text-[11px] font-semibold rounded-lg transition ${chatFilter === 'tg' ? 'bg-sky-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          TG
+                        </button>
+                        <button
+                          onClick={() => setChatFilter('whatsapp')}
+                          className={`flex-1 py-1 text-[11px] font-semibold rounded-lg transition ${chatFilter === 'whatsapp' ? 'bg-emerald-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          WA
+                        </button>
+                        <button
+                          onClick={() => setChatFilter('web')}
+                          className={`flex-1 py-1 text-[11px] font-semibold rounded-lg transition ${chatFilter === 'web' ? 'bg-amber-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          Web
+                        </button>
+                      </div>
+
+                      {/* 消息對話卡片列表 */}
+                      <div className="space-y-2 flex-1 overflow-y-auto max-h-[360px] pr-1">
+                        {chatList
+                          .filter((c) => chatFilter === 'all' || c.channel === chatFilter)
+                          .map((item) => (
+                            <div
+                              key={item.id}
+                              onClick={() => setActiveChatId(item.id)}
+                              className={`p-3 rounded-xl border transition cursor-pointer ${
+                                activeChatId === item.id
+                                  ? 'border-amber-400/60 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                                  : 'border-white/5 bg-black/20 hover:border-white/15 hover:bg-white/5'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs font-bold text-white truncate max-w-[130px]">{item.name}</span>
+                                  <span className={`text-[9px] px-1.5 py-0.2 rounded-full border ${item.badgeColor}`}>
+                                    {item.badge}
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-white/40 font-mono">{item.time}</span>
+                              </div>
+                              <p className="text-xs text-white/60 truncate">{item.lastMsg}</p>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* 右欄：當前對話工作台 (7列) */}
+                    <div className="lg:col-span-7 rounded-2xl border border-white/10 bg-white/5 p-4 flex flex-col justify-between space-y-3">
+                      {/* 對話頭部 */}
+                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-lg border border-amber-400/30">
+                            {activeChat.channel === 'tg' ? '✈️' : activeChat.channel === 'whatsapp' ? '💬' : '🌐'}
+                          </div>
+                          <div>
+                            <div className="text-xs font-bold text-white flex items-center gap-2">
+                              <span>{activeChat.name}</span>
+                              <span className="text-[10px] text-amber-300 font-mono">[{activeChat.channelName}]</span>
+                            </div>
+                            <div className="text-[10px] text-emerald-400">● {isZh ? '正在溝通中 (來源：打粉引流)' : 'In Session (via Traffic Growth)'}</div>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => showToast(isZh ? '已切換為人工客服接管模式' : 'Human agent took over')}
+                          className="rounded-xl border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-white/80 hover:bg-white/10 transition cursor-pointer"
+                        >
+                          {isZh ? '👤 切換人工' : '👤 Manual'}
+                        </button>
+                      </div>
+
+                      {/* 聊天氣泡歷史 */}
+                      <div className="space-y-3 flex-1 overflow-y-auto max-h-[220px] p-2 bg-black/20 rounded-xl">
+                        {/* 訪客消息 */}
+                        <div className="flex items-start gap-2">
+                          <div className="h-6 w-6 rounded-full bg-sky-500/30 flex items-center justify-center text-[10px]">客</div>
+                          <div className="max-w-[80%] rounded-2xl rounded-tl-none bg-white/10 p-2.5 text-xs text-white/90">
+                            {activeChat.lastMsg}
+                          </div>
+                        </div>
+
+                        {/* AI 自動代回提示 */}
+                        {aiAutoReply && (
+                          <div className="flex items-start gap-2 justify-end">
+                            <div className="max-w-[85%] rounded-2xl rounded-tr-none bg-gradient-to-r from-amber-500/20 to-amber-400/10 border border-amber-400/30 p-2.5 text-xs text-amber-200">
+                              <div className="text-[10px] text-amber-400 font-mono mb-1">🤖 AI 客服代回 (官方白皮書與合規知識庫)：</div>
+                              {isZh ? '您好！MOORE LABS 策略門檻為 100 USDT 起，底層通過新加坡金流牌照與 Wallet MPC 3/3 門限金庫託管，兌付即時到賬。您可以直接在控制台【錢包安全】進行授權。' : 'Hello! Minimum threshold is 100 USDT, fully audited under Singapore MAS framework and 3/3 MPC vault.'}
+                            </div>
+                            <div className="h-6 w-6 rounded-full bg-amber-500 flex items-center justify-center text-[10px] text-slate-950 font-bold">AI</div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 快捷發送工具與輸入框 */}
+                      <div className="space-y-2 pt-2 border-t border-white/10">
+                        {/* 快捷物料按鈕 */}
+                        <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                          <span className="text-white/40">{isZh ? '快捷發送：' : 'Send:'}</span>
+                          <button
+                            onClick={() => showToast(isZh ? '已將 6K 官方宣發海報發送給客戶！' : '6K Poster sent!')}
+                            className="rounded-lg border border-white/10 bg-white/5 px-2 py-0.5 text-white/70 hover:text-white hover:border-amber-400/40 cursor-pointer"
+                          >
+                            🖼️ 6K 宣發海報
+                          </button>
+                          <button
+                            onClick={() => showToast(isZh ? '已發送實體合規白皮書 PDF！' : 'Whitepaper sent!')}
+                            className="rounded-lg border border-white/10 bg-white/5 px-2 py-0.5 text-white/70 hover:text-white hover:border-amber-400/40 cursor-pointer"
+                          >
+                            📄 合規白皮書
+                          </button>
+                          <button
+                            onClick={() => showToast(isZh ? '已發送算力充值引導！' : 'Top-up guide sent!')}
+                            className="rounded-lg border border-white/10 bg-white/5 px-2 py-0.5 text-white/70 hover:text-white hover:border-amber-400/40 cursor-pointer"
+                          >
+                            ⚡ 充值指引
+                          </button>
+                        </div>
+
+                        {/* 輸入框與發送按鈕 */}
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder={isZh ? '輸入回覆內容，按 Enter 發送...' : 'Type message, press Enter to send...'}
+                            className="flex-1 rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                          />
+                          <button
+                            onClick={() => showToast(isZh ? '消息發送成功！' : 'Message sent!')}
+                            className="rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 px-4 py-2 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer"
+                          >
+                            {isZh ? '發送' : 'Send'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </main>
+
+          {/* ========================================================================= */}
+          {/* 🌟 核心升級：Mac / iOS 級【底部 Max 懸浮微光膠囊 (Bottom Floating Dock)】 */}
+          {/* 5大獨立業務板塊，常駐屏幕底端，單手大拇指盲操秒切，選中帶琥珀金發光微升 */}
+          {/* ========================================================================= */}
+          <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-[96vw] sm:max-w-none">
+            <div className="flex items-center gap-1 sm:gap-2 rounded-full border border-white/20 bg-[#0d1627]/90 px-2 sm:px-3.5 py-1.5 sm:py-2 backdrop-blur-2xl shadow-[0_16px_48px_rgba(0,0,0,0.65)] ring-1 ring-white/10">
+              
+              {/* 膠囊 1: 錢包安全 */}
+              <button
+                onClick={() => setActiveTab('wallet')}
+                className={`capsule-dock-btn relative flex items-center gap-1.5 rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'wallet'
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.5)] -translate-y-1 scale-105'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className="text-sm sm:text-base">🛡️</span>
+                <span>{isZh ? '錢包安全' : 'Wallet'}</span>
+              </button>
+
+              {/* 膠囊 2: 創意工坊 */}
+              <button
+                onClick={() => setActiveTab('media')}
+                className={`capsule-dock-btn relative flex items-center gap-1.5 rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'media'
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.5)] -translate-y-1 scale-105'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className="text-sm sm:text-base">🎨</span>
+                <span>{isZh ? '創意工坊' : 'Studio'}</span>
+              </button>
+
+              {/* 膠囊 3: 電報群管 */}
+              <button
+                onClick={() => setActiveTab('bot')}
+                className={`capsule-dock-btn relative flex items-center gap-1.5 rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'bot'
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.5)] -translate-y-1 scale-105'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className="text-sm sm:text-base">🤖</span>
+                <span>{isZh ? '電報群管' : 'Bot Guard'}</span>
+              </button>
+
+              {/* 膠囊 4: 引流打粉 */}
+              <button
+                onClick={() => setActiveTab('growth')}
+                className={`capsule-dock-btn relative flex items-center gap-1.5 rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'growth'
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.5)] -translate-y-1 scale-105'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className="text-sm sm:text-base">🚀</span>
+                <span>{isZh ? '引流打粉' : 'Traffic'}</span>
+              </button>
+
+              {/* 膠囊 5: 聚合聊天 */}
+              <button
+                onClick={() => setActiveTab('chat')}
+                className={`capsule-dock-btn relative flex items-center gap-1.5 rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold transition-all duration-300 cursor-pointer ${
+                  activeTab === 'chat'
+                    ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.5)] -translate-y-1 scale-105'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <span className="text-sm sm:text-base">💬</span>
+                <span>{isZh ? '聚合聊天' : 'Omni-Chat'}</span>
+              </button>
+            </div>
+          </nav>
         </div>
       );
     }
