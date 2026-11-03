@@ -834,11 +834,720 @@
       }
     };
 
+
+    // ==========================================
+    // MOORE LABS 個人中心 / 二級控制台組件 (ConsoleView)
+    // 專為手機端極致精簡優化：少文字、大卡片、圖標化、大按鈕
+    // ==========================================
+    function ConsoleView({ lang, toggleLang, onBack }) {
+      const [activeDrawer, setActiveDrawer] = useState(null); // 'bot' | 'growth' | 'ai' | 'broadcast' | null
+      const [aiTab, setAiTab] = useState('poster'); // 'poster' | 'video' | 'avatar'
+      const [toast, setToast] = useState(null);
+
+      // 模擬業務狀態
+      const [botActive, setBotActive] = useState(true);
+      const [growthActive, setGrowthActive] = useState(true);
+      const [broadcastScheduled, setBroadcastScheduled] = useState(true);
+      const [posterPreview, setPosterPreview] = useState(false);
+      const [videoRendering, setVideoRendering] = useState(false);
+
+      const showToast = (msg) => {
+        setToast(msg);
+        setTimeout(() => setToast(null), 2400);
+      };
+
+      const isZh = lang === 'zh';
+
+      return (
+        <div className="min-h-screen bg-[#070b14] text-white selection:bg-amber-400/25 animate-console-fade pb-24">
+          {/* Toast 提示條 */}
+          {toast && (
+            <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 rounded-full border border-emerald-400/40 bg-slate-900/95 px-5 py-2.5 text-xs sm:text-sm font-semibold text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.3)] backdrop-blur-xl animate-bounce">
+              <span>✓</span>
+              <span>{toast}</span>
+            </div>
+          )}
+
+          {/* 控制台專屬頂部導航 */}
+          <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0c1220]/90 backdrop-blur-xl">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-3.5">
+              {/* 返回官網按鈕 */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/85 hover:bg-white/10 hover:text-white transition active:scale-95 cursor-pointer"
+                >
+                  <span className="text-amber-400">←</span>
+                  <span>{isZh ? '返回官網' : 'Back to Portal'}</span>
+                </button>
+                <div className="hidden sm:flex items-center gap-2 border-l border-white/10 pl-3">
+                  <span className="h-2 w-2 rounded-full bg-amber-400"></span>
+                  <span className="text-xs font-bold tracking-wider text-white/90">MOORE WORKSPACE</span>
+                </div>
+              </div>
+
+              {/* 右側錢包與算力狀態 */}
+              <div className="flex items-center gap-2 sm:gap-3">
+                {/* 算力點數膠囊 */}
+                <div className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-500/10 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold text-amber-300">
+                  <span>⚡</span>
+                  <span>{isZh ? '算力: 1,500' : 'Credits: 1,500'}</span>
+                </div>
+
+                {/* 錢包地址膠囊 */}
+                <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-mono font-medium text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>0x71c...88a9</span>
+                </div>
+
+                {/* 雙語切換 */}
+                <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-0.5 text-xs">
+                  <button
+                    onClick={() => toggleLang('zh')}
+                    className={`rounded-full px-2 py-0.5 text-[10px] sm:text-xs font-semibold transition ${isZh ? 'bg-amber-500/20 text-amber-300' : 'text-white/50'}`}
+                  >
+                    繁
+                  </button>
+                  <button
+                    onClick={() => toggleLang('en')}
+                    className={`rounded-full px-2 py-0.5 text-[10px] sm:text-xs font-semibold transition ${!isZh ? 'bg-amber-500/20 text-amber-300' : 'text-white/50'}`}
+                  >
+                    EN
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* 控制台主體內容區 */}
+          <main className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
+            {/* 頂部歡迎與極簡狀態卡 (手機秒級掃視) */}
+            <div className="mb-6 sm:mb-8 rounded-3xl border border-white/10 bg-gradient-to-r from-slate-900/90 via-[#0d162a]/95 to-slate-900/90 p-5 sm:p-7 shadow-xl backdrop-blur-md">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300 mb-2">
+                    <span>★</span>
+                    <span>{isZh ? '尊享企業級節點' : 'Enterprise Node'}</span>
+                  </div>
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
+                    {isZh ? '個人控制台 · 數字資產與自動化中台' : 'Personal Workspace · Growth & AI Hub'}
+                  </h1>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-400">
+                    {isZh ? '一站式託管 TG 機器人、全網社群打粉、AI 6K海報與視頻宣發' : 'One-stop TG Bot management, traffic growth, and AI media production'}
+                  </p>
+                </div>
+
+                {/* 3個快速指標 (手機橫排極簡) */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center">
+                  <div className="rounded-2xl border border-white/8 bg-white/5 p-2 sm:p-3">
+                    <div className="text-sm sm:text-lg font-bold text-amber-300">1</div>
+                    <div className="text-[10px] sm:text-xs text-white/50">{isZh ? '在線機器人' : 'Active Bot'}</div>
+                  </div>
+                  <div className="rounded-2xl border border-white/8 bg-white/5 p-2 sm:p-3">
+                    <div className="text-sm sm:text-lg font-bold text-emerald-400">128</div>
+                    <div className="text-[10px] sm:text-xs text-white/50">{isZh ? '今日引流' : 'Today Leads'}</div>
+                  </div>
+                  <div className="rounded-2xl border border-white/8 bg-white/5 p-2 sm:p-3">
+                    <div className="text-sm sm:text-lg font-bold text-sky-400">2</div>
+                    <div className="text-[10px] sm:text-xs text-white/50">{isZh ? '運行中任務' : 'Live Tasks'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 四大核心功能磁貼 (直觀、大按鈕、點擊即出抽屜) */}
+            <div className="mb-8">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-sm sm:text-base font-semibold uppercase tracking-wider text-white/70">
+                  {isZh ? '核心能力矩陣' : 'Core Capabilities'}
+                </h2>
+                <span className="text-xs text-amber-400/80">
+                  {isZh ? '點選板塊呼出功能' : 'Tap to configure'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {/* 模塊 1: TG 機器人與群管 */}
+                <div
+                  onClick={() => setActiveDrawer('bot')}
+                  className="console-card group relative flex flex-col justify-between rounded-3xl p-5 sm:p-6 cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-2xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        🤖
+                      </div>
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${botActive ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-slate-700 text-slate-300'}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${botActive ? 'bg-emerald-400 animate-ping' : 'bg-slate-400'}`}></span>
+                        {botActive ? (isZh ? '守護中' : 'Active') : (isZh ? '未開啟' : 'Off')}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-amber-300 transition">
+                      {isZh ? '電報機器人與群管' : 'Telegram Bot & Admin'}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-slate-400 leading-relaxed">
+                      {isZh ? '一鍵綁定 Token、智能防炸群秒刪廣告、新成員迎賓圖文與持幣驗資' : '1-Click Bot hosting, smart anti-spam, greeting cards, token gating'}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                    <span className="text-[11px] text-white/50">{isZh ? '已接管 1 個社群' : '1 Group Managed'}</span>
+                    <button className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-300 group-hover:bg-amber-500 group-hover:text-slate-950 transition">
+                      {isZh ? '管理配置 →' : 'Manage →'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 模塊 2: 社群引流拓客 (打粉) */}
+                <div
+                  onClick={() => setActiveDrawer('growth')}
+                  className="console-card group relative flex flex-col justify-between rounded-3xl p-5 sm:p-6 cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/15 border border-sky-400/30 text-2xl shadow-[0_0_15px_rgba(56,189,248,0.2)]">
+                        🚀
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                        <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                        {isZh ? 'AI 防封矩陣' : 'Anti-Ban'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-sky-300 transition">
+                      {isZh ? '社群引流拓客 (打粉)' : 'Traffic Growth & Leads'}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-slate-400 leading-relaxed">
+                      {isZh ? '批量導入競對群、AI 改寫防封話術、安全頻控自動沉澱精準私域粉' : 'Target groups scraping, AI anti-ban copy, safe automated leads acquisition'}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                    <span className="text-[11px] text-white/50">{isZh ? '今日進粉 128 人' : '128 Leads Today'}</span>
+                    <button className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold text-sky-300 group-hover:bg-sky-500 group-hover:text-slate-950 transition">
+                      {isZh ? '新建拓客 →' : 'Launch →'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 模塊 3: PWA AI 創意多媒體工廠 */}
+                <div
+                  onClick={() => setActiveDrawer('ai')}
+                  className="console-card group relative flex flex-col justify-between rounded-3xl p-5 sm:p-6 cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 border border-emerald-400/30 text-2xl shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                        🎨
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        ⚡ A100 超算
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-300 transition">
+                      {isZh ? 'PWA AI 創意工廠' : 'PWA AI Creative Studio'}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-slate-400 leading-relaxed">
+                      {isZh ? '6K 矢量海報一圖讀懂、15s快閃/2min商業片、竹子風知性數字人口播' : '6K infographics, 15s-2min promo videos, photorealistic talking-head avatars'}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                    <span className="text-[11px] text-white/50">{isZh ? '0.4s 秒級出圖' : '0.4s Fast Gen'}</span>
+                    <button className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300 group-hover:bg-emerald-500 group-hover:text-slate-950 transition">
+                      {isZh ? '開始創作 →' : 'Create →'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 模塊 4: 定時任務與自動宣發 */}
+                <div
+                  onClick={() => setActiveDrawer('broadcast')}
+                  className="console-card group relative flex flex-col justify-between rounded-3xl p-5 sm:p-6 cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/15 border border-purple-400/30 text-2xl shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                        📅
+                      </div>
+                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/30">
+                        {isZh ? '全自動無人值守' : 'Automated'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-purple-300 transition">
+                      {isZh ? '定時任務與自動宣發' : 'Scheduled Broadcast'}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-slate-400 leading-relaxed">
+                      {isZh ? '自動抓取行情合成晨報海報，到點自動推送到 TG 主群、頻道與推特' : 'Auto morning briefing generation & scheduled auto-push to TG & Twitter'}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-3">
+                    <span className="text-[11px] text-white/50">{isZh ? '明早 08:30 廣播' : 'Next: 08:30'}</span>
+                    <button className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-semibold text-purple-300 group-hover:bg-purple-500 group-hover:text-slate-950 transition">
+                      {isZh ? '排期日曆 →' : 'Schedule →'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 底部：實時任務隊列與產物中心 */}
+            <div className="rounded-3xl border border-white/10 bg-[#0e1628]/80 p-5 sm:p-6 backdrop-blur-md">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-400">⚡</span>
+                  <h3 className="text-sm sm:text-base font-bold text-white">
+                    {isZh ? '正在進行的任務與產物庫' : 'Live Tasks & Deliverables'}
+                  </h3>
+                </div>
+                <span className="text-xs text-white/40">{isZh ? '雲端實時同步' : 'Live Synced'}</span>
+              </div>
+
+              <div className="space-y-3">
+                {/* 運行中任務 */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-sky-400/20 bg-sky-500/5 p-3.5">
+                  <div className="flex items-center gap-3">
+                    <div className="h-2.5 w-2.5 rounded-full bg-sky-400 animate-ping"></div>
+                    <div>
+                      <div className="text-xs sm:text-sm font-semibold text-sky-200">
+                        {isZh ? '【視頻渲染中 68%】《MOORE LABS 2026 全球戰略片》' : '[Rendering 68%] MOORE LABS 2026 Keynote'}
+                      </div>
+                      <div className="text-[11px] text-slate-400">
+                        {isZh ? 'Colab Pro+ A100-80GB GPU · 預計還需 18 秒' : 'Colab Pro+ A100 GPU · ~18s remaining'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-full sm:w-36 bg-slate-800 rounded-full h-2 overflow-hidden">
+                    <div className="bg-gradient-to-r from-sky-400 to-amber-400 h-full w-[68%] rounded-full animate-pulse"></div>
+                  </div>
+                </div>
+
+                {/* 已完成產物 1 */}
+                <div className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/5 p-3.5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/20 text-lg text-amber-300">
+                      🖼
+                    </div>
+                    <div>
+                      <div className="text-xs sm:text-sm font-semibold text-white">
+                        {isZh ? '6K 官方晨報海報 (2026-11-03).png' : '6K Daily Market Briefing.png'}
+                      </div>
+                      <div className="text-[11px] text-slate-400">
+                        {isZh ? '0.4秒生成 · 6144×3456 矢量' : '0.4s gen · 6K Vector'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => showToast(isZh ? '已在新窗口打開高清預覽' : 'Opening preview')}
+                      className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold text-white/80 hover:text-white"
+                    >
+                      {isZh ? '預覽' : 'Preview'}
+                    </button>
+                    <button
+                      onClick={() => showToast(isZh ? '海報已成功發送到 TG 官方主群！' : 'Sent to TG Group!')}
+                      className="rounded-full bg-amber-500/20 border border-amber-400/40 px-3 py-1 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition"
+                    >
+                      {isZh ? '發送至TG群' : 'Send to TG'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          {/* ======================================================== */}
+          {/* 四大專屬抽屜 / 底部浮層 (Drawer / Bottom Sheet) */}
+          {/* ======================================================== */}
+          {activeDrawer && (
+            <div className="fixed inset-0 z-50 flex justify-end">
+              {/* 暗色高斯模糊遮罩 */}
+              <div
+                onClick={() => setActiveDrawer(null)}
+                className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+              />
+
+              {/* 抽屜實體 (PC端右側滑出 / 手機端底部滑出) */}
+              <div className="relative z-10 w-full sm:max-w-xl h-[88vh] sm:h-full mt-auto sm:mt-0 rounded-t-[32px] sm:rounded-none sm:rounded-l-[32px] border-t sm:border-t-0 sm:border-l border-white/15 bg-[#0b1220]/98 p-6 shadow-2xl backdrop-blur-2xl flex flex-col justify-between overflow-y-auto console-drawer animate-bottom-sheet sm:animate-drawer-right">
+                {/* 頂部把手 (手機端) 與 關閉按鈕 */}
+                <div>
+                  <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-white/20 sm:hidden"></div>
+
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-2xl">
+                        {activeDrawer === 'bot' && '🤖'}
+                        {activeDrawer === 'growth' && '🚀'}
+                        {activeDrawer === 'ai' && '🎨'}
+                        {activeDrawer === 'broadcast' && '📅'}
+                      </span>
+                      <div>
+                        <h3 className="text-lg font-bold text-white">
+                          {activeDrawer === 'bot' && (isZh ? '電報機器人與群管中心' : 'TG Bot & Admin')}
+                          {activeDrawer === 'growth' && (isZh ? '社群引流拓客 (打粉中台)' : 'Traffic Growth Engine')}
+                          {activeDrawer === 'ai' && (isZh ? 'PWA AI 創意多媒體工廠' : 'PWA AI Creative Studio')}
+                          {activeDrawer === 'broadcast' && (isZh ? '定時宣發排期與自動廣播' : 'Scheduled Broadcast')}
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                          {isZh ? '填寫配置即可一鍵自動化運行' : 'Configure and launch automation'}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setActiveDrawer(null)}
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {/* 抽屜 1: TG 機器人內容 */}
+                  {activeDrawer === 'bot' && (
+                    <div className="space-y-4 text-xs sm:text-sm">
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '1. 機器人 API Token (來自 @BotFather)' : '1. Bot API Token (from @BotFather)'}
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            defaultValue="7829104812:AAFq9xM-example_valid_token"
+                            className="flex-1 rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-mono text-white focus:border-amber-400 focus:outline-none"
+                            placeholder="123456789:ABCdef..."
+                          />
+                          <button
+                            onClick={() => showToast(isZh ? 'Token 探活成功！機器人已在線' : 'Token verified active!')}
+                            className="rounded-xl border border-amber-400/40 bg-amber-500/20 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950"
+                          >
+                            {isZh ? '驗證' : 'Verify'}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '2. 智能群管開關 (點選即生效)' : '2. Admin Security Controls'}
+                        </label>
+                        <div className="space-y-2">
+                          <label className="flex items-center justify-between rounded-xl border border-white/8 bg-white/5 p-3 cursor-pointer">
+                            <span className="text-white/85">{isZh ? '智能防炸群、秒刪廣告與外鏈' : 'Anti-spam & auto-delete ads links'}</span>
+                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400" />
+                          </label>
+                          <label className="flex items-center justify-between rounded-xl border border-white/8 bg-white/5 p-3 cursor-pointer">
+                            <span className="text-white/85">{isZh ? '新成員入群自動發送高清迎賓卡片' : 'Auto-send welcome infographic'}</span>
+                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400" />
+                          </label>
+                          <label className="flex items-center justify-between rounded-xl border border-white/8 bg-white/5 p-3 cursor-pointer">
+                            <span className="text-white/85">{isZh ? '鏈上持幣驗資進群 (門檻 >= 100 USDT)' : 'Token Gating (>= 100 USDT)'}</span>
+                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400" />
+                          </label>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '3. 自定義歡迎詞' : '3. Welcome Message'}
+                        </label>
+                        <input
+                          type="text"
+                          defaultValue={isZh ? '歡迎來到官方社群！請先閱讀置頂合規指南。' : 'Welcome! Please read the pinned guidelines.'}
+                          className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white focus:border-amber-400 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 抽屜 2: 社群引流打粉內容 */}
+                  {activeDrawer === 'growth' && (
+                    <div className="space-y-4 text-xs sm:text-sm">
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '1. 競對/目標群組鏈接池 (每行一個)' : '1. Target Groups Pool (one per line)'}
+                        </label>
+                        <textarea
+                          rows="3"
+                          defaultValue="https://t.me/web3_quant_asia&#10;https://t.me/defi_arbitrage_group&#10;https://t.me/crypto_investors_sg"
+                          className="w-full rounded-xl border border-white/15 bg-white/5 p-3 text-xs font-mono text-white focus:border-sky-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="font-semibold text-white/90">
+                            {isZh ? '2. 推廣話術與物料' : '2. Promotion Message'}
+                          </label>
+                          <button
+                            onClick={() => showToast(isZh ? '✨ AI 已完成5組防封同義改寫變體！' : 'AI generated 5 anti-ban variants!')}
+                            className="text-xs text-sky-400 hover:underline"
+                          >
+                            {isZh ? '✨ AI 改寫防封版' : '✨ AI Anti-ban'}
+                          </button>
+                        </div>
+                        <textarea
+                          rows="3"
+                          defaultValue={isZh ? 'MOORE LABS 2026 全球生態基金啟動！持有即可享受專屬量化策略與合規實體資產分紅，點此了解詳情：https://ai.apg.mom/webside' : 'MOORE LABS 2026 Global Ecosystem Fund is live! Learn more: https://ai.apg.mom/webside'}
+                          className="w-full rounded-xl border border-white/15 bg-white/5 p-3 text-xs text-white focus:border-sky-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '3. 每日安全頻控 (平台硬護欄：防止封號)' : '3. Daily Safe Rate Limit (Anti-Ban Guard)'}
+                        </label>
+                        <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 p-3 flex items-center justify-between">
+                          <span className="text-xs text-sky-200">
+                            {isZh ? '綠色安全檔：單號每日 30~50 人，隨機間隔 25 秒' : 'Green Safe Zone: 30-50 users/day, 25s delay'}
+                          </span>
+                          <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-400">
+                            {isZh ? '100% 安全' : 'Safe'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 抽屜 3: AI 創意工坊內容 */}
+                  {activeDrawer === 'ai' && (
+                    <div className="space-y-4 text-xs sm:text-sm">
+                      {/* Tab 選擇 */}
+                      <div className="grid grid-cols-3 gap-1 rounded-2xl border border-white/15 bg-white/5 p-1 text-center text-xs font-semibold">
+                        <button
+                          onClick={() => setAiTab('poster')}
+                          className={`rounded-xl py-1.5 transition ${aiTab === 'poster' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          {isZh ? '6K 營銷海報' : '6K Poster'}
+                        </button>
+                        <button
+                          onClick={() => setAiTab('video')}
+                          className={`rounded-xl py-1.5 transition ${aiTab === 'video' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          {isZh ? '商業宣傳片' : 'Video Factory'}
+                        </button>
+                        <button
+                          onClick={() => setAiTab('avatar')}
+                          className={`rounded-xl py-1.5 transition ${aiTab === 'avatar' ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-white/60 hover:text-white'}`}
+                        >
+                          {isZh ? '竹子風數字人' : 'AI Presenter'}
+                        </button>
+                      </div>
+
+                      {aiTab === 'poster' && (
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block font-semibold text-white/90 mb-1">
+                              {isZh ? '海報主標題' : 'Poster Title'}
+                            </label>
+                            <input
+                              type="text"
+                              defaultValue={isZh ? 'MOORE LABS 2026 全球生態戰略升級' : 'MOORE LABS 2026 Global Ecosystem Upgrade'}
+                              className="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs text-white"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-semibold text-white/90 mb-1">
+                              {isZh ? '核心亮點 (每點一行或貼新聞稿讓 AI 提取)' : 'Key Highlights'}
+                            </label>
+                            <textarea
+                              rows="2"
+                              defaultValue={isZh ? "• 5000萬 生態孵化基金正式部署\n• 萬人盛典統籌落地與 POS 支付\n• Wallet MPC 門限安全資產護航" : "• 50M Ecosystem Incubation Fund\n• 10,000+ Attendees Summit & POS\n• Wallet MPC Security Layer"}
+                            />
+                          </div>
+                          <button
+                            onClick={() => {
+                              setPosterPreview(true);
+                              showToast(isZh ? '⚡ 0.4 秒已生成 6K 高清矢量海報！' : '6K poster generated in 0.4s!');
+                            }}
+                            className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110"
+                          >
+                            {isZh ? '⚡ 0.4s 快速出圖 (Fast Vector)' : '⚡ 0.4s Fast Generate'}
+                          </button>
+                          {posterPreview && (
+                            <div className="rounded-2xl border border-emerald-400/40 bg-slate-900/90 p-3 text-center">
+                              <div className="text-[11px] text-emerald-400 mb-1 font-semibold">✓ 6K 矢量渲染就緒 (6144×3456)</div>
+                              <div className="h-28 rounded-lg bg-gradient-to-tr from-slate-950 via-slate-900 to-indigo-950 flex flex-col items-center justify-center p-2 border border-white/10">
+                                <div className="text-amber-400 font-bold text-sm">MOORE LABS 2026</div>
+                                <div className="text-[10px] text-slate-300 mt-1">全球生態戰略升級 · 實體合規金流</div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {aiTab === 'video' && (
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block font-semibold text-white/90 mb-1">
+                              {isZh ? '視頻腳本旁白' : 'Video Script'}
+                            </label>
+                            <textarea
+                              rows="3"
+                              defaultValue={isZh ? '從去中心化金流到萬億實體資產，MOORE LABS 構建下一代全球流動性樞紐。' : 'From decentralized liquidity to trillions in real-world assets, MOORE LABS builds the future.'}
+                              className="w-full rounded-xl border border-white/15 bg-white/5 p-2 text-xs text-white"
+                            />
+                          </div>
+                          <button
+                            onClick={() => {
+                              setVideoRendering(true);
+                              showToast(isZh ? '已提交至 Colab Pro+ A100 GPU 隊列渲染！' : 'Submitted to Colab Pro+ A100 GPU!');
+                            }}
+                            className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110"
+                          >
+                            {isZh ? '🚀 雲端 A100 渲染 (AI Video Factory)' : '🚀 Render on Cloud A100'}
+                          </button>
+                        </div>
+                      )}
+
+                      {aiTab === 'avatar' && (
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block font-semibold text-white/90 mb-1">
+                              {isZh ? '主播形象選擇' : 'Presenter Style'}
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="rounded-xl border border-emerald-400 bg-emerald-500/10 p-2.5 text-center cursor-pointer">
+                                <div className="font-bold text-white text-xs">竹子風知性主播</div>
+                                <div className="text-[10px] text-emerald-300">微側12度 · 3D口型唇動</div>
+                              </div>
+                              <div className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center opacity-60">
+                                <div className="font-bold text-white text-xs">商務沉穩男主播</div>
+                                <div className="text-[10px] text-slate-400">西裝高知 · 英文母語</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block font-semibold text-white/90 mb-1">
+                              {isZh ? '口播文稿' : 'Speech Script'}
+                            </label>
+                            <textarea
+                              rows="2"
+                              defaultValue={isZh ? '大家好，我是 MOORE LABS 官方AI發布官。今天為大家發布 2026 全球重大進展...' : 'Hello everyone, welcome to the MOORE LABS 2026 keynote update...'}
+                              className="w-full rounded-xl border border-white/15 bg-white/5 p-2 text-xs text-white"
+                            />
+                          </div>
+                          <button
+                            onClick={() => showToast(isZh ? '真人唇型口播視頻生成中！' : 'Avatar video generating!')}
+                            className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110"
+                          >
+                            {isZh ? '🎙 生成真人神態口播 (Studio Master)' : '🎙 Generate Avatar Video'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* 抽屜 4: 定時宣發排期內容 */}
+                  {activeDrawer === 'broadcast' && (
+                    <div className="space-y-4 text-xs sm:text-sm">
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '1. 選擇廣播物料' : '1. Select Content'}
+                        </label>
+                        <select className="w-full rounded-xl border border-white/15 bg-slate-900 px-3 py-2 text-xs text-white">
+                          <option>{isZh ? '最新 6K 晨報海報 (每日早間自動抓取最新行情)' : 'Latest 6K Daily Market Briefing'}</option>
+                          <option>{isZh ? 'MOORE LABS 2026 戰略宣傳視頻.mp4' : 'MOORE LABS 2026 Strategy Video'}</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '2. 定時觸發時刻' : '2. Scheduled Time'}
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="time"
+                            defaultValue="08:30"
+                            className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-mono text-white"
+                          />
+                          <span className="flex items-center text-slate-400 text-xs">
+                            {isZh ? '(每天固定時間全自動廣播)' : '(Daily recurring automated push)'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-white/90 mb-1.5">
+                          {isZh ? '3. 推送渠道' : '3. Target Channels'}
+                        </label>
+                        <div className="space-y-2">
+                          <label className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/5 p-3 cursor-pointer">
+                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-purple-400" />
+                            <span className="text-white/85">Telegram 官方主社群 (@moore_official)</span>
+                          </label>
+                          <label className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/5 p-3 cursor-pointer">
+                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-purple-400" />
+                            <span className="text-white/85">Telegram 公告頻道 (@moore_announcements)</span>
+                          </label>
+                          <label className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/5 p-3 cursor-pointer">
+                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-purple-400" />
+                            <span className="text-white/85">Twitter/X 官方推文同步發布</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 底部保存提交按鈕 */}
+                <div className="border-t border-white/10 pt-4 mt-6">
+                  <button
+                    onClick={() => {
+                      showToast(isZh ? '✓ 配置已成功保存並啟動！' : '✓ Configuration saved and live!');
+                      setActiveDrawer(null);
+                    }}
+                    className="w-full rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 py-3 text-sm font-bold text-slate-950 shadow-lg hover:brightness-110 active:scale-95 transition"
+                  >
+                    {isZh ? '保存並啟動自動化' : 'Save & Launch Automation'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     function MooreLabsLanding() {
       const rootRef = useRef(null);
       const heroRef = useRef(null);
       const marqueeRow1 = useMemo(() => [...backers.slice(0, 18), ...backers.slice(0, 18)], []);
       const marqueeRow2 = useMemo(() => [...backers.slice(18), ...backers.slice(18)], []);
+
+      // 控制台二級頁面路由狀態 ('home' | 'console')
+      const [view, setView] = useState(() => {
+        try {
+          return (typeof window !== 'undefined' && window.location.hash.startsWith('#/console')) ? 'console' : 'home';
+        } catch (e) {
+          return 'home';
+        }
+      });
+
+      const openConsole = () => {
+        window.location.hash = '#/console';
+        setView('console');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      };
+
+      const backToHome = () => {
+        window.location.hash = '#/';
+        setView('home');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      };
+
+      useEffect(() => {
+        const handleHashChange = () => {
+          if (window.location.hash.startsWith('#/console')) {
+            setView('console');
+          } else {
+            setView('home');
+          }
+        };
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
+      }, []);
 
       // 雙語言狀態 (預設繁體中文，支援一鍵切換英文)
       const [lang, setLang] = useState(() => {
@@ -1123,9 +1832,12 @@
         // 修復 SPA 異步渲染導致的外部直達錨點失效：在 React 掛載後監聽 window.location.hash 並平滑執行 scrollIntoView
         const scrollToHashTarget = () => {
           const hash = window.location.hash;
-          if (!hash || hash === '#') return;
+          if (!hash || hash === '#' || hash.startsWith('#/')) return;
           const targetId = decodeURIComponent(hash.slice(1));
-          const targetEl = document.getElementById(targetId) || document.querySelector(hash);
+          let targetEl = document.getElementById(targetId);
+          if (!targetEl) {
+            try { targetEl = document.querySelector(hash); } catch (e) {}
+          }
           if (!targetEl) return;
 
           const mobileTitleEl = document.querySelector('.cap-mobile-title');
@@ -1223,6 +1935,17 @@
 
       return (
         <div ref={rootRef} className="min-h-screen bg-[#0a1220] text-white selection:bg-white/25">
+          {/* 二級頁面 (個人控制台 ConsoleView) */}
+          {view === 'console' && (
+            <ConsoleView
+              lang={lang}
+              toggleLang={toggleLang}
+              onBack={backToHome}
+            />
+          )}
+
+          {/* 首頁 Landing Page (當處於控制台時保持 hidden 保活，GSAP 動效零損毀) */}
+          <div className={view === 'console' ? 'hidden' : 'block'}>
           <div className="pointer-events-none fixed inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,#0b1322_0%,#0c1424_36%,#0b1220_100%)]" />
           </div>
@@ -1251,7 +1974,19 @@
                 ))}
               </nav>
 
-              <div className="flex items-center gap-3 shrink-0 whitespace-nowrap">
+              <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 whitespace-nowrap">
+                {/* 控制台二級頁面高光膠囊入口 */}
+                <button
+                  onClick={openConsole}
+                  className="group relative inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-amber-400/50 bg-gradient-to-r from-amber-500/25 via-amber-400/15 to-amber-500/25 px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-amber-300 shadow-[0_0_18px_rgba(245,158,11,0.25)] backdrop-blur-md transition-all duration-300 hover:border-amber-400 hover:bg-amber-500/35 hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]"></span>
+                  </span>
+                  <span>{lang === 'zh' ? '⚡ 進入控制台' : '⚡ Launch Console'}</span>
+                </button>
+
                 {/* 雙語言切換膠囊 (繁體 / EN) */}
                 <div className="flex items-center rounded-full border border-white/15 bg-white/5 p-0.5 text-xs backdrop-blur-md shadow-sm">
                   <button
@@ -1349,6 +2084,12 @@
 
                     {/* 官方行動按鈕 */}
                     <div className="hero-reveal mt-8 sm:mt-10 flex flex-wrap justify-center gap-3.5 sm:gap-4">
+                      <button
+                        onClick={openConsole}
+                        className="rounded-full border border-amber-400/40 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-bold text-slate-950 shadow-[0_4px_24px_rgba(245,158,11,0.35)] backdrop-blur-md transition hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        {lang === 'zh' ? '⚡ 進入個人工作台' : '⚡ Launch Workspace'}
+                      </button>
                       <a
                         href="#why-moore-labs"
                         className="rounded-full border border-black/10 bg-[#0f172a] px-7 sm:px-8 py-3 sm:py-3.5 text-sm font-semibold text-white shadow-md backdrop-blur-md transition hover:bg-[#1e293b] hover:scale-105 active:scale-95"
@@ -1717,6 +2458,7 @@
           {/* 輕量 Wallet MPC 門限安全錢包連接彈窗 (原生純淨高質感) */}
           
 
+          </div>
         </div>
       );
     }
