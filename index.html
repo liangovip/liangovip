@@ -844,14 +844,19 @@
     // 嚴格傳承摩爾首頁視覺基因：深海藍黑 #0a1220、磨砂微光、01/02/03 序列排版
     // 三大縮略圖選項卡 (Tri-Pillar Thumbnail Cards) + 點擊展開對應專屬工作台
     // =========================================================================
+    // =========================================================================
+    // MOORE LABS 大廠級三膠囊滑動切換控制台 (Three-Capsule Switcher Console)
+    // 嚴格落實用戶指令：
+    // 1. [ 錢包 MPC ] 2. [ 創意多媒體 ] 3. [ 靈活電報功能 ]
+    // 單一視圖每次只顯示當前選中的一個功能，結構純淨清爽，一眼看懂！
+    // =========================================================================
     function ConsoleView({ lang, toggleLang, onBack }) {
-      const [activePillar, setActivePillar] = useState(0); // 0: 社群拓客與打粉, 1: AI 創意工坊, 2: 自動化宣發
+      const [activeTab, setActiveTab] = useState('wallet'); // 'wallet' | 'media' | 'telegram'
       const [aiEngine, setAiEngine] = useState('poster'); // 'poster' | 'video' | 'avatar'
       const [toast, setToast] = useState(null);
 
       // 業務狀態
       const [botToken, setBotToken] = useState('7829104812:AAFq9xM-example_valid_token');
-      const [botActive, setBotActive] = useState(true);
       const [posterGenerated, setPosterGenerated] = useState(true);
       const [videoRendering, setVideoRendering] = useState(false);
 
@@ -861,48 +866,6 @@
       };
 
       const isZh = lang === 'zh';
-
-      const pillarData = [
-        {
-          id: 0,
-          num: '01',
-          tag: isZh ? '矩陣獲客 · 群管中台' : 'Traffic Growth & Bot',
-          title: isZh ? '社群拓客與打粉' : 'Community & Traffic',
-          desc: isZh ? 'TG 機器人託管、競對群打粉、AI防封' : 'TG Bot admin, leads scraping, anti-ban',
-          status: isZh ? '1個群託管中' : '1 Group Active',
-          icon: (
-            <svg className="w-8 h-8 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-            </svg>
-          )
-        },
-        {
-          id: 1,
-          num: '02',
-          tag: isZh ? 'A100 超算 · 內容工坊' : 'A100 Cloud · AI Studio',
-          title: isZh ? 'AI 創意多媒體' : 'AI Media Studio',
-          desc: isZh ? '6K 矢量海報、商業視頻、知性數字人' : '6K infographics, promo videos, AI presenter',
-          status: isZh ? '0.4s 秒級出圖' : '0.4s Fast Gen',
-          icon: (
-            <svg className="w-8 h-8 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-            </svg>
-          )
-        },
-        {
-          id: 2,
-          num: '03',
-          tag: isZh ? '無人值守 · 全網廣播' : 'Automated · Broadcast',
-          title: isZh ? '自動化宣發與調度' : 'Automated Broadcast',
-          desc: isZh ? '每日晨報自動合成、TG/推特廣播、任務流' : 'Daily briefing auto-gen, TG & X push, tasks',
-          status: isZh ? '明早 08:30 廣播' : 'Next 08:30',
-          icon: (
-            <svg className="w-8 h-8 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          )
-        }
-      ];
 
       return (
         <div className="min-h-screen bg-[#0a1220] text-white selection:bg-amber-400/25 animate-console-fade pb-28">
@@ -914,7 +877,7 @@
             </div>
           )}
 
-          {/* 頂部大廠風格導航 (傳承首頁極簡科技美學) */}
+          {/* 頂部大廠極簡導航 (傳承首頁極簡科技美學) */}
           <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0c1424]/90 backdrop-blur-xl">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-3.5">
               {/* 返回官網 */}
@@ -965,310 +928,206 @@
             </div>
           </header>
 
-          <main className="mx-auto max-w-7xl px-4 pt-6 sm:px-6 sm:pt-10">
-            {/* 標題引言區 (大氣開闊、極簡大廠留白) */}
-            <div className="mb-6 sm:mb-8 text-center sm:text-left flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b border-white/8 pb-6">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono text-sky-400 mb-2.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 animate-ping"></span>
-                  <span>ENTERPRISE WORKSPACE V2.6</span>
-                </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
-                  {isZh ? '數字資產與自動化控制台' : 'Digital Assets & Automation Console'}
-                </h1>
-                <p className="mt-2 text-xs sm:text-sm text-white/60 max-w-2xl leading-relaxed">
-                  {isZh ? '點選下方三大業務縮略卡片，即刻展開專屬工作台。高自由度託管 TG 機器人、精準引流、AI 6K海報與全網定時宣發。' : 'Select any of the three core pillars below to expand its dedicated workspace.'}
-                </p>
+          <main className="mx-auto max-w-5xl px-4 pt-6 sm:px-6 sm:pt-10">
+            {/* 標題與指引 (極簡克制) */}
+            <div className="mb-6 text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono text-amber-400 mb-2.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                <span>CONTROL PANEL · 獨立功能模式</span>
               </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
+                {isZh ? '個人控制台' : 'Personal Workspace'}
+              </h1>
+              <p className="mt-1.5 text-xs sm:text-sm text-white/60">
+                {isZh ? '滑動點選下方膠囊，每次專注呈現單一業務功能，清晰直觀' : 'Select a capsule below to view its dedicated feature without distraction'}
+              </p>
+            </div>
 
-              {/* 快速切換標籤 */}
-              <div className="text-xs text-amber-400/90 font-mono tracking-wide">
-                {isZh ? `當前板塊: 0${activePillar + 1} / 03` : `Current: 0${activePillar + 1} / 03`}
+            {/* ========================================================================= */}
+            {/* 三大專屬滑動膠囊按鈕 (Segmented Capsule Slider Switcher) */}
+            {/* ========================================================================= */}
+            <div className="flex justify-center mb-8">
+              <div className="relative inline-flex items-center rounded-full border border-white/15 bg-[#0e172a]/95 p-1.5 backdrop-blur-xl shadow-[0_12px_36px_rgba(0,0,0,0.4)]">
+                {/* 膠囊 1: 錢包 MPC */}
+                <button
+                  onClick={() => setActiveTab('wallet')}
+                  className={`capsule-btn relative z-10 flex items-center gap-2 rounded-full px-4 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
+                    activeTab === 'wallet'
+                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-105'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <span className="text-sm sm:text-base">🛡️</span>
+                  <span>{isZh ? '錢包 MPC' : 'Wallet MPC'}</span>
+                </button>
+
+                {/* 膠囊 2: 創意多媒體 */}
+                <button
+                  onClick={() => setActiveTab('media')}
+                  className={`capsule-btn relative z-10 flex items-center gap-2 rounded-full px-4 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
+                    activeTab === 'media'
+                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-105'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <span className="text-sm sm:text-base">🎨</span>
+                  <span>{isZh ? '創意多媒體' : 'Creative Studio'}</span>
+                </button>
+
+                {/* 膠囊 3: 電報功能 */}
+                <button
+                  onClick={() => setActiveTab('telegram')}
+                  className={`capsule-btn relative z-10 flex items-center gap-2 rounded-full px-4 sm:px-7 py-2 sm:py-2.5 text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
+                    activeTab === 'telegram'
+                      ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 shadow-[0_0_24px_rgba(245,158,11,0.45)] scale-105'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <span className="text-sm sm:text-base">🤖</span>
+                  <span>{isZh ? '電報功能' : 'Telegram Suite'}</span>
+                </button>
               </div>
             </div>
 
             {/* ========================================================================= */}
-            {/* 三大縮略圖選項卡 (Three Thumbnail Pillar Cards Switcher) */}
+            {/* 主體展示區：100% 僅展示當前選中的單一膠囊板塊 (純粹、清晰、絕不混雜) */}
             {/* ========================================================================= */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 mb-8">
-              {pillarData.map((item) => {
-                const isActive = activePillar === item.id;
-                return (
-                  <div
-                    key={item.id}
-                    onClick={() => setActivePillar(item.id)}
-                    className={`pillar-thumb-card group relative rounded-[26px] p-5 sm:p-6 transition-all duration-300 cursor-pointer overflow-hidden ${
-                      isActive
-                        ? 'border border-amber-400/60 bg-[linear-gradient(180deg,rgba(30,46,78,0.92),rgba(14,22,38,0.95))] shadow-[0_16px_40px_rgba(245,158,11,0.15)] ring-1 ring-amber-400/30'
-                        : 'border border-white/12 bg-[linear-gradient(180deg,rgba(22,34,58,0.7),rgba(12,18,32,0.85))] hover:border-white/25 hover:bg-[linear-gradient(180deg,rgba(26,40,68,0.85),rgba(14,21,36,0.9))]'
-                    }`}
-                  >
-                    {/* 頂部縮略圖指示與大字編號 */}
-                    <div className="flex items-start justify-between mb-4">
-                      {/* 精緻縮略圖標 */}
-                      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl border transition-all ${
-                        isActive
-                          ? 'border-amber-400/40 bg-amber-500/20 shadow-[0_0_18px_rgba(245,158,11,0.3)]'
-                          : 'border-white/10 bg-white/5 group-hover:border-white/20'
-                      }`}>
-                        {item.icon}
-                      </div>
-
-                      {/* 01 / 02 / 03 序列大字編號 (摩爾首頁經典字體) */}
-                      <div className={`font-mono text-2xl sm:text-3xl font-bold tracking-tight transition-colors ${
-                        isActive ? 'text-amber-400' : 'text-white/20 group-hover:text-white/35'
-                      }`}>
-                        {item.num}
-                      </div>
-                    </div>
-
-                    {/* 微標籤 */}
-                    <div className="mb-2">
-                      <span className={`inline-block text-[11px] font-mono tracking-wider px-2 py-0.5 rounded-full border ${
-                        isActive
-                          ? 'border-amber-400/30 bg-amber-400/10 text-amber-300'
-                          : 'border-white/10 bg-white/5 text-white/50'
-                      }`}>
-                        {item.tag}
-                      </span>
-                    </div>
-
-                    {/* 標題與簡介 */}
-                    <h3 className={`text-lg sm:text-xl font-bold transition-colors ${
-                      isActive ? 'text-white' : 'text-white/90 group-hover:text-white'
-                    }`}>
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-xs text-white/60 leading-relaxed">
-                      {item.desc}
-                    </p>
-
-                    {/* 底部狀態與展開指示 */}
-                    <div className="mt-5 flex items-center justify-between border-t border-white/8 pt-3 text-xs">
-                      <span className="text-white/45 font-mono">{item.status}</span>
-                      <span className={`font-semibold flex items-center gap-1 ${
-                        isActive ? 'text-amber-400' : 'text-white/40 group-hover:text-white/80'
-                      }`}>
-                        {isActive ? (isZh ? '● 已展開工作台' : '● Expanded') : (isZh ? '點擊切換 →' : 'Switch →')}
-                      </span>
-                    </div>
-
-                    {/* 激活時底部金色微光橫線 */}
-                    {isActive && (
-                      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* ========================================================================= */}
-            {/* 展開後的專屬工作台 (The Dedicated Expanded Workspace) */}
-            {/* ========================================================================= */}
-            <div className="rounded-[32px] border border-white/14 bg-[linear-gradient(180deg,rgba(20,32,54,0.88),rgba(10,16,28,0.95))] p-5 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)] backdrop-blur-2xl">
+            <div className="rounded-[32px] border border-white/14 bg-[linear-gradient(180deg,rgba(20,32,54,0.9),rgba(10,16,28,0.96))] p-6 sm:p-9 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
               
-              {/* ------------------------------------------------------------- */}
-              {/* 板塊 01 專屬工作台：社群拓客與打粉中台 */}
-              {/* ------------------------------------------------------------- */}
-              {activePillar === 0 && (
-                <div className="space-y-6 sm:space-y-8 animate-console-fade">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/8 pb-4">
-                    <div>
-                      <div className="text-xs font-mono text-amber-400 tracking-wider">PILLAR 01 · AUTOMATION WORKSPACE</div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">
-                        {isZh ? '電報機器人託管與精準社群拓客 (打粉)' : 'TG Bot Hosting & Community Growth'}
-                      </h2>
+              {/* ----------------------------------------------------------------------- */}
+              {/* 【膠囊 1】：錢包 MPC 板塊 (只顯示錢包與金庫功能，清清爽爽) */}
+              {/* ----------------------------------------------------------------------- */}
+              {activeTab === 'wallet' && (
+                <div className="space-y-6 animate-console-fade">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        🛡️
+                      </div>
+                      <div>
+                        <h2 className="text-lg sm:text-xl font-bold text-white">
+                          {isZh ? 'Wallet MPC 門限安全金庫' : 'Wallet MPC Institutional Vault'}
+                        </h2>
+                        <p className="text-xs text-white/50">
+                          {isZh ? '多重簽名碎片協管，無單點私鑰洩露風險' : 'Threshold Signature Scheme, Multi-party custody'}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
-                      <span className="text-xs font-mono text-emerald-300">{isZh ? '矩陣防護在線' : 'Matrix Shield Active'}</span>
+                    <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-xs font-semibold text-emerald-300">
+                      {isZh ? '● 運行正常' : '● Vault Secured'}
+                    </span>
+                  </div>
+
+                  {/* 核心卡片網格 */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* 地址卡 */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5 space-y-2">
+                      <div className="text-xs text-white/50">{isZh ? '當前連接錢包' : 'Connected Wallet'}</div>
+                      <div className="text-sm sm:text-base font-mono font-bold text-amber-300 flex items-center justify-between">
+                        <span>0x71c5...88a9</span>
+                        <button
+                          onClick={() => showToast(isZh ? '錢包地址已複製到剪貼簿！' : 'Address copied!')}
+                          className="text-xs font-sans text-white/60 hover:text-white border border-white/15 rounded-lg px-2 py-0.5"
+                        >
+                          {isZh ? '複製' : 'Copy'}
+                        </button>
+                      </div>
+                      <div className="text-[11px] text-emerald-400 font-mono">● Ethereum Mainnet (Chain ID: 1)</div>
+                    </div>
+
+                    {/* MPC 門限分片狀態 */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5 space-y-2">
+                      <div className="text-xs text-white/50">{isZh ? 'MPC 門限密鑰分片' : 'Key Shard Distribution'}</div>
+                      <div className="text-sm sm:text-base font-bold text-white flex items-center justify-between">
+                        <span>3 / 3 碎片在線守護</span>
+                        <span className="text-xs text-amber-400 font-mono">100% SAFE</span>
+                      </div>
+                      <div className="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
+                        <div className="bg-gradient-to-r from-emerald-400 to-amber-400 h-full w-full rounded-full"></div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* 左側：TG 機器人一鍵託管 */}
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">🤖</span>
-                          <h3 className="font-bold text-white text-base">
-                            {isZh ? 'Telegram 機器人一鍵創建與託管' : '1-Click TG Bot Creation'}
-                          </h3>
-                        </div>
-                        <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
-                          {isZh ? '已接管 1 群' : '1 Group Active'}
-                        </span>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1.5">
-                          {isZh ? '機器人 API Token (從 @BotFather 獲取)' : 'Bot API Token (from @BotFather)'}
-                        </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={botToken}
-                            onChange={(e) => setBotToken(e.target.value)}
-                            className="flex-1 rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs font-mono text-white focus:border-amber-400 focus:outline-none"
-                            placeholder="123456789:ABCdef..."
-                          />
-                          <button
-                            onClick={() => showToast(isZh ? 'Token 探活成功！機器人已全時在線' : 'Token verified active!')}
-                            className="rounded-xl border border-amber-400/40 bg-amber-500/20 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition active:scale-95"
-                          >
-                            {isZh ? '驗證' : 'Verify'}
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2.5 pt-1">
-                        <div className="text-xs font-semibold text-white/80">
-                          {isZh ? '安全與群管開關 (即開即用)' : 'Security Controls'}
-                        </div>
-                        <label className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-3 cursor-pointer hover:border-white/20 transition">
-                          <span className="text-xs text-white/85">{isZh ? '智慧防炸群 · 秒刪垃圾廣告與外部引流鏈接' : 'Anti-spam & auto-delete ads'}</span>
-                          <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400 cursor-pointer" />
-                        </label>
-                        <label className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-3 cursor-pointer hover:border-white/20 transition">
-                          <span className="text-xs text-white/85">{isZh ? '新成員入群自動發送高清迎賓卡片' : 'Auto-send welcome infographic'}</span>
-                          <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400 cursor-pointer" />
-                        </label>
-                        <label className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-3 cursor-pointer hover:border-white/20 transition">
-                          <span className="text-xs text-white/85">{isZh ? '鏈上持幣驗資進群 (門檻 >= 100 USDT)' : 'Token Gating (>= 100 USDT)'}</span>
-                          <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400 cursor-pointer" />
-                        </label>
-                      </div>
-
-                      <button
-                        onClick={() => showToast(isZh ? '✓ 機器人守護配置已保存並生效！' : 'Bot config saved and live!')}
-                        className="w-full rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
-                      >
-                        {isZh ? '保存並啟動機器人守護' : 'Save & Launch Bot Shield'}
-                      </button>
+                  {/* 算力資產餘額卡 */}
+                  <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <div className="text-xs font-semibold text-amber-300 uppercase tracking-wider">{isZh ? '可用算力點數' : 'Compute Credits'}</div>
+                      <div className="text-2xl sm:text-3xl font-bold font-mono text-white mt-1">1,500 <span className="text-sm font-normal text-white/50">⚡ Credits</span></div>
+                      <div className="text-xs text-white/60 mt-1">{isZh ? '可用於生成 1,500 張 6K 矢量海報 或 150 條商業視頻' : 'Good for 1,500 6K posters or 150 promo videos'}</div>
                     </div>
-
-                    {/* 右側：社群引流打粉拓客 */}
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">🚀</span>
-                          <h3 className="font-bold text-white text-base">
-                            {isZh ? '社群精準引流拓客矩陣 (打粉)' : 'Traffic Growth & Leads Infiltration'}
-                          </h3>
-                        </div>
-                        <span className="rounded-full bg-sky-500/20 border border-sky-400/30 px-2.5 py-0.5 text-[11px] font-semibold text-sky-300">
-                          {isZh ? '今日進粉 128 人' : '128 Leads Today'}
-                        </span>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1.5">
-                          {isZh ? '目標競對群組鏈接池 (每行一個)' : 'Target Groups Pool (one per line)'}
-                        </label>
-                        <textarea
-                          rows="3"
-                          defaultValue={`https://t.me/web3_quant_asia
-https://t.me/defi_arbitrage_group
-https://t.me/crypto_investors_sg`}
-                          className="w-full rounded-xl border border-white/15 bg-black/40 p-3 text-xs font-mono text-white focus:border-sky-400 focus:outline-none"
-                        />
-                      </div>
-
-                      <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <label className="text-xs font-semibold text-white/80">
-                            {isZh ? '引流文案與落地物料' : 'Promo Copy & Landing Link'}
-                          </label>
-                          <button
-                            onClick={() => showToast(isZh ? '✨ AI 已自動生成 5 組防封同義改寫變體！' : 'AI generated 5 anti-ban variants!')}
-                            className="text-xs text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
-                          >
-                            <span>✨</span>
-                            <span>{isZh ? 'AI 一鍵改寫5版防封' : 'AI Anti-Ban Rewrites'}</span>
-                          </button>
-                        </div>
-                        <textarea
-                          rows="2"
-                          defaultValue={isZh ? 'MOORE LABS 2026 生態基金啟動！持有即可享受專屬量化策略與合規實體資產分紅：https://ai.apg.mom/webside' : 'MOORE LABS 2026 Ecosystem Fund is live! Learn more: https://ai.apg.mom/webside'}
-                          className="w-full rounded-xl border border-white/15 bg-black/40 p-3 text-xs text-white focus:border-sky-400 focus:outline-none"
-                        />
-                      </div>
-
-                      <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 p-3 flex items-center justify-between text-xs">
-                        <span className="text-sky-200">
-                          {isZh ? '安全頻控：單號每日 30~50 人，隨機間隔 25 秒' : 'Rate Limit: 30-50 users/day, 25s delay'}
-                        </span>
-                        <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                          {isZh ? '100% 安全防封' : 'Anti-Ban Safe'}
-                        </span>
-                      </div>
-
+                    <div className="flex gap-2">
                       <button
-                        onClick={() => showToast(isZh ? '🚀 自動化拓客隊列已啟動！正在後台運行' : 'Growth queue launched!')}
-                        className="w-full rounded-xl bg-gradient-to-r from-sky-500 via-sky-400 to-sky-500 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
+                        onClick={() => showToast(isZh ? '正在調起 Web3 算力充值合約...' : 'Opening deposit contract...')}
+                        className="rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 px-5 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
                       >
-                        {isZh ? '啟動自動化拓客隊列' : 'Launch Growth Automation'}
+                        {isZh ? '充值算力' : 'Top Up'}
+                      </button>
+                      <button
+                        onClick={() => showToast(isZh ? '已斷開當前錢包連接' : 'Wallet disconnected')}
+                        className="rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/10"
+                      >
+                        {isZh ? '斷開' : 'Disconnect'}
                       </button>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* ------------------------------------------------------------- */}
-              {/* 板塊 02 專屬工作台：PWA AI 創意多媒體工坊 */}
-              {/* ------------------------------------------------------------- */}
-              {activePillar === 1 && (
-                <div className="space-y-6 sm:space-y-8 animate-console-fade">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/8 pb-4">
-                    <div>
-                      <div className="text-xs font-mono text-sky-400 tracking-wider">PILLAR 02 · CREATIVE STUDIO</div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">
-                        {isZh ? 'PWA AI 創意多媒體工坊 (海報 · 視頻 · 數字人)' : 'PWA AI Creative Studio (Posters, Videos, Avatars)'}
-                      </h2>
+              {/* ----------------------------------------------------------------------- */}
+              {/* 【膠囊 2】：創意多媒體板塊 (只顯示海報/視頻/數字人創作與下載) */}
+              {/* ----------------------------------------------------------------------- */}
+              {activeTab === 'media' && (
+                <div className="space-y-6 animate-console-fade">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-500/15 border border-sky-400/30 text-xl shadow-[0_0_15px_rgba(56,189,248,0.2)]">
+                        🎨
+                      </div>
+                      <div>
+                        <h2 className="text-lg sm:text-xl font-bold text-white">
+                          {isZh ? 'PWA AI 創意多媒體工坊' : 'PWA AI Creative Studio'}
+                        </h2>
+                        <p className="text-xs text-white/50">
+                          {isZh ? '6K 矢量海報、商業宣傳短片、竹子風知性數字人' : '6K Vector Posters, Commercial Videos, Talking-Head Avatars'}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* 3個子引擎切換膠囊 */}
-                    <div className="flex rounded-full border border-white/15 bg-white/5 p-1 text-xs">
+                    {/* 3個小切換膠囊 */}
+                    <div className="flex rounded-full border border-white/15 bg-black/40 p-1 text-xs">
                       <button
                         onClick={() => setAiEngine('poster')}
-                        className={`rounded-full px-3 py-1 font-semibold transition ${
-                          aiEngine === 'poster' ? 'bg-sky-400 text-slate-950' : 'text-white/60 hover:text-white'
+                        className={`rounded-full px-3.5 py-1 font-semibold transition ${
+                          aiEngine === 'poster' ? 'bg-sky-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'
                         }`}
                       >
-                        {isZh ? '⚡ 6K 矢量海報' : '6K Poster'}
+                        {isZh ? '6K 營銷海報' : '6K Poster'}
                       </button>
                       <button
                         onClick={() => setAiEngine('video')}
-                        className={`rounded-full px-3 py-1 font-semibold transition ${
-                          aiEngine === 'video' ? 'bg-sky-400 text-slate-950' : 'text-white/60 hover:text-white'
+                        className={`rounded-full px-3.5 py-1 font-semibold transition ${
+                          aiEngine === 'video' ? 'bg-sky-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'
                         }`}
                       >
-                        {isZh ? '🎥 商業短片工坊' : 'Video Factory'}
+                        {isZh ? '商業宣傳片' : 'Video Factory'}
                       </button>
                       <button
                         onClick={() => setAiEngine('avatar')}
-                        className={`rounded-full px-3 py-1 font-semibold transition ${
-                          aiEngine === 'avatar' ? 'bg-sky-400 text-slate-950' : 'text-white/60 hover:text-white'
+                        className={`rounded-full px-3.5 py-1 font-semibold transition ${
+                          aiEngine === 'avatar' ? 'bg-sky-400 text-slate-950 font-bold' : 'text-white/60 hover:text-white'
                         }`}
                       >
-                        {isZh ? '🎙 竹子風數字人' : 'AI Presenter'}
+                        {isZh ? '知性數字人' : 'AI Presenter'}
                       </button>
                     </div>
                   </div>
 
-                  {/* 引擎 1: 6K 矢量海報 (Fast Vector) */}
+                  {/* 1. 6K 海報工坊 */}
                   {aiEngine === 'poster' && (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4">
-                        <div className="text-sm font-bold text-white flex items-center justify-between">
-                          <span>{isZh ? '海報參數與文案配置' : 'Poster Content & Theme'}</span>
-                          <span className="text-xs font-mono text-emerald-400">0.4s Fast Vector Engine</span>
-                        </div>
-
+                      <div className="space-y-4">
                         <div>
-                          <label className="block text-xs font-semibold text-white/80 mb-1">
-                            {isZh ? '海報主標題' : 'Poster Title'}
-                          </label>
+                          <label className="block text-xs font-semibold text-white/80 mb-1.5">{isZh ? '海報主標題' : 'Poster Title'}</label>
                           <input
                             type="text"
                             defaultValue={isZh ? 'MOORE LABS 2026 全球生態戰略升級' : 'MOORE LABS 2026 Global Upgrade'}
@@ -1277,9 +1136,7 @@ https://t.me/crypto_investors_sg`}
                         </div>
 
                         <div>
-                          <label className="block text-xs font-semibold text-white/80 mb-1">
-                            {isZh ? '核心亮點賣點 (每行一個，或貼新聞稿讓 AI 提取)' : 'Key Highlights'}
-                          </label>
+                          <label className="block text-xs font-semibold text-white/80 mb-1.5">{isZh ? '核心亮點賣點 (每行一個)' : 'Key Highlights'}</label>
                           <textarea
                             rows="3"
                             defaultValue={`• $5000萬 生態孵化基金正式部署
@@ -1295,7 +1152,6 @@ https://t.me/crypto_investors_sg`}
                             <select className="w-full rounded-xl border border-white/15 bg-slate-900 px-3 py-2 text-xs text-white">
                               <option>16:9 (Twitter / TG 最佳)</option>
                               <option>9:16 (手機全屏海報)</option>
-                              <option>1:1 (正方形頭像/標籤)</option>
                             </select>
                           </div>
                           <div>
@@ -1303,7 +1159,6 @@ https://t.me/crypto_investors_sg`}
                             <select className="w-full rounded-xl border border-white/15 bg-slate-900 px-3 py-2 text-xs text-white">
                               <option>{isZh ? '摩爾深海藍 (官方默認)' : 'Deep Ocean Blue'}</option>
                               <option>{isZh ? '黑金奢華質感' : 'Dark Gold'}</option>
-                              <option>{isZh ? '純白極簡科技' : 'Clean White'}</option>
                             </select>
                           </div>
                         </div>
@@ -1311,16 +1166,16 @@ https://t.me/crypto_investors_sg`}
                         <button
                           onClick={() => {
                             setPosterGenerated(true);
-                            showToast(isZh ? '⚡ 0.4 秒已生成 6K 高清矢量海報！' : '6K poster generated in 0.4s!');
+                            showToast(isZh ? '⚡ 0.4 秒已完成 6K 高清矢量渲染！' : '6K poster generated in 0.4s!');
                           }}
-                          className="w-full rounded-xl bg-gradient-to-r from-sky-400 via-teal-400 to-sky-400 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
+                          className="w-full rounded-xl bg-gradient-to-r from-sky-400 via-teal-400 to-sky-400 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer"
                         >
                           {isZh ? '⚡ 0.4s 秒級出圖 (Fast Vector 6K)' : '⚡ 0.4s Fast Generate (6K)'}
                         </button>
                       </div>
 
-                      {/* 右側：實時 6K 預覽卡片 */}
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4">
+                      {/* 實時 6K 預覽卡片 */}
+                      <div className="space-y-4">
                         <div className="flex items-center justify-between text-xs">
                           <span className="font-semibold text-white/80">{isZh ? '6K 矢量渲染預覽' : '6K Vector Preview'}</span>
                           <span className="text-emerald-400 font-mono">6144 × 3456 PX · 0.4s</span>
@@ -1347,60 +1202,51 @@ https://t.me/crypto_investors_sg`}
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 pt-2">
+                        <div className="flex items-center gap-3">
                           <button
                             onClick={() => showToast(isZh ? '高清 6K 矢量原圖下載就緒！' : '6K image download started!')}
                             className="flex-1 rounded-xl border border-white/15 bg-white/10 py-2.5 text-xs font-semibold text-white hover:bg-white/20 transition active:scale-95"
                           >
-                            {isZh ? '⬇ 下載 6K 高清原圖' : '⬇ Download 6K Image'}
+                            {isZh ? '⬇ 下載 6K 原圖' : '⬇ Download'}
                           </button>
                           <button
                             onClick={() => showToast(isZh ? '已一鍵發送至 Telegram 官方社群！' : 'Sent to TG Group!')}
                             className="flex-1 rounded-xl bg-amber-500/20 border border-amber-400/40 py-2.5 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition active:scale-95"
                           >
-                            {isZh ? '🚀 一鍵發送到 TG 群' : '🚀 Push to TG Group'}
+                            {isZh ? '🚀 一鍵發到 TG 群' : '🚀 Push to TG'}
                           </button>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* 引擎 2: 商業短片工坊 (AI Video Factory) */}
+                  {/* 2. 商業視頻工坊 */}
                   {aiEngine === 'video' && (
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4 max-w-2xl mx-auto">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-white text-sm">{isZh ? '商業宣傳片腳本配置' : 'Video Prompt & Narration'}</span>
-                        <span className="text-sky-400 font-mono">Google Flow / Veo 3D 運鏡</span>
-                      </div>
-
+                    <div className="max-w-xl mx-auto space-y-4">
                       <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1">
-                          {isZh ? '視頻旁白腳本 (3~5個場景句子)' : 'Narration Script'}
-                        </label>
+                        <label className="block text-xs font-semibold text-white/80 mb-1.5">{isZh ? '視頻腳本旁白' : 'Video Script'}</label>
                         <textarea
                           rows="4"
                           defaultValue={isZh ? '從去中心化金流到萬億實體資產，MOORE LABS 構建下一代全球流動性樞紐。由新加坡官方牌照合規護航，提供 $5000萬 生態孵化資金與企業級門限金庫。' : 'From decentralized liquidity to trillions in real-world assets, MOORE LABS builds the next-gen global financial layer.'}
                           className="w-full rounded-xl border border-white/15 bg-black/40 p-3 text-xs text-white focus:border-sky-400 focus:outline-none"
                         />
                       </div>
-
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                          <label className="block font-semibold text-white/80 mb-1">{isZh ? '視頻時長規格' : 'Video Duration'}</label>
+                          <label className="block font-semibold text-white/80 mb-1">{isZh ? '視頻時長規格' : 'Duration'}</label>
                           <select className="w-full rounded-xl border border-white/15 bg-slate-900 px-3 py-2 text-xs text-white">
                             <option>{isZh ? '15s ~ 30s 閃電快閃宣傳片' : '15-30s Flash Promo'}</option>
                             <option>{isZh ? '30s ~ 2min 深度產品解說片' : '30s-2min Explainer'}</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block font-semibold text-white/80 mb-1">{isZh ? '旁白音色選擇' : 'Voiceover Style'}</label>
+                          <label className="block font-semibold text-white/80 mb-1">{isZh ? '旁白音色選擇' : 'Voiceover'}</label>
                           <select className="w-full rounded-xl border border-white/15 bg-slate-900 px-3 py-2 text-xs text-white">
                             <option>{isZh ? '知性大氣女聲 (中文母語)' : 'Female Pro (Chinese)'}</option>
                             <option>{isZh ? '沉穩科技男聲 (中英雙語)' : 'Male Tech (Bilingual)'}</option>
                           </select>
                         </div>
                       </div>
-
                       <button
                         onClick={() => {
                           setVideoRendering(true);
@@ -1413,195 +1259,160 @@ https://t.me/crypto_investors_sg`}
                     </div>
                   )}
 
-                  {/* 引擎 3: 竹子風知性數字人 (Studio Talking Head) */}
+                  {/* 3. 竹子風知性數字人 */}
                   {aiEngine === 'avatar' && (
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4 max-w-2xl mx-auto">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-white text-sm">{isZh ? '真人口播數字人參數' : 'Talking-Head Avatar'}</span>
-                        <span className="text-emerald-400 font-mono">神經級 3D 唇形對齊</span>
-                      </div>
-
+                    <div className="max-w-xl mx-auto space-y-4">
                       <div className="grid grid-cols-2 gap-3">
                         <div className="rounded-xl border border-emerald-400/60 bg-emerald-500/10 p-3 text-center cursor-pointer">
                           <div className="text-xs font-bold text-white">{isZh ? '竹子風知性主播' : 'Zhuzi Style Host'}</div>
-                          <div className="text-[10px] text-emerald-300 mt-1">{isZh ? '微側12度 · 胸前黃金手勢' : '12-deg angle, natural gesture'}</div>
+                          <div className="text-[10px] text-emerald-300 mt-1">{isZh ? '微側12度 · 3D口型唇動' : '12-deg angle, natural gesture'}</div>
                         </div>
                         <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-center opacity-60">
                           <div className="text-xs font-bold text-white">{isZh ? '商務科技男主播' : 'Business Male Host'}</div>
                           <div className="text-[10px] text-slate-400 mt-1">{isZh ? '西裝沉穩 · 嚴肅報告' : 'Suit & tie, keynote style'}</div>
                         </div>
                       </div>
-
                       <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1">
-                          {isZh ? '口播播報文稿 (自動口語化潤色)' : 'Speech Script'}
-                        </label>
+                        <label className="block text-xs font-semibold text-white/80 mb-1.5">{isZh ? '口播文稿' : 'Speech Script'}</label>
                         <textarea
                           rows="3"
-                          defaultValue={isZh ? '大家好，我是 MOORE LABS 官方AI發布官。今天很高興為大家介紹我們在實體合規資產與全球萬人峰會統籌領域的重大突破...' : 'Hello everyone, welcome to the MOORE LABS 2026 keynote update.'}
+                          defaultValue={isZh ? '大家好，我是 MOORE LABS 官方AI發布官。今天為大家介紹我們在實體合規資產與全球萬人峰會統籌領域的重大突破...' : 'Hello everyone, welcome to the MOORE LABS 2026 keynote update.'}
                           className="w-full rounded-xl border border-white/15 bg-black/40 p-3 text-xs text-white focus:border-emerald-400 focus:outline-none"
                         />
                       </div>
-
                       <button
                         onClick={() => showToast(isZh ? '真人唇型口播視頻生成中！' : 'Avatar video generating!')}
                         className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
                       >
-                        {isZh ? '🎙 生成真人神態口播視頻 (Studio Master)' : '🎙 Generate Avatar Video'}
+                        {isZh ? '🎙 生成真人神態口播 (Studio Master)' : '🎙 Generate Avatar Video'}
                       </button>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* ------------------------------------------------------------- */}
-              {/* 板塊 03 專屬工作台：自動化宣發與定時調度 */}
-              {/* ------------------------------------------------------------- */}
-              {activePillar === 2 && (
-                <div className="space-y-6 sm:space-y-8 animate-console-fade">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/8 pb-4">
-                    <div>
-                      <div className="text-xs font-mono text-emerald-400 tracking-wider">PILLAR 03 · AUTOMATED BROADCAST</div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">
-                        {isZh ? '全自動無人值守定時宣發與調度中台' : 'Automated Scheduled Broadcast & Task Dispatch'}
-                      </h2>
+              {/* ----------------------------------------------------------------------- */}
+              {/* 【膠囊 3】：電報功能板塊 (只顯示 TG 機器人群管與精準打粉引流) */}
+              {/* ----------------------------------------------------------------------- */}
+              {activeTab === 'telegram' && (
+                <div className="space-y-6 animate-console-fade">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/15 border border-amber-400/30 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        🤖
+                      </div>
+                      <div>
+                        <h2 className="text-lg sm:text-xl font-bold text-white">
+                          {isZh ? 'Telegram 機器人與精準引流 (打粉)' : 'Telegram Suite & Traffic Growth'}
+                        </h2>
+                        <p className="text-xs text-white/50">
+                          {isZh ? '機器人一鍵託管、智慧防廣告、競對群打粉矩陣' : 'Bot admin, anti-spam, leads scraping & infiltration'}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
-                      <span className="text-xs font-mono text-white/70">{isZh ? '下次廣播: 明日 08:30' : 'Next: 08:30 Tomorrow'}</span>
-                    </div>
+                    <span className="rounded-full bg-emerald-500/20 border border-emerald-400/30 px-3 py-1 text-xs font-semibold text-emerald-300">
+                      {isZh ? '● 矩陣就緒' : '● System Ready'}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* 左側：定時排期規則配置 */}
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4">
-                      <div className="text-sm font-bold text-white flex items-center justify-between">
-                        <span>{isZh ? '定時排期與多渠道發射規則' : 'Schedule & Channels'}</span>
-                        <span className="text-xs text-amber-400 font-mono">Recurring Cron</span>
+                    {/* 左：TG 機器人託管 */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5 space-y-3.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-white text-sm">🤖 {isZh ? '機器人一鍵託管' : 'Bot Hosting'}</span>
+                        <span className="text-emerald-400 font-mono">{isZh ? '已接管 1 群' : '1 Group Active'}</span>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1.5">
-                          {isZh ? '1. 宣發物料來源' : '1. Broadcast Material'}
-                        </label>
-                        <select className="w-full rounded-xl border border-white/15 bg-black/50 px-3 py-2 text-xs text-white">
-                          <option>{isZh ? '每日行情早報 (每日早間自動抓取最新行情合成 6K 海報)' : 'Daily Briefing (Auto-gen 6K poster every morning)'}</option>
-                          <option>{isZh ? 'MOORE LABS 2026 全球戰略宣傳視頻.mp4' : 'MOORE LABS 2026 Strategy Video'}</option>
-                          <option>{isZh ? '自定義營銷海報庫存物料' : 'Custom Marketing Assets'}</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1.5">
-                          {isZh ? '2. 定時觸發時刻' : '2. Scheduled Time'}
+                        <label className="block text-xs font-semibold text-white/80 mb-1">
+                          {isZh ? 'API Token (來自 @BotFather)' : 'Bot API Token'}
                         </label>
                         <div className="flex gap-2">
                           <input
-                            type="time"
-                            defaultValue="08:30"
-                            className="rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs font-mono text-white"
+                            type="text"
+                            value={botToken}
+                            onChange={(e) => setBotToken(e.target.value)}
+                            className="flex-1 rounded-xl border border-white/15 bg-black/40 px-3 py-2 text-xs font-mono text-white focus:border-amber-400 focus:outline-none"
+                            placeholder="123456789:ABCdef..."
                           />
-                          <span className="flex items-center text-white/50 text-xs font-mono">
-                            {isZh ? '每天固定時刻自動廣播' : 'Daily automated broadcast'}
-                          </span>
+                          <button
+                            onClick={() => showToast(isZh ? 'Token 探活成功！機器人已全時在線' : 'Token verified active!')}
+                            className="rounded-xl border border-amber-400/40 bg-amber-500/20 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition active:scale-95"
+                          >
+                            {isZh ? '驗證' : 'Verify'}
+                          </button>
                         </div>
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-semibold text-white/80 mb-1.5">
-                          {isZh ? '3. 同步推送渠道' : '3. Broadcast Channels'}
+                      <div className="space-y-2 pt-1">
+                        <div className="text-xs font-semibold text-white/80">{isZh ? '群管規則開關' : 'Admin Controls'}</div>
+                        <label className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-2.5 cursor-pointer">
+                          <span className="text-xs text-white/85">{isZh ? '智慧防炸群 · 秒刪垃圾廣告外鏈' : 'Anti-spam auto-delete'}</span>
+                          <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400 cursor-pointer" />
                         </label>
-                        <div className="space-y-2">
-                          <label className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-black/30 p-2.5 cursor-pointer hover:border-white/20">
-                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-emerald-400 cursor-pointer" />
-                            <span className="text-xs text-white/85">Telegram 官方主社群 (@moore_official)</span>
-                          </label>
-                          <label className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-black/30 p-2.5 cursor-pointer hover:border-white/20">
-                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-emerald-400 cursor-pointer" />
-                            <span className="text-xs text-white/85">Telegram 官方公告頻道 (@moore_announcements)</span>
-                          </label>
-                          <label className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-black/30 p-2.5 cursor-pointer hover:border-white/20">
-                            <input type="checkbox" defaultChecked className="h-4 w-4 accent-emerald-400 cursor-pointer" />
-                            <span className="text-xs text-white/85">Twitter/X 官方推特同步推文發布</span>
-                          </label>
-                        </div>
+                        <label className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-2.5 cursor-pointer">
+                          <span className="text-xs text-white/85">{isZh ? '新成員入群自動發送高清迎賓卡片' : 'Welcome card'}</span>
+                          <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400 cursor-pointer" />
+                        </label>
+                        <label className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-2.5 cursor-pointer">
+                          <span className="text-xs text-white/85">{isZh ? '鏈上持幣驗資進群 (>= 100 USDT)' : 'Token gating (>= 100 USDT)'}</span>
+                          <input type="checkbox" defaultChecked className="h-4 w-4 accent-amber-400 cursor-pointer" />
+                        </label>
                       </div>
 
                       <button
-                        onClick={() => showToast(isZh ? '✓ 定時廣播排期已保存並激活！' : 'Broadcast schedule activated!')}
-                        className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
+                        onClick={() => showToast(isZh ? '✓ 機器人守護配置已保存並生效！' : 'Bot config saved and live!')}
+                        className="w-full rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 py-2.5 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition"
                       >
-                        {isZh ? '保存排期並激活全自動廣播' : 'Save & Activate Automation'}
+                        {isZh ? '保存並啟動機器人守護' : 'Save & Launch Bot Shield'}
                       </button>
                     </div>
 
-                    {/* 右側：實時任務隊列與產物流 */}
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 space-y-4">
-                      <div className="text-sm font-bold text-white flex items-center justify-between">
-                        <span>{isZh ? '雲端渲染任務與已生成物料庫' : 'Cloud Tasks & Assets'}</span>
-                        <span className="text-xs font-mono text-sky-400">Live Synced</span>
+                    {/* 右：社群打粉引流 */}
+                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5 space-y-3.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-white text-sm">🚀 {isZh ? '社群引流拓客 (打粉)' : 'Traffic Growth'}</span>
+                        <span className="text-sky-300 font-mono">{isZh ? '今日進粉 128 人' : '128 Leads Today'}</span>
                       </div>
 
-                      {/* 渲染進度 */}
-                      <div className="rounded-xl border border-sky-400/20 bg-sky-500/5 p-3.5 space-y-2">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-semibold text-sky-200">{isZh ? '【視頻渲染中 68%】《MOORE 戰略片》' : '[Rendering 68%] MOORE Keynote'}</span>
-                          <span className="font-mono text-sky-300">~18s</span>
-                        </div>
-                        <div className="w-full bg-black/50 rounded-full h-1.5 overflow-hidden">
-                          <div className="bg-gradient-to-r from-sky-400 to-amber-400 h-full w-[68%] rounded-full animate-pulse"></div>
-                        </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-white/80 mb-1">{isZh ? '目標競對群組鏈接池 (每行一個)' : 'Target Groups Pool'}</label>
+                        <textarea
+                          rows="2"
+                          defaultValue={`https://t.me/web3_quant_asia
+https://t.me/defi_arbitrage_group`}
+                          className="w-full rounded-xl border border-white/15 bg-black/40 p-2 text-xs font-mono text-white focus:border-sky-400 focus:outline-none"
+                        />
                       </div>
 
-                      {/* 已生成晨報 */}
-                      <div className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-3 text-xs">
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-amber-400 text-base">🖼</span>
-                          <div>
-                            <div className="font-semibold text-white">{isZh ? '6K 官方晨報海報 (2026-11-03).png' : '6K Daily Market Briefing.png'}</div>
-                            <div className="text-[10px] text-white/40 font-mono">0.4s 快速生成 · 6144×3456</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5">
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-xs font-semibold text-white/80">{isZh ? '推廣文案' : 'Promo Copy'}</label>
                           <button
-                            onClick={() => showToast(isZh ? '正在打開 6K 預覽...' : 'Opening preview...')}
-                            className="rounded-lg border border-white/15 px-2 py-1 text-[11px] text-white/80 hover:text-white"
+                            onClick={() => showToast(isZh ? '✨ AI 已完成 5 組防封改寫變體！' : 'AI generated 5 anti-ban variants!')}
+                            className="text-xs text-sky-400 hover:underline cursor-pointer"
                           >
-                            {isZh ? '預覽' : 'View'}
-                          </button>
-                          <button
-                            onClick={() => showToast(isZh ? '已一鍵發送至 Telegram 官方社群！' : 'Sent to TG!')}
-                            className="rounded-lg bg-emerald-500/20 border border-emerald-400/30 px-2 py-1 text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 transition"
-                          >
-                            {isZh ? '推送到TG' : 'Push'}
+                            {isZh ? '✨ AI 改寫防封版' : '✨ AI Anti-ban'}
                           </button>
                         </div>
+                        <textarea
+                          rows="2"
+                          defaultValue={isZh ? 'MOORE LABS 2026 生態基金啟動！持有即可享受專屬量化策略與合規實體資產分紅：https://ai.apg.mom/webside' : 'MOORE LABS 2026 Ecosystem Fund is live! https://ai.apg.mom/webside'}
+                          className="w-full rounded-xl border border-white/15 bg-black/40 p-2 text-xs text-white focus:border-sky-400 focus:outline-none"
+                        />
                       </div>
 
-                      {/* 口播視頻已生成 */}
-                      <div className="flex items-center justify-between rounded-xl border border-white/8 bg-black/30 p-3 text-xs">
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-sky-400 text-base">🎙</span>
-                          <div>
-                            <div className="font-semibold text-white">{isZh ? '竹子風知性口播_解說.mp4' : 'Zhuzi_Talking_Head.mp4'}</div>
-                            <div className="text-[10px] text-white/40 font-mono">1080P H.264 · 1m 24s</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => showToast(isZh ? '正在播放口播視頻...' : 'Playing...')}
-                            className="rounded-lg border border-white/15 px-2 py-1 text-[11px] text-white/80 hover:text-white"
-                          >
-                            {isZh ? '播放' : 'Play'}
-                          </button>
-                          <button
-                            onClick={() => showToast(isZh ? '視頻已成功下載到本地！' : 'Video downloaded!')}
-                            className="rounded-lg bg-sky-500/20 border border-sky-400/30 px-2 py-1 text-[11px] font-semibold text-sky-300 hover:bg-sky-500 hover:text-slate-950 transition"
-                          >
-                            {isZh ? '下載' : 'Get'}
-                          </button>
-                        </div>
+                      <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 p-2.5 flex items-center justify-between text-xs">
+                        <span className="text-sky-200">{isZh ? '安全頻控：每日 30~50 人，間隔 25 秒' : '30-50 users/day, 25s delay'}</span>
+                        <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-400">{isZh ? '100% 安全' : 'Safe'}</span>
                       </div>
+
+                      <button
+                        onClick={() => showToast(isZh ? '🚀 自動化打粉隊列已啟動！正在後台運行' : 'Growth queue launched!')}
+                        className="w-full rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 py-2.5 text-xs font-bold text-white hover:brightness-110 active:scale-95 transition"
+                      >
+                        {isZh ? '啟動自動化拓客隊列' : 'Launch Growth Automation'}
+                      </button>
                     </div>
                   </div>
                 </div>
