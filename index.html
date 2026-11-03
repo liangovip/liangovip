@@ -845,8 +845,8 @@
     // 移動端 (Mobile)：原生 iOS 級 DApp 體驗 (單手大拇指盲操、動態展開 Dock 7膠囊)
     // =========================================================================
     
-    // 2026 非小號曼谷峰會 · 傳統企業極簡版 DECK 唯一固定成品直連路徑（Nginx ETag 實時同步最新定稿 · 8.2MB 毫秒級秒開）
-    const FXH_SUMMIT_PDF_URL = './assets/fxh_deck/2026非小号曼谷峰会_传统企业极简版_DECK.pdf';
+    // 2026 非小號曼谷峰會 · 傳統企業極簡版 DECK 唯一固定成品夾直連路徑（Nginx 直接掛載固定成品夾 + 動態時間戳 100% 穿透緩存）
+    const FXH_SUMMIT_PDF_URL = './fxh-summit-deck/2026非小号曼谷峰会_传统企业极简版_DECK.pdf';
 
     function ConsoleView({ lang, toggleLang, onBack }) {
       const [activeTab, setActiveTab] = useState('wallet'); // 'wallet'|'media'|'bot'|'growth'|'chat'|'ppt'|'translate'
@@ -2795,8 +2795,12 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                         {lang === 'zh' ? 'Wallet MPC 門限安全' : 'Wallet MPC Security'}
                       </span>
                       <a
-                        href={FXH_SUMMIT_PDF_URL}
-                        title={lang === 'zh' ? '點擊直接打開：2026非小號曼谷峰會_傳統企業極簡版_DECK.pdf' : 'Click to open 2026 Feixiaohao Bangkok Summit Pitch Deck PDF'}
+                        href={`${FXH_SUMMIT_PDF_URL}?t=latest`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = `${FXH_SUMMIT_PDF_URL}?t=${Date.now()}`;
+                        }}
+                        title={lang === 'zh' ? '點擊直接打開最新：2026非小號曼谷峰會_傳統企業極簡版_DECK.pdf' : 'Click to open latest 2026 Feixiaohao Bangkok Summit Pitch Deck PDF'}
                         className="inline-flex items-center rounded-full border border-emerald-500/45 bg-white/90 hover:bg-emerald-50 text-[#0f172a] hover:text-emerald-950 px-3.5 py-1 text-xs font-semibold backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
                       >
                         <span className="mr-1.5 text-emerald-600 font-bold group-hover:scale-125 transition-transform">&#10022;</span>
