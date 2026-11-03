@@ -843,18 +843,513 @@
     // 桌面端 (PC)：高盛/幣安級 Web3 專業控制台中台 (左右分欄、7大中台業務)
     // 移動端 (Mobile)：原生 iOS 級 DApp 體驗 (單手大拇指盲操、動態展開 Dock 7膠囊)
     // =========================================================================
-    function ConsoleView({ lang, toggleLang, onBack, initialTab = 'wallet', initialPreset = 'fxh' }) {
-      const getInitialTab = () => {
-        try {
-          if (typeof window !== 'undefined' && window.location.hash.includes('tab=')) {
-            const m = window.location.hash.match(/tab=([a-zA-Z0-9_]+)/);
-            if (m && m[1]) return m[1];
-          }
-        } catch (e) {}
-        return initialTab || 'wallet';
+    
+    // =========================================================================
+    // 2026 非小號曼谷峰會 · 傳統企業招商 PPT 獨立詳情瀏覽器 (SummitDeckViewer)
+    // 點擊首頁紅框「萬人國際盛會交付 / 非小號峰會」直接打開本頁，無需生成步驟，直接瀏覽全套 22 頁傳統企業招商 PPT 詳情
+    // 支持：1. 16:9 交互式大屏幻燈片翻頁  2. 單列超清長圖連讀模式  3. 全頁畫冊網格一覽  4. 點擊全屏放大與 PDF 原件下載
+    // =========================================================================
+    const SUMMIT_DECK_SLIDES = [
+      { id: 1, section: 'overview', tag: 'COVER', title: '峰會主視覺封面', titleEn: 'Summit Keynote Cover', file: './assets/fxh_deck/01_cover_clean.webp', desc: '2026非小號旗艦先導峰會暨鏈接納斯達克AI與股票代幣化研討會 · HOST: 非小號 (NASDAQ: FXHO) ｜ CO-HOST: Moore Labs' },
+      { id: 2, section: 'overview', tag: 'OVERVIEW', title: '峰會總覽與核心背景', titleEn: 'Summit Overview & Background', file: './assets/fxh_deck/02_summit_overview_clean.webp', desc: '幣安區塊鏈周曼谷站先導峰會 · 打通華爾街合規資本、傳統實體企業轉型與鏈上流動性樞紐' },
+      { id: 3, section: 'organizer', tag: 'HOST INTRO', title: '主辦方介紹：非小號 (Feixiaohao)', titleEn: 'Host Intro: Feixiaohao', file: './assets/fxh_deck/03_fxh_intro_photos_clean.webp', desc: '全球領先的數字資產數據與生態平台 · 攜手聯合主辦方 Moore Labs 打造萬人級國際盛典' },
+      { id: 4, section: 'organizer', tag: 'NASDAQ: FXHO', title: '納斯達克上市與幣安生態佈局', titleEn: 'NASDAQ Listing & Ecosystem', file: './assets/fxh_deck/03b_fxh_nasdaq_fxho_clean.webp', desc: 'Feixiaohao Inc. (NASDAQ: FXHO) 合規上市實體背書 · 深度接入頂級公鏈與全球合規金融網絡' },
+      { id: 5, section: 'organizer', tag: '9 YEARS METRICS', title: '非小號九年深耕十大核心指標', titleEn: '9 Years of Core Metrics', file: './assets/fxh_deck/04_fxh_metrics_clean.webp', desc: '累計覆蓋 3,000萬+ 用戶、5,000+ 全球 KOL、600+ 合作媒體、9年零中斷安全穩定運行' },
+      { id: 6, section: 'organizer', tag: 'MEDIA MATRIX', title: '全球宣發與 600+ 合作媒體矩陣', titleEn: 'Global Media Matrix', file: './assets/fxh_deck/04b_media_matrix_clean.webp', desc: '600+ 權威財經與 Web3 媒體聯合宣發 · 13大主流直播平台全球同步推流，千萬級品牌曝光' },
+      { id: 7, section: 'organizer', tag: 'CO-HOST', title: '聯合主辦方：Moore Labs 機構介紹', titleEn: 'Co-Host: Moore Labs', file: './assets/fxh_deck/04c_moore_labs_intro_clean.webp', desc: '新加坡 ACRA 官方註冊深度孵化網絡 · $5,000萬生態基金、MPC 門限金庫與曼谷實體基地' },
+      { id: 8, section: 'value', tag: 'AUDIENCE', title: '峰會參會對象與適合企業', titleEn: 'Target Enterprises & Audience', file: './assets/fxh_deck/05_target_audience_clean.webp', desc: '精準面向傳統實體企業轉型、上市公司代表、股票代幣化與 RWA 資產方、AI 科技企業及頂級 VC' },
+      { id: 9, section: 'value', tag: 'CORE VALUE', title: '為什麼傳統企業不能錯過這場峰會', titleEn: 'Why Attend This Summit', file: './assets/fxh_deck/05b_why_attend_clean.webp', desc: '華爾街合規資本 × 東盟政商資源 × 幣安周先導流量 · 為傳統企業提供一站式出海與資本對接閉環' },
+      { id: 10, section: 'value', tag: 'VENUE & TIME', title: '活動時間與曼谷核心場館座標', titleEn: 'Date, Time & Bangkok Venue', file: './assets/fxh_deck/06_time_location_clean.webp', desc: '2026年11月27日 13:00-21:30 · 泰國曼谷中華總商會宴會廳 (Thai CC Banquet Hall)' },
+      { id: 11, section: 'value', tag: 'GOLDEN WINDOW', title: '曼谷 Web3 黃金檔期全覽 (11.21-12.05)', titleEn: 'Bangkok Summit Circuit', file: './assets/fxh_deck/09_bangkok_bbw_track_clean.webp', desc: '處於幣安區塊鏈周開幕前 1 天黃金 C 位檔期，全球機構抵泰首站聚焦，商務轉化率最高' },
+      { id: 12, section: 'sponsor', tag: 'DIAMOND · 10,000U', title: '鑽石贊助方案 (10,000 USDT)', titleEn: 'Diamond Sponsorship (10,000 USDT)', file: './assets/fxh_deck/07_sponsor_diamond_clean.webp', desc: '含 10分鐘獨立主題演講、10分鐘官方專訪、VIP晚宴主桌席位+10張門票、首頁廣告2周及幣安生態閉門對接' },
+      { id: 13, section: 'sponsor', tag: 'GOLD · 3,000U', title: '黃金贊助方案 (3,000 USDT)', titleEn: 'Gold Sponsorship (3,000 USDT)', file: './assets/fxh_deck/08_sponsor_gold_clean.webp', desc: '含現場授牌頒獎、VIP席位+2張門票、官方新聞稿2篇+快訊3條、首頁廣告1周及專場 Space 圓桌' },
+      { id: 14, section: 'sponsor', tag: 'SILVER · 1,000U', title: '白銀贊助方案 (1,000 USDT)', titleEn: 'Silver Sponsorship (1,000 USDT)', file: './assets/fxh_deck/09_sponsor_silver_clean.webp', desc: '含大會VIP門票、主視覺背景板與宣傳物料品牌 LOGO 露出、600+ 媒體矩陣聯合宣發報導' },
+      { id: 15, section: 'sponsor', tag: 'COMPARISON', title: '三檔贊助方案核心權益對比總表', titleEn: 'Sponsorship Packages Comparison', file: './assets/fxh_deck/09b_sponsor_comparison_clean.webp', desc: '鑽石 (10,000U) / 黃金 (3,000U) / 白銀 (1,000U) 四大維度 18 項核心招商權益一覽對照' },
+      { id: 16, section: 'highlights', tag: 'HIGHLIGHTS 01', title: '往期活動集錦 (01)：千人主會場與 RWA 論壇', titleEn: 'Past Highlights 01: Main Stage', file: './assets/fxh_deck/10_rwa_events_1_clean.webp', desc: '往期全球千人峰會主會場爆滿實況與 RWA 實體資產代幣化專題演講現場' },
+      { id: 17, section: 'highlights', tag: 'HIGHLIGHTS 02', title: '往期活動集錦 (02)：全球峰會足跡與國際展台', titleEn: 'Past Highlights 02: Global Footprint', file: './assets/fxh_deck/11_rwa_events_2_clean.webp', desc: '香港 Web3 嘉年華、Bitcoin 2024 國際展台與全球參展企業深度商務洽談實拍' },
+      { id: 18, section: 'highlights', tag: 'HIGHLIGHTS 03', title: '往期活動集錦 (03)：VIP 晚宴與年度頒獎盛典', titleEn: 'Past Highlights 03: VIP Gala & Awards', file: './assets/fxh_deck/16_rwa_events_4_clean.webp', desc: '高規格閉門資本晚宴、傳統企業家與加密基金創始人面對面授牌頒獎榮耀時刻' },
+      { id: 19, section: 'highlights', tag: 'HIGHLIGHTS 04', title: '往期活動集錦 (04)：圓桌論壇與行業領袖碰撞', titleEn: 'Past Highlights 04: Roundtable Panels', file: './assets/fxh_deck/17_rwa_events_5_clean.webp', desc: '匯聚納斯達克上市公司高管、知名學者與頂級 KOL 的深度圓桌思想交鋒' },
+      { id: 20, section: 'highlights', tag: 'HIGHLIGHTS 05', title: '往期活動集錦 (05)：全球戰略簽約與授牌儀式', titleEn: 'Past Highlights 05: Signing Ceremony', file: './assets/fxh_deck/15_rwa_events_6_clean.webp', desc: '多國傳統實體企業、合規金流機構與生態基金現場達成戰略合作簽約實景' },
+      { id: 21, section: 'highlights', tag: 'HIGHLIGHTS 06', title: '往期活動集錦 (06)：曼谷 IMPACT 峰會與全球社區', titleEn: 'Past Highlights 06: Bangkok Community', file: './assets/fxh_deck/18_rwa_events_6b_clean.webp', desc: '泰國曼谷本地政商資源聯動、東南亞萬人社區共識盛典現場實錄' },
+      { id: 22, section: 'highlights', tag: 'CLOSING', title: '峰會封底主視覺：2026.11.27 曼谷見', titleEn: 'Closing Keynote: See You in Bangkok', file: './assets/fxh_deck/19_closing_clean.webp', desc: '鏈動全球資本 · 煥新價值生態 —— 誠邀全球傳統企業與合作夥伴共赴曼谷盛會' }
+    ];
+
+    function SummitDeckViewer({ lang, toggleLang, onBack }) {
+      const isZh = lang === 'zh';
+      const [currentIndex, setCurrentIndex] = useState(0);
+      const [displayMode, setDisplayMode] = useState('both'); // 'slide' | 'scroll' | 'grid' | 'both'
+      const [activeSection, setActiveSection] = useState('all');
+      const [fullscreenSlide, setFullscreenSlide] = useState(null);
+
+      const currentSlide = SUMMIT_DECK_SLIDES[currentIndex] || SUMMIT_DECK_SLIDES[0];
+
+      const goPrev = () => {
+        setCurrentIndex((prev) => (prev > 0 ? prev - 1 : SUMMIT_DECK_SLIDES.length - 1));
       };
 
-      const [activeTab, setActiveTab] = useState(getInitialTab); // 'wallet'|'media'|'bot'|'growth'|'chat'|'ppt'|'translate'
+      const goNext = () => {
+        setCurrentIndex((prev) => (prev < SUMMIT_DECK_SLIDES.length - 1 ? prev + 1 : 0));
+      };
+
+      const jumpToSlide = (idx) => {
+        setCurrentIndex(idx);
+        const stageEl = document.getElementById('deck-main-stage');
+        if (stageEl) {
+          stageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      // 鍵盤左右方向鍵翻頁支持
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (fullscreenSlide) {
+            if (e.key === 'Escape') setFullscreenSlide(null);
+            if (e.key === 'ArrowLeft') {
+              const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
+              const nextIdx = idx > 0 ? idx - 1 : SUMMIT_DECK_SLIDES.length - 1;
+              setFullscreenSlide(SUMMIT_DECK_SLIDES[nextIdx]);
+            }
+            if (e.key === 'ArrowRight') {
+              const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
+              const nextIdx = idx < SUMMIT_DECK_SLIDES.length - 1 ? idx + 1 : 0;
+              setFullscreenSlide(SUMMIT_DECK_SLIDES[nextIdx]);
+            }
+            return;
+          }
+          if (e.key === 'ArrowLeft') goPrev();
+          if (e.key === 'ArrowRight') goNext();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [fullscreenSlide]);
+
+      const sections = [
+        { id: 'all', labelZh: '全部章節 (22頁)', labelEn: 'All Slides (22)', startIdx: 0 },
+        { id: 'overview', labelZh: '🔥 峰會總覽 (P01-02)', labelEn: 'Overview (P01-02)', startIdx: 0 },
+        { id: 'organizer', labelZh: '🏛️ 主辦方與上市實力 (P03-07)', labelEn: 'Organizers (P03-07)', startIdx: 2 },
+        { id: 'value', labelZh: '🎯 傳統企業參會價值 (P08-11)', labelEn: 'Enterprise Value (P08-11)', startIdx: 7 },
+        { id: 'sponsor', labelZh: '💎 招商贊助方案 (P12-15)', labelEn: 'Sponsorship (P12-15)', startIdx: 11 },
+        { id: 'highlights', labelZh: '📸 往期千人峰會實況 (P16-22)', labelEn: 'Past Highlights (P16-22)', startIdx: 15 },
+      ];
+
+      const filteredSlides = activeSection === 'all'
+        ? SUMMIT_DECK_SLIDES
+        : SUMMIT_DECK_SLIDES.filter((s) => s.section === activeSection);
+
+      return (
+        <div className="min-h-screen bg-[#060b16] text-white selection:bg-amber-400/30 relative overflow-x-hidden pb-20">
+          {/* 背景環境光 */}
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="absolute -top-32 left-1/4 h-[480px] w-[480px] rounded-full bg-indigo-600/10 blur-[140px]"></div>
+            <div className="absolute top-1/3 right-10 h-[520px] w-[520px] rounded-full bg-amber-500/8 blur-[150px]"></div>
+          </div>
+
+          {/* 全屏超清放大燈箱 (Fullscreen Lightbox) */}
+          {fullscreenSlide && (
+            <div
+              className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-2xl flex flex-col justify-between p-3 sm:p-6 animate-fadeIn"
+              onClick={() => setFullscreenSlide(null)}
+            >
+              <div className="flex items-center justify-between max-w-7xl w-full mx-auto border-b border-white/10 pb-3" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-2.5">
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-bold">
+                    PAGE {fullscreenSlide.id < 10 ? `0${fullscreenSlide.id}` : fullscreenSlide.id} / 22
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-white truncate max-w-[220px] sm:max-w-lg">
+                    {isZh ? fullscreenSlide.title : fullscreenSlide.titleEn}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
+                      const prevIdx = idx > 0 ? idx - 1 : SUMMIT_DECK_SLIDES.length - 1;
+                      setFullscreenSlide(SUMMIT_DECK_SLIDES[prevIdx]);
+                    }}
+                    className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
+                  >
+                    ← {isZh ? '上一頁' : 'Prev'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const idx = SUMMIT_DECK_SLIDES.findIndex((s) => s.id === fullscreenSlide.id);
+                      const nextIdx = idx < SUMMIT_DECK_SLIDES.length - 1 ? idx + 1 : 0;
+                      setFullscreenSlide(SUMMIT_DECK_SLIDES[nextIdx]);
+                    }}
+                    className="rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs font-bold text-white cursor-pointer transition"
+                  >
+                    {isZh ? '下一頁' : 'Next'} →
+                  </button>
+                  <button
+                    onClick={() => setFullscreenSlide(null)}
+                    className="rounded-xl bg-rose-500/20 border border-rose-400/40 hover:bg-rose-500 hover:text-white px-3.5 py-1.5 text-xs font-bold text-rose-200 cursor-pointer transition"
+                  >
+                    ✕ {isZh ? '退出全屏' : 'Close'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="my-auto max-w-7xl w-full mx-auto flex items-center justify-center relative py-2" onClick={(e) => e.stopPropagation()}>
+                <img
+                  src={fullscreenSlide.file}
+                  alt={fullscreenSlide.title}
+                  className="max-h-[78vh] w-auto object-contain rounded-2xl border border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.8)]"
+                />
+              </div>
+
+              <div className="max-w-7xl w-full mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-white/10 pt-3 text-xs text-white/70" onClick={(e) => e.stopPropagation()}>
+                <p>{fullscreenSlide.desc}</p>
+                <span className="font-mono text-amber-300 shrink-0">HOST: 非小號 (NASDAQ: FXHO) ｜ CO-HOST: Moore Labs</span>
+              </div>
+            </div>
+          )}
+
+          {/* 頂部固定導航欄 */}
+          <header className="sticky top-0 z-50 border-b border-white/10 bg-[#080e1d]/90 backdrop-blur-2xl">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-6 gap-2">
+              <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+                <button
+                  onClick={onBack}
+                  className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-white hover:border-amber-400/60 hover:bg-white/10 transition active:scale-95 cursor-pointer shrink-0"
+                >
+                  <span className="text-amber-400 font-bold">←</span>
+                  <span>{isZh ? '返回首頁' : 'Back Home'}</span>
+                </button>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+                    <h1 className="text-xs sm:text-sm md:text-base font-bold tracking-tight text-white truncate">
+                      {isZh ? '2026 非小號曼谷峰會 · 傳統企業招商 PPT 詳情' : '2026 Feixiaohao Bangkok Summit · Enterprise Pitch Deck'}
+                    </h1>
+                    <span className="hidden md:inline-flex items-center rounded-full bg-amber-500/15 border border-amber-400/30 px-2.5 py-0.5 text-[11px] font-mono font-semibold text-amber-300">
+                      22 SLIDES FULL DECK
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 右側視圖切換與下載操作 */}
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="hidden sm:flex items-center rounded-full border border-white/12 bg-white/[0.03] p-0.5 text-xs">
+                  <button
+                    onClick={() => setDisplayMode('both')}
+                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${displayMode === 'both' ? 'bg-amber-400 text-slate-950' : 'text-white/70 hover:text-white'}`}
+                  >
+                    {isZh ? '🎞️ 演播 + 全頁詳情' : 'Stage + Full'}
+                  </button>
+                  <button
+                    onClick={() => setDisplayMode('scroll')}
+                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${displayMode === 'scroll' ? 'bg-amber-400 text-slate-950' : 'text-white/70 hover:text-white'}`}
+                  >
+                    {isZh ? '📜 長圖連讀' : 'Vertical Scroll'}
+                  </button>
+                  <button
+                    onClick={() => setDisplayMode('grid')}
+                    className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${displayMode === 'grid' ? 'bg-amber-400 text-slate-950' : 'text-white/70 hover:text-white'}`}
+                  >
+                    {isZh ? '⊞ 畫冊網格' : 'Grid View'}
+                  </button>
+                </div>
+
+                <a
+                  href="./assets/fxh_deck/2026_feixiaohao_bangkok_summit_enterprise_deck.pdf"
+                  target="_blank"
+                  download="2026非小號曼谷峰會_傳統企業招商PPT_完整版.pdf"
+                  className="rounded-full bg-gradient-to-r from-amber-500 to-amber-400 px-3.5 py-1.5 text-xs font-bold text-slate-950 hover:brightness-110 transition shadow-[0_4px_16px_rgba(245,158,11,0.3)] inline-flex items-center gap-1"
+                >
+                  <span>⬇</span>
+                  <span>{isZh ? '下載 PDF' : 'PDF'}</span>
+                </a>
+
+                <button
+                  onClick={toggleLang}
+                  className="rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-semibold text-white/80 hover:text-white cursor-pointer"
+                >
+                  {isZh ? 'EN' : '繁'}
+                </button>
+              </div>
+            </div>
+
+            {/* 章節快速跳轉導航欄 */}
+            <div className="border-t border-white/6 bg-[#060a15]/80">
+              <div className="mx-auto max-w-7xl px-3 sm:px-6 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+                {sections.map((sec) => {
+                  const isActive = activeSection === sec.id;
+                  return (
+                    <button
+                      key={sec.id}
+                      onClick={() => {
+                        setActiveSection(sec.id);
+                        setCurrentIndex(sec.startIdx);
+                      }}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                        isActive
+                          ? 'bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
+                          : 'border border-white/8 bg-white/[0.02] text-white/65 hover:text-white hover:border-white/20'
+                      }`}
+                    >
+                      {isZh ? sec.labelZh : sec.labelEn}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </header>
+
+          {/* 主體內容區 */}
+          <main className="relative z-10 mx-auto max-w-7xl px-3 sm:px-6 pt-5 space-y-8">
+            {/* 移動端視圖模式快速切換條 */}
+            <div className="flex sm:hidden items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-1 text-xs">
+              <button
+                onClick={() => setDisplayMode('both')}
+                className={`flex-1 py-1.5 rounded-xl font-bold transition ${displayMode === 'both' ? 'bg-amber-400 text-slate-950' : 'text-white/70'}`}
+              >
+                {isZh ? '🎞️ 幻燈片翻頁' : 'Slide'}
+              </button>
+              <button
+                onClick={() => setDisplayMode('scroll')}
+                className={`flex-1 py-1.5 rounded-xl font-bold transition ${displayMode === 'scroll' ? 'bg-amber-400 text-slate-950' : 'text-white/70'}`}
+              >
+                {isZh ? '📜 長圖連讀 (22頁)' : 'Scroll All'}
+              </button>
+              <button
+                onClick={() => setDisplayMode('grid')}
+                className={`flex-1 py-1.5 rounded-xl font-bold transition ${displayMode === 'grid' ? 'bg-amber-400 text-slate-950' : 'text-white/70'}`}
+              >
+                {isZh ? '⊞ 縮略網格' : 'Grid'}
+              </button>
+            </div>
+
+            {/* 第一部分：16:9 高清交互式幻燈片主舞台 (當處於 both 或 slide 模式時顯示) */}
+            {(displayMode === 'both' || displayMode === 'slide') && (
+              <section id="deck-main-stage" className="rounded-3xl border border-white/12 bg-[linear-gradient(180deg,rgba(15,24,42,0.92),rgba(8,13,25,0.96))] p-3.5 sm:p-6 shadow-[0_24px_80px_rgba(0,0,0,0.65)] space-y-4">
+                {/* 舞台頂部頁碼與標題欄 */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/8 pb-3.5">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <span className="rounded-lg bg-amber-500/20 border border-amber-400/40 px-2.5 py-1 font-mono text-xs font-bold text-amber-300">
+                      SLIDE {currentSlide.id < 10 ? `0${currentSlide.id}` : currentSlide.id} / 22
+                    </span>
+                    <span className="rounded-md bg-emerald-500/15 border border-emerald-400/30 px-2 py-0.5 font-mono text-[11px] font-semibold text-emerald-300">
+                      {currentSlide.tag}
+                    </span>
+                    <h2 className="text-base sm:text-lg font-bold text-white">
+                      {isZh ? currentSlide.title : currentSlide.titleEn}
+                    </h2>
+                  </div>
+
+                  {/* 翻頁與全屏按鈕組 */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={goPrev}
+                      className="rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 px-3.5 py-1.5 text-xs font-bold text-white transition active:scale-95 cursor-pointer"
+                    >
+                      ← {isZh ? '上一頁' : 'Prev'}
+                    </button>
+                    <button
+                      onClick={goNext}
+                      className="rounded-xl bg-amber-400 hover:bg-amber-300 px-4 py-1.5 text-xs font-bold text-slate-950 transition active:scale-95 cursor-pointer shadow-[0_4px_14px_rgba(245,158,11,0.3)]"
+                    >
+                      {isZh ? '下一頁' : 'Next'} →
+                    </button>
+                    <button
+                      onClick={() => setFullscreenSlide(currentSlide)}
+                      className="rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/90 transition cursor-pointer"
+                      title={isZh ? '全屏放大查看' : 'Fullscreen'}
+                    >
+                      ⛶ {isZh ? '全屏放大' : 'Fullscreen'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 16:9 幻燈片高清主畫面 + 左右懸浮切換熱區 */}
+                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/15 bg-black shadow-2xl group">
+                  <img
+                    src={currentSlide.file}
+                    alt={currentSlide.title}
+                    onClick={() => setFullscreenSlide(currentSlide)}
+                    className="w-full h-full object-contain cursor-zoom-in transition-transform duration-300"
+                  />
+
+                  {/* 左側上一頁大按鈕 */}
+                  <button
+                    onClick={goPrev}
+                    aria-label="Previous Slide"
+                    className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-white/20 bg-slate-950/75 text-white hover:bg-amber-400 hover:text-slate-950 hover:border-amber-300 transition flex items-center justify-center text-lg font-bold shadow-xl backdrop-blur-md cursor-pointer"
+                  >
+                    ‹
+                  </button>
+
+                  {/* 右側下一頁大按鈕 */}
+                  <button
+                    onClick={goNext}
+                    aria-label="Next Slide"
+                    className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 h-9 w-9 sm:h-12 sm:w-12 rounded-full border border-white/20 bg-slate-950/70 text-white hover:bg-amber-400 hover:text-slate-950 hover:border-amber-300 transition flex items-center justify-center text-lg font-bold shadow-xl backdrop-blur-md cursor-pointer"
+                  >
+                    ›
+                  </button>
+                </div>
+
+                {/* 畫框外部下方：當前頁核心看點解讀條（100% 零遮擋 PPT 畫面） */}
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed">
+                    {currentSlide.desc}
+                  </p>
+                  <span className="text-[11px] font-mono text-amber-300 shrink-0">
+                    {isZh ? '🔍 點擊 PPT 畫面可全屏放大 · 支持 ← → 鍵翻頁' : '🔍 Click slide to zoom · Use ← → keys'}
+                  </span>
+                </div>
+
+                {/* 底部 22 頁橫向膠片縮略圖導航條 (Filmstrip) */}
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center justify-between text-xs text-white/50">
+                    <span>{isZh ? '🎞️ 全套 22 頁 PPT 縮略導航（點擊任意頁秒級切換）' : '🎞️ 22-Slide Filmstrip Navigation'}</span>
+                    <span className="font-mono text-amber-300">PAGE {currentSlide.id} OF 22</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar">
+                    {SUMMIT_DECK_SLIDES.map((s, idx) => {
+                      const active = idx === currentIndex;
+                      return (
+                        <button
+                          key={s.id}
+                          onClick={() => setCurrentIndex(idx)}
+                          className={`group relative shrink-0 w-28 sm:w-36 rounded-xl overflow-hidden border transition-all duration-200 cursor-pointer text-left ${
+                            active
+                              ? 'border-amber-400 ring-2 ring-amber-400/50 scale-[1.03] shadow-[0_4px_20px_rgba(245,158,11,0.3)]'
+                              : 'border-white/10 opacity-65 hover:opacity-100 hover:border-white/30'
+                          }`}
+                        >
+                          <div className="aspect-[16/9] w-full bg-black">
+                            <img src={s.file} alt={s.title} className="w-full h-full object-cover" loading="lazy" />
+                          </div>
+                          <div className={`px-2 py-1 text-[10px] font-mono truncate ${active ? 'bg-amber-400 text-slate-950 font-bold' : 'bg-slate-900/90 text-white/80'}`}>
+                            P{s.id < 10 ? `0${s.id}` : s.id} · {s.title}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* 第二部分：全套 22 頁 PPT 詳情完整瀏覽區（長圖連讀模式 或 畫冊網格模式） */}
+            <section className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                    <span className="text-amber-400">✦</span>
+                    <span>{isZh ? '非小號曼谷峰會 · 傳統企業招商 PPT 全頁詳情一覽' : 'Full 22-Slide Enterprise Pitch Deck Details'}</span>
+                    <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-400/30 px-2 py-0.5 rounded-full">
+                      {filteredSlides.length} {isZh ? '頁' : 'Slides'}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-white/60 mt-0.5">
+                    {isZh ? '以下為傳統企業招商 PPT 完整頁面詳情，可直接上下滑動瀏覽，或點擊任意頁面全屏高清查看' : 'Scroll down to read all slides in detail, or click any slide to view in fullscreen HD'}
+                  </p>
+                </div>
+              </div>
+
+              {/* 根據視圖模式渲染：若為 scroll 則單列大圖長卷連讀；否則為高清雙列詳情畫冊 */}
+              {displayMode === 'scroll' ? (
+                <div className="space-y-6 max-w-5xl mx-auto">
+                  {filteredSlides.map((slide) => (
+                    <div
+                      key={slide.id}
+                      className="rounded-3xl border border-white/12 bg-[#0b1324] p-3 sm:p-5 shadow-xl space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-bold">
+                            PAGE {slide.id < 10 ? `0${slide.id}` : slide.id} / 22
+                          </span>
+                          <span className="text-sm sm:text-base font-bold text-white">
+                            {isZh ? slide.title : slide.titleEn}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setFullscreenSlide(slide)}
+                          className="text-xs text-amber-300 hover:underline font-mono cursor-pointer"
+                        >
+                          🔍 {isZh ? '全屏查看' : 'Zoom'}
+                        </button>
+                      </div>
+
+                      <div
+                        onClick={() => setFullscreenSlide(slide)}
+                        className="aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/10 bg-black cursor-zoom-in"
+                      >
+                        <img src={slide.file} alt={slide.title} className="w-full h-full object-contain" loading="lazy" />
+                      </div>
+
+                      <p className="text-xs sm:text-sm text-white/75 leading-relaxed">
+                        {slide.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {filteredSlides.map((slide) => (
+                    <div
+                      key={slide.id}
+                      className="group rounded-3xl border border-white/12 bg-[linear-gradient(145deg,#0d1629,#080e1c)] p-4 space-y-3 shadow-lg hover:border-amber-400/50 hover:shadow-[0_8px_32px_rgba(245,158,11,0.18)] transition-all duration-300"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-bold">
+                            P{slide.id < 10 ? `0${slide.id}` : slide.id}
+                          </span>
+                          <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 font-mono text-[10px] border border-emerald-400/30">
+                            {slide.tag}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => jumpToSlide(slide.id - 1)}
+                            className="text-[11px] text-white/60 hover:text-amber-300 font-mono cursor-pointer"
+                          >
+                            {isZh ? '在主舞台打開 ↗' : 'Open in Stage ↗'}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div
+                        onClick={() => setFullscreenSlide(slide)}
+                        className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/10 bg-black cursor-pointer"
+                      >
+                        <img
+                          src={slide.file}
+                          alt={slide.title}
+                          className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                          <span className="rounded-full bg-slate-950/90 border border-amber-400/60 px-3.5 py-1.5 text-xs font-bold text-amber-300 shadow-lg">
+                            🔍 {isZh ? '點擊全屏高清查看此頁 PPT' : 'Click for Fullscreen HD'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <h4 className="text-sm sm:text-base font-bold text-white">
+                          {isZh ? slide.title : slide.titleEn}
+                        </h4>
+                        <p className="text-xs text-white/65 leading-relaxed">
+                          {slide.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </main>
+        </div>
+      );
+    }
+
+    function ConsoleView({ lang, toggleLang, onBack }) {
+      const [activeTab, setActiveTab] = useState('wallet'); // 'wallet'|'media'|'bot'|'growth'|'chat'|'ppt'|'translate'
       const [aiEngine, setAiEngine] = useState('poster'); // 'poster' | 'video' | 'avatar'
       const [trafficChannel, setTrafficChannel] = useState('telegram'); // 'telegram' | 'whatsapp'
       const [chatFilter, setChatFilter] = useState('all'); // 'all' | 'tg' | 'whatsapp' | 'web'
@@ -862,47 +1357,8 @@
       const [aiAutoReply, setAiAutoReply] = useState(true);
       const [toast, setToast] = useState(null);
 
-      // PPT 製作與非小號招商狀態
-      const getInitialPreset = () => {
-        try {
-          if (typeof window !== 'undefined' && window.location.hash.includes('preset=')) {
-            const m = window.location.hash.match(/preset=([a-zA-Z0-9_]+)/);
-            if (m && m[1]) return m[1];
-          }
-        } catch (e) {}
-        return initialPreset || 'fxh';
-      };
-
-      const [pptSelectedVault, setPptSelectedVault] = useState(getInitialPreset);
+      // PPT 製作狀態
       const [pptPreset, setPptPreset] = useState('keynote');
-      const [showAllFxhSlides, setShowAllFxhSlides] = useState(false);
-      const [lightboxSlide, setLightboxSlide] = useState(null);
-
-      useEffect(() => {
-        if (initialTab) setActiveTab(initialTab);
-        if (initialPreset) setPptSelectedVault(initialPreset);
-      }, [initialTab, initialPreset]);
-
-      // 11月27日非小號曼谷峰會 · 傳統企業招商專用 PPT 超清幻燈片數據庫 (真實資產)
-      const fxhSlides = [
-        { id: 1, title: '峰會主視覺封面', titleEn: 'Keynote Cover', tag: 'COVER', file: './assets/fxh_deck/01_cover_clean.webp', note: 'HOST: 非小號 · CO-HOST: Moore Labs' },
-        { id: 2, title: '峰會總覽與核心背景', titleEn: 'Summit Overview', tag: 'OVERVIEW', file: './assets/fxh_deck/02_summit_overview_clean.webp', note: '東盟金融中心雲端天際線 · 傳統企業轉型' },
-        { id: 3, title: '納斯達克上市與FXHO', titleEn: 'Nasdaq & FXHO', tag: 'LISTED', file: './assets/fxh_deck/03b_fxh_nasdaq_fxho_clean.webp', note: '上市代碼 · 接入頂級公鏈流動性' },
-        { id: 4, title: '非小號九年實力指標', titleEn: 'Platform Metrics', tag: 'METRICS', file: './assets/fxh_deck/04_fxh_metrics_clean.webp', note: '3,000萬用戶 · 5,000+ KOL · 9年沈淀' },
-        { id: 5, title: '參會對象與適合企業', titleEn: 'Target Enterprise', tag: 'AUDIENCE', file: './assets/fxh_deck/05_target_audience_clean.webp', note: '傳統企業實體資產躍遷 · 上市公司代表' },
-        { id: 6, title: '為什麼不能錯過這場峰會', titleEn: 'Core Value', tag: 'VALUE', file: './assets/fxh_deck/05b_why_attend_clean.webp', note: '華爾街合規資本與鏈上實體金流交匯' },
-        { id: 7, title: '時間地點與場館交通', titleEn: 'Date & Venue', tag: 'LOCATION', file: './assets/fxh_deck/06_time_location_clean.webp', note: '2026年11月27日 16:00-20:00 泰國曼谷' },
-        { id: 8, title: '鑽石贊助方案 (10,000U)', titleEn: 'Diamond Sponsor', tag: 'DIAMOND', file: './assets/fxh_deck/07_sponsor_diamond_clean.webp', note: '10分鐘分享 + 專訪 + VIP席位 + 廣告2周' },
-        { id: 9, title: '黃金贊助方案 (3,000U)', titleEn: 'Gold Sponsor', tag: 'GOLD', file: './assets/fxh_deck/08_sponsor_gold_clean.webp', note: '現場頒獎 + VIP席位 + 官媒宣發 + 廣告1周' },
-        { id: 10, title: '白銀贊助方案 (1,000U)', titleEn: 'Silver Sponsor', tag: 'SILVER', file: './assets/fxh_deck/09_sponsor_silver_clean.webp', note: '大會普通門票 + 展位曝光 + 矩陣聯合報導' },
-        { id: 11, title: '三檔贊助權益對比矩陣', titleEn: 'Sponsorship Matrix', tag: 'COMPARE', file: './assets/fxh_deck/09b_sponsor_comparison_clean.webp', note: '白銀 / 黃金 / 鑽石 完整權益對照表' },
-        { id: 12, title: '千人峰會實況照片集錦', titleEn: 'Summit Live Photos', tag: 'GALLERY', file: './assets/fxh_deck/10_rwa_events_1_clean.webp', note: '主會場實拍 · 國際展商 · 萬人狂歡' },
-        { id: 13, title: '圓桌論壇與嘉賓思想碰撞', titleEn: 'Roundtable Panel', tag: 'PANEL', file: './assets/fxh_deck/11_rwa_events_2_clean.webp', note: '實體企業家與全球頂級基金閉門交流' },
-        { id: 14, title: '全球戰略簽約授牌儀式', titleEn: 'Signing Ceremony', tag: 'SIGNING', file: './assets/fxh_deck/15_rwa_events_6_clean.webp', note: '跨國傳統實體資產合作簽約實景' },
-        { id: 15, title: '全球媒體矩陣 (36家)', titleEn: 'Media Matrix', tag: 'MEDIA', file: './assets/fxh_deck/04b_media_matrix_clean.webp', note: 'CoinDesk · 金色財經 · PANews · 華爾街媒體' },
-        { id: 16, title: '聯合主辦方 Moore Labs', titleEn: 'Co-Host Intro', tag: 'CO-HOST', file: './assets/fxh_deck/04c_moore_labs_intro_clean.webp', note: '實體合規金庫架構 · 曼谷數字游民站' },
-        { id: 17, title: '閉幕致辭與商務對接', titleEn: 'Closing Keynote', tag: 'CLOSING', file: './assets/fxh_deck/19_closing_clean.webp', note: '曼谷之夜 · 官方招商聯絡窗口' },
-      ];
 
       // 圖片翻譯狀態
       const [targetLang, setTargetLang] = useState('en'); // 'en' | 'ja' | 'ko' | 'ar' | 'ru' | 'es'
@@ -1073,57 +1529,6 @@
             <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 rounded-full border border-amber-400/40 bg-slate-950/90 px-5 py-2 text-xs sm:text-sm font-semibold text-amber-200 shadow-[0_8px_32px_rgba(245,158,11,0.25)] backdrop-blur-xl animate-bounce">
               <span className="text-amber-400 font-bold">✓</span>
               <span>{toast}</span>
-            </div>
-          )}
-
-          {/* PPT 幻燈片全屏超清畫廊燈箱 (Lightbox Modal) */}
-          {lightboxSlide && (
-            <div 
-              className="fixed inset-0 z-[110] flex items-center justify-center bg-black/90 backdrop-blur-xl p-3 sm:p-6 animate-fadeIn"
-              onClick={() => setLightboxSlide(null)}
-            >
-              <div 
-                className="relative max-w-5xl w-full bg-[#0c1322] border border-white/20 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-3.5"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono text-xs font-bold border border-emerald-400/30">
-                      SLIDE {lightboxSlide.id < 10 ? `0${lightboxSlide.id}` : lightboxSlide.id}
-                    </span>
-                    <span className="text-sm font-bold text-white">{isZh ? lightboxSlide.title : lightboxSlide.titleEn}</span>
-                    <span className="text-xs text-white/50 hidden sm:inline font-mono">({lightboxSlide.tag})</span>
-                  </div>
-                  <button
-                    onClick={() => setLightboxSlide(null)}
-                    className="rounded-full bg-white/10 hover:bg-white/20 px-3 py-1 text-white/80 hover:text-white transition cursor-pointer text-xs font-semibold"
-                  >
-                    ✕ {isZh ? '關閉' : 'Close'}
-                  </button>
-                </div>
-                
-                <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden border border-white/10 bg-black/60 shadow-inner flex items-center justify-center">
-                  <img 
-                    src={lightboxSlide.file} 
-                    alt={lightboxSlide.title} 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-white/60 pt-1">
-                  <span className="font-mono text-amber-300">{lightboxSlide.note}</span>
-                  <div className="flex items-center gap-2">
-                    <a
-                      href="./assets/fxh_deck/2026_feixiaohao_bangkok_summit_enterprise_deck.pdf"
-                      target="_blank"
-                      download
-                      className="px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 hover:bg-amber-500 hover:text-slate-950 transition font-semibold"
-                    >
-                      {isZh ? '⬇ 下載 25頁極簡版 PDF (29MB)' : '⬇ Download PDF (29MB)'}
-                    </a>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
 
@@ -1928,31 +2333,24 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
         }
 
         if (tabId === 'ppt') {
-          const isFxh = pptSelectedVault === 'fxh';
-          const displayedSlides = showAllFxhSlides ? fxhSlides : fxhSlides.slice(0, 8);
-
           return (
             <div className="space-y-6 animate-console-fade">
-              {/* 頂部非小號招商與智庫引擎狀態欄 */}
+              {/* 頂部引擎狀態欄 */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-white/8 pb-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-ping"></span>
                     <span className="text-xs font-bold text-white tracking-wide">
-                      {isFxh
-                        ? (isZh ? '非小號 × MOORE 曼谷全球峰會 · 傳統企業招商引擎已連線' : 'FEIXIAOHAO BANGKOK SUMMIT ENTERPRISE DECK ONLINE')
-                        : (isZh ? 'MOORE 智庫大腦深度排版引擎已連線' : 'MOORE INTELLIGENCE DECK ENGINE ONLINE')}
+                      {isZh ? 'MOORE 智庫大腦深度排版引擎已連線' : 'MOORE INTELLIGENCE DECK ENGINE ONLINE'}
                     </span>
                   </div>
                   <p className="text-xs text-white/60 mt-1">
-                    {isFxh
-                      ? (isZh ? '直接關聯 11月27日非小號曼谷峰會官方智庫，已提煉生成傳統企業專項招商幻燈片 (22 頁全套極簡版)' : 'Connected to Feixiaohao Bangkok Summit vault: Traditional Enterprise pitch deck ready')
-                      : (isZh ? '直接關聯 MOORE 官方戰略文檔與智庫中樞，秒級提煉生成機構級商業幻燈片初稿' : 'Directly connect MOORE strategic repositories to generate institutional pitch decks')}
+                    {isZh ? '直接關聯 MOORE 官方戰略文檔與智庫中樞，秒級提煉生成機構級商業幻燈片初稿' : 'Directly connect MOORE strategic repositories to generate institutional pitch decks'}
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 px-3 py-1 text-xs font-semibold text-emerald-300 w-fit">
+                <div className="flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 px-3 py-1 text-xs font-semibold text-amber-300 w-fit">
                   <span>⚡</span>
-                  <span>{isFxh ? (isZh ? '傳統企業極簡版 · 22頁超清就緒' : 'Enterprise Deck · 22 Slides') : (isZh ? 'MOORE 矢量排版 · 0.8s 渲染' : 'MOORE Vector 0.8s Render')}</span>
+                  <span>{isZh ? 'MOORE 矢量排版 · 0.8s 渲染' : 'MOORE Vector 0.8s Render'}</span>
                 </div>
               </div>
 
@@ -1961,47 +2359,17 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] text-amber-400 border border-amber-400/40">1</span>
-                    <span>{isZh ? '關聯項目智庫中樞 (PROJECT REPOSITORIES)' : 'Select Project Repository'}</span>
+                    <span>{isZh ? '提交/關聯項目知識庫來源 (Sources)' : 'Select / Connect Knowledge Source'}</span>
                   </span>
-                  <span className="text-white/40 text-[11px] font-mono">{isZh ? '非小號峰會智庫 / MOORE 官方白皮書' : 'FEIXIAOHAO VAULT / MOORE WHITEPAPER'}</span>
+                  <span className="text-white/40 text-[11px] font-mono">{isZh ? 'MOORE 官方智庫 / 商業白皮書' : 'MOORE VAULT / WHITEPAPER'}</span>
                 </div>
 
-                {/* 3大官方自研智庫卡片 (支持一鍵切換非小號峰會招商 vs MOORE基金) */}
+                {/* 3大 MOORE 官方自研智庫卡片 (100% MOORE 詮釋，無任何第三方痕跡) */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* 卡片 1: 非小號曼谷峰會招商庫 (用戶紅框直達目標) */}
-                  <div
-                    onClick={() => {
-                      setPptSelectedVault('fxh');
-                      showToast(isZh ? '已切換至【非小號曼谷峰會 · 傳統企業招商專用 PPT】' : 'Switched to Feixiaohao Summit Enterprise Deck');
-                    }}
-                    className={`rounded-2xl border p-3.5 space-y-1.5 transition cursor-pointer relative overflow-hidden ${
-                      isFxh
-                        ? 'border-emerald-400/70 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(255,255,255,0.03))] shadow-[0_4px_24px_rgba(16,185,129,0.25)] ring-1 ring-emerald-400/40'
-                        : 'border-white/8 bg-white/[0.02] hover:border-white/20'
-                    }`}
-                  >
+                  <div className="rounded-2xl border border-amber-400/50 bg-[linear-gradient(135deg,rgba(245,158,11,0.15),rgba(255,255,255,0.02))] p-3.5 space-y-1.5 shadow-[0_4px_20px_rgba(245,158,11,0.15)] relative overflow-hidden cursor-pointer">
                     <div className="absolute top-2 right-2 text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                      {isFxh ? 'CONNECTED · 傳統企業版' : 'SELECT'}
+                      CONNECTED
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">🚀</span>
-                      <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? '非小號曼谷峰會招商庫' : 'Feixiaohao Summit Vault'}</span>
-                    </div>
-                    <div className="text-[10px] text-white/50">{isZh ? '官方招商核心文檔 · 傳統企業贊助與實體落地 (22頁)' : 'Official sponsorship deck for enterprise'}</div>
-                  </div>
-
-                  {/* 卡片 2: MOORE 官方生態基金戰略 */}
-                  <div
-                    onClick={() => {
-                      setPptSelectedVault('moore');
-                      showToast(isZh ? '已切換至【MOORE 官方生態基金戰略】' : 'Switched to MOORE Ecosystem Strategy');
-                    }}
-                    className={`rounded-2xl border p-3.5 space-y-1.5 transition cursor-pointer relative overflow-hidden ${
-                      !isFxh
-                        ? 'border-amber-400/70 bg-[linear-gradient(135deg,rgba(245,158,11,0.18),rgba(255,255,255,0.03))] shadow-[0_4px_24px_rgba(245,158,11,0.25)] ring-1 ring-amber-400/40'
-                        : 'border-white/8 bg-white/[0.02] hover:border-white/20'
-                    }`}
-                  >
                     <div className="flex items-center gap-2">
                       <span className="text-base">🏛️</span>
                       <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? 'MOORE 官方生態基金戰略' : 'MOORE Ecosystem Strategy'}</span>
@@ -2009,18 +2377,20 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <div className="text-[10px] text-white/50">{isZh ? '官方核心文檔 · 包含實體合規與金流章程' : 'Official documentation & MAS rails'}</div>
                   </div>
 
-                  {/* 卡片 3: MOORE 量化風控核心模型 */}
-                  <div
-                    onClick={() => {
-                      showToast(isZh ? '量化風控模型智庫目前關聯於量化中台，可隨時導出專項 Deck' : 'Quant risk deck available');
-                    }}
-                    className="rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 space-y-1.5 hover:border-white/20 transition cursor-pointer"
-                  >
+                  <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 space-y-1.5 hover:border-white/20 transition cursor-pointer">
                     <div className="flex items-center gap-2">
                       <span className="text-base">📈</span>
                       <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? 'MOORE 量化風控核心模型' : 'MOORE Quant & Risk Model'}</span>
                     </div>
                     <div className="text-[10px] text-white/50">{isZh ? '官方核心文檔 · 微觀訂單流與對沖架構' : 'Official quant engine manual'}</div>
+                  </div>
+
+                  <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-3.5 space-y-1.5 hover:border-white/20 transition cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">🌐</span>
+                      <span className="text-xs font-bold text-white truncate max-w-[150px]">{isZh ? 'MOORE 全球節點生態治理' : 'MOORE Global Node Governance'}</span>
+                    </div>
+                    <div className="text-[10px] text-white/50">{isZh ? '官方核心文檔 · 萬人盛典協同手冊' : 'Official node governance manual'}</div>
                   </div>
                 </div>
 
@@ -2030,8 +2400,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <label className="block text-[11px] font-semibold text-white/70 mb-1">{isZh ? '輸入 MOORE 智庫鏈接 / 官方項目識別碼 (MOORE ID)' : 'Enter MOORE Vault Link or Project ID'}</label>
                     <input
                       type="text"
-                      key={pptSelectedVault}
-                      defaultValue={isFxh ? 'moore://vault/feixiaohao-bangkok-summit-traditional-enterprise-deck' : 'moore://vault/ecosystem-fund-2026-keynote'}
+                      defaultValue="moore://vault/ecosystem-fund-2026-keynote"
                       className="w-full rounded-xl border border-white/12 bg-black/40 px-3 py-2 text-xs font-mono text-white focus:border-amber-400 focus:outline-none"
                     />
                   </div>
@@ -2062,8 +2431,7 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                     <label className="block text-[11px] font-semibold text-white/70 mb-1">{isZh ? '幻燈片核心主題 / 大會名稱' : 'Presentation Title'}</label>
                     <input
                       type="text"
-                      key={`title_${pptSelectedVault}`}
-                      defaultValue={isFxh ? (isZh ? '2026 非小號曼谷全球峰會 · 傳統企業招商與實體落地專項方案 (22頁完整版)' : '2026 Feixiaohao Bangkok Summit Enterprise Pitch Deck') : (isZh ? 'MOORE LABS 2026 全球萬人峰會 · 實體合規金流與生態戰略發布會' : 'MOORE LABS 2026 Global Summit Keynote')}
+                      defaultValue={isZh ? 'MOORE LABS 2026 全球萬人峰會 · 實體合規金流與生態戰略發布會' : 'MOORE LABS 2026 Global Summit Keynote'}
                       className="w-full rounded-xl border border-white/12 bg-black/40 px-3.5 py-2 text-xs font-medium text-white focus:border-amber-400 focus:outline-none"
                     />
                   </div>
@@ -2071,18 +2439,9 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                   <div>
                     <label className="block text-[11px] font-semibold text-white/70 mb-1">{isZh ? '幻燈片規格' : 'Deck Format'}</label>
                     <select className="w-full rounded-xl border border-white/12 bg-slate-900 px-3 py-2 text-xs text-white">
-                      {isFxh ? (
-                        <>
-                          <option>{isZh ? '傳統企業招商專用 (16:9 · 22頁極簡版)' : 'Traditional Enterprise Deck (22 Slides)'}</option>
-                          <option>{isZh ? '贊助權益精準對比 (3頁核心矩陣)' : 'Sponsorship Comparison (3 Slides)'}</option>
-                        </>
-                      ) : (
-                        <>
-                          <option>{isZh ? '萬人盛典 Keynote (16:9 · 12 頁初稿)' : 'Keynote (16:9 · 12 Slides)'}</option>
-                          <option>{isZh ? '機構融資商業計劃書 (Pitch Deck · 20 頁)' : 'Investor Pitch (20 Slides)'}</option>
-                          <option>{isZh ? '一圖讀懂精華展板 (One-Pager · 6K 矢量)' : 'One-Pager (6K Vector)'}</option>
-                        </>
-                      )}
+                      <option>{isZh ? '萬人盛典 Keynote (16:9 · 12 頁初稿)' : 'Keynote (16:9 · 12 Slides)'}</option>
+                      <option>{isZh ? '機構融資商業計劃書 (Pitch Deck · 20 頁)' : 'Investor Pitch (20 Slides)'}</option>
+                      <option>{isZh ? '一圖讀懂精華展板 (One-Pager · 6K 矢量)' : 'One-Pager (6K Vector)'}</option>
                     </select>
                   </div>
                 </div>
@@ -2090,18 +2449,12 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                 <button
                   onClick={() => {
                     setPptGenerating(true);
-                    showToast(isFxh
-                      ? (isZh ? '✓ 非小號曼谷峰會傳統企業招商智庫已提煉完成，幻燈片初稿已更新！' : 'Feixiaohao Summit Enterprise Deck generated!')
-                      : (isZh ? '✓ MOORE 智庫大腦提煉完成，商業幻燈片初稿已生成！' : 'MOORE Vault extracted & deck generated!'));
+                    showToast(isZh ? '✓ MOORE 智庫大腦提煉完成，商業幻燈片初稿已生成！' : 'MOORE Vault extracted & deck generated!');
                   }}
-                  className={`w-full rounded-xl py-3 text-xs font-bold active:scale-95 transition cursor-pointer shadow-lg flex items-center justify-center gap-2 ${
-                    isFxh
-                      ? 'bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 text-slate-950 hover:brightness-110 shadow-[0_4px_24px_rgba(16,185,129,0.3)]'
-                      : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 hover:brightness-110 shadow-[0_4px_24px_rgba(245,158,11,0.35)]'
-                  }`}
+                  className="w-full rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 py-3 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_24px_rgba(245,158,11,0.35)] flex items-center justify-center gap-2"
                 >
                   <span className="text-base">⚡</span>
-                  <span>{isFxh ? (isZh ? '調用非小號峰會招商智庫 · 生成傳統企業招商 PPT' : 'Generate Traditional Enterprise Pitch Deck') : (isZh ? '調用 MOORE 智庫大腦 · 一鍵生成商業幻燈片初稿' : 'Generate Pitch Deck with MOORE Intelligence')}</span>
+                  <span>{isZh ? '調用 MOORE 智庫大腦 · 一鍵生成商業幻燈片初稿' : 'Generate Pitch Deck with MOORE Intelligence'}</span>
                 </button>
               </div>
 
@@ -2110,157 +2463,94 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] text-amber-400 border border-amber-400/40">3</span>
-                    <span>{isFxh ? (isZh ? '非小號曼谷峰會 · 傳統企業招商幻燈片初稿' : 'Feixiaohao Summit Enterprise Deck Preview') : (isZh ? '幻燈片初稿即時大屏預覽 (12 頁全套就緒)' : 'Generated Deck Draft Preview')}</span>
+                    <span>{isZh ? '幻燈片初稿即時大屏預覽 (12 頁全套就緒)' : 'Generated Deck Draft Preview'}</span>
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-mono">
-                    {isFxh ? 'VERIFIED BY FEIXIAOHAO & MOORE LABS' : 'VERIFIED BY MOORE INTELLIGENCE'}
-                  </span>
+                  <span className="text-[10px] text-emerald-400 font-mono">VERIFIED BY MOORE INTELLIGENCE</span>
                 </div>
 
-                {/* 根據選中的智庫展示真實幻燈片：若為 fxh 則展示傳統企業招商真实 PPT，若為 moore 則展示官方戰略 */}
-                {isFxh ? (
-                  <div className="space-y-4">
-                    {/* 傳統企業 PPT 核心幻燈片網格 */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                      {displayedSlides.map((slide) => (
-                        <div
-                          key={slide.id}
-                          className="group rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#0d1524,#070d18)] p-3 space-y-2.5 shadow-lg hover:border-emerald-400/50 hover:shadow-[0_4px_24px_rgba(16,185,129,0.2)] transition-all duration-300 relative overflow-hidden"
-                        >
-                          <div className="flex justify-between items-center text-[10px] font-mono text-emerald-400">
-                            <span className="font-bold">SLIDE {slide.id < 10 ? `0${slide.id}` : slide.id}</span>
-                            <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9px]">{slide.tag}</span>
-                          </div>
-
-                          {/* 幻燈片真實圖片縮略圖 (點擊放大燈箱) */}
-                          <div
-                            onClick={() => setLightboxSlide(slide)}
-                            className="relative aspect-[16/9] w-full rounded-xl overflow-hidden border border-white/10 bg-black/40 cursor-pointer group-hover:scale-[1.02] transition-transform duration-300"
-                          >
-                            <img
-                              src={slide.file}
-                              alt={slide.title}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                              <span className="rounded-full bg-slate-900/90 border border-emerald-400/50 px-2.5 py-1 text-[10px] font-bold text-emerald-300 backdrop-blur-md">
-                                🔍 點擊查看超清大圖
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="space-y-0.5">
-                            <div className="text-xs font-bold text-white tracking-tight truncate">{isZh ? slide.title : slide.titleEn}</div>
-                            <div className="text-[10px] text-white/50 truncate font-mono">{slide.note}</div>
-                          </div>
-                        </div>
-                      ))}
+                {/* 幻燈片初稿 4 頁核心卡片網格展示 */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Slide 1: 封面 */}
+                  <div className="rounded-2xl border border-amber-400/50 bg-[linear-gradient(135deg,#121c2e,#0a111c)] p-4 space-y-2 shadow-lg relative overflow-hidden">
+                    <div className="flex justify-between items-center text-[10px] font-mono text-amber-400">
+                      <span>SLIDE 01</span>
+                      <span className="px-1.5 py-0.2 rounded bg-amber-500/20">COVER</span>
                     </div>
-
-                    {/* 展開/收起全部 17 頁完整幻燈片按鈕 */}
-                    <div className="text-center pt-2">
-                      <button
-                        onClick={() => setShowAllFxhSlides(!showAllFxhSlides)}
-                        className="rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-5 py-2 text-xs font-semibold text-white/90 hover:text-white transition active:scale-95 cursor-pointer inline-flex items-center gap-2"
-                      >
-                        <span>{showAllFxhSlides ? (isZh ? '▲ 收起部分幻燈片 (顯示核心 8 頁精華)' : '▲ Collapse to 8 Core Slides') : (isZh ? '▼ 展開全部 17 頁完整招商幻燈片 (含活動實況與媒體矩陣)' : '▼ Expand All 17 Slides')}</span>
-                      </button>
+                    <div className="text-2xl pt-1">⚡</div>
+                    <div className="text-sm font-bold text-white tracking-tight">MOORE LABS 2026</div>
+                    <div className="text-[11px] text-amber-300">{isZh ? '全球萬人峰會 · 實體合規金流' : 'Global Summit Keynote'}</div>
+                    <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
+                      MOORE 戰略綱要 · CHAPTER 01
                     </div>
                   </div>
-                ) : (
-                  /* 默認 MOORE 生態戰略 4 頁核心幻燈片 */
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div className="rounded-2xl border border-amber-400/50 bg-[linear-gradient(135deg,#121c2e,#0a111c)] p-4 space-y-2 shadow-lg relative overflow-hidden">
-                      <div className="flex justify-between items-center text-[10px] font-mono text-amber-400">
-                        <span>SLIDE 01</span>
-                        <span className="px-1.5 py-0.2 rounded bg-amber-500/20">COVER</span>
-                      </div>
-                      <div className="text-2xl pt-1">⚡</div>
-                      <div className="text-sm font-bold text-white tracking-tight">MOORE LABS 2026</div>
-                      <div className="text-[11px] text-amber-300">{isZh ? '全球萬人峰會 · 實體合規金流' : 'Global Summit Keynote'}</div>
-                      <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                        MOORE 戰略綱要 · CHAPTER 01
-                      </div>
-                    </div>
 
-                    <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-4 space-y-2 shadow-lg">
-                      <div className="flex justify-between items-center text-[10px] font-mono text-sky-400">
-                        <span>SLIDE 02</span>
-                        <span className="px-1.5 py-0.2 rounded bg-sky-500/20">MARKET</span>
-                      </div>
-                      <div className="text-2xl pt-1">📈</div>
-                      <div className="text-sm font-bold text-white tracking-tight">{isZh ? '萬億實體資產躍遷' : 'Trillion RWA Shift'}</div>
-                      <div className="text-[11px] text-sky-200">{isZh ? '傳統合規金流與去中心化流動性樞紐' : 'Compliant liquidity rails'}</div>
-                      <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                        MOORE 金流架構 · CHAPTER 02
-                      </div>
+                  {/* Slide 2: 市場痛點與機遇 */}
+                  <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-4 space-y-2 shadow-lg">
+                    <div className="flex justify-between items-center text-[10px] font-mono text-sky-400">
+                      <span>SLIDE 02</span>
+                      <span className="px-1.5 py-0.2 rounded bg-sky-500/20">MARKET</span>
                     </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-4 space-y-2 shadow-lg">
-                      <div className="flex justify-between items-center text-[10px] font-mono text-emerald-400">
-                        <span>SLIDE 03</span>
-                        <span className="px-1.5 py-0.2 rounded bg-emerald-500/20">VAULT</span>
-                      </div>
-                      <div className="text-2xl pt-1">🛡️</div>
-                      <div className="text-sm font-bold text-white tracking-tight">{isZh ? 'Wallet MPC 門限安全' : 'Threshold MPC Custody'}</div>
-                      <div className="text-[11px] text-emerald-200">{isZh ? '3/3 密鑰分片在線協管 · 零單點風險' : '3/3 key shares online'}</div>
-                      <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                        MOORE 門限安全 · CHAPTER 03
-                      </div>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-4 space-y-2 shadow-lg">
-                      <div className="flex justify-between items-center text-[10px] font-mono text-amber-400">
-                        <span>SLIDE 04</span>
-                        <span className="px-1.5 py-0.2 rounded bg-amber-500/20">INCENTIVE</span>
-                      </div>
-                      <div className="text-2xl pt-1">💰</div>
-                      <div className="text-sm font-bold text-white tracking-tight">{isZh ? '$5000萬 生態基金' : '$50M Ecosystem Fund'}</div>
-                      <div className="text-[11px] text-amber-200">{isZh ? '激勵全球萬人盛典量化與合規節點' : 'Incentivize global nodes'}</div>
-                      <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
-                        MOORE 生態激勵 · CHAPTER 04
-                      </div>
+                    <div className="text-2xl pt-1">📈</div>
+                    <div className="text-sm font-bold text-white tracking-tight">{isZh ? '萬億實體資產躍遷' : 'Trillion RWA Shift'}</div>
+                    <div className="text-[11px] text-sky-200">{isZh ? '傳統合規金流與去中心化流動性樞紐' : 'Compliant liquidity rails'}</div>
+                    <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
+                      MOORE 金流架構 · CHAPTER 02
                     </div>
                   </div>
-                )}
 
-                {/* 導出與下載工具列 (支持原生 PPTX 與 25頁極簡版 PDF 直連下載) */}
+                  {/* Slide 3: 核心架構 */}
+                  <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-4 space-y-2 shadow-lg">
+                    <div className="flex justify-between items-center text-[10px] font-mono text-emerald-400">
+                      <span>SLIDE 03</span>
+                      <span className="px-1.5 py-0.2 rounded bg-emerald-500/20">VAULT</span>
+                    </div>
+                    <div className="text-2xl pt-1">🛡️</div>
+                    <div className="text-sm font-bold text-white tracking-tight">{isZh ? 'Wallet MPC 門限安全' : 'Threshold MPC Custody'}</div>
+                    <div className="text-[11px] text-emerald-200">{isZh ? '3/3 密鑰分片在線協管 · 零單點風險' : '3/3 key shares online'}</div>
+                    <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
+                      MOORE 門限安全 · CHAPTER 03
+                    </div>
+                  </div>
+
+                  {/* Slide 4: 生態激勵基金 */}
+                  <div className="rounded-2xl border border-white/10 bg-[linear-gradient(135deg,#101928,#080e18)] p-4 space-y-2 shadow-lg">
+                    <div className="flex justify-between items-center text-[10px] font-mono text-amber-400">
+                      <span>SLIDE 04</span>
+                      <span className="px-1.5 py-0.2 rounded bg-amber-500/20">INCENTIVE</span>
+                    </div>
+                    <div className="text-2xl pt-1">💰</div>
+                    <div className="text-sm font-bold text-white tracking-tight">{isZh ? '$5000萬 生態基金' : '$50M Ecosystem Fund'}</div>
+                    <div className="text-[11px] text-amber-200">{isZh ? '激勵全球萬人盛典量化與合規節點' : 'Incentivize global nodes'}</div>
+                    <div className="text-[9px] text-white/40 pt-2 border-t border-white/10 font-mono">
+                      MOORE 生態激勵 · CHAPTER 04
+                    </div>
+                  </div>
+                </div>
+
+                {/* 導出與下載工具列 */}
                 <div className="rounded-2xl border border-white/8 bg-white/[0.02] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <div className="text-xs font-bold text-white">
-                      {isFxh
-                        ? (isZh ? '非小號曼谷峰會 · 傳統企業招商 DECK 交付就緒' : 'Feixiaohao Summit Enterprise Deck Ready')
-                        : (isZh ? '初稿交付就緒 · 支持多格式無損導出' : 'Draft Ready for Export')}
-                    </div>
-                    <div className="text-[11px] text-white/50">
-                      {isFxh
-                        ? (isZh ? '包含 10,000U 鑽石 / 3,000U 黃金 / 1,000U 白銀三檔贊助權益，支持微軟原生 .PPTX 與 25頁超清 PDF' : 'Diamond, Gold, Silver sponsorship packages included (.PPTX & PDF)')
-                        : (isZh ? '可直接使用微軟 PowerPoint 進行自由二次編輯或投屏路演' : 'Microsoft PowerPoint .PPTX & Lossless 6K PDF')}
-                    </div>
+                    <div className="text-xs font-bold text-white">{isZh ? '初稿交付就緒 · 支持多格式無損導出' : 'Draft Ready for Export'}</div>
+                    <div className="text-[11px] text-white/50">{isZh ? '可直接使用微軟 PowerPoint 進行自由二次編輯或投屏路演' : 'Microsoft PowerPoint .PPTX & Lossless 6K PDF'}</div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <button
-                      onClick={() => showToast(isZh ? '✓ 微軟原生 .PPTX 傳統企業招商幻燈片已準備就緒，開始下載！' : '.PPTX file ready for download!')}
-                      className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 px-4 py-2 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
+                      onClick={() => showToast(isZh ? '✓ 微軟原生 .PPTX 可編輯幻燈片已準備就緒，開始下載！' : '.PPTX file ready!')}
+                      className="rounded-xl bg-gradient-to-r from-amber-500 to-amber-400 px-4 py-2 text-xs font-bold text-slate-950 hover:brightness-110 active:scale-95 transition cursor-pointer shadow-[0_4px_16px_rgba(245,158,11,0.25)]"
                     >
                       {isZh ? '⬇ 導出 .PPTX (微軟原生)' : '⬇ Export .PPTX'}
                     </button>
-                    <a
-                      href="./assets/fxh_deck/2026_feixiaohao_bangkok_summit_enterprise_deck.pdf"
-                      target="_blank"
-                      download="2026非小號曼谷峰會_傳統企業極簡版_DECK.pdf"
-                      onClick={() => showToast(isZh ? '✓ 正在下載 25頁傳統企業極簡版 PDF (29MB)...' : 'Downloading 25-page PDF...')}
-                      className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10 active:scale-95 transition cursor-pointer inline-flex items-center gap-1.5"
-                    >
-                      <span>📄</span>
-                      <span>{isZh ? '下載 25頁 PDF (29MB)' : 'Download PDF'}</span>
-                    </a>
                     <button
-                      onClick={() => showToast(isZh ? '✓ 已將傳統企業招商方案發送至 Telegram 官方商務對接群！' : 'Broadcast to Business TG channel!')}
-                      className="rounded-xl border border-emerald-400/40 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-300 hover:bg-emerald-500 hover:text-slate-950 active:scale-95 transition cursor-pointer"
+                      onClick={() => showToast(isZh ? '✓ 6K 矢量無損 PDF 幻燈片已導出！' : '6K Vector PDF exported!')}
+                      className="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10 active:scale-95 transition cursor-pointer"
                     >
-                      {isZh ? '🚀 發到招商群' : '🚀 Push TG'}
+                      {isZh ? '📄 6K PDF' : '📄 6K PDF'}
+                    </button>
+                    <button
+                      onClick={() => showToast(isZh ? '✓ 已一鍵廣播至 Telegram 官方投資人頻道！' : 'Broadcast to TG channel!')}
+                      className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-500 hover:text-slate-950 active:scale-95 transition cursor-pointer"
+                    >
+                      {isZh ? '🚀 發到 TG' : '🚀 Push TG'}
                     </button>
                   </div>
                 </div>
@@ -2433,40 +2723,28 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
       const marqueeRow1 = useMemo(() => [...backers.slice(0, 18), ...backers.slice(0, 18)], []);
       const marqueeRow2 = useMemo(() => [...backers.slice(18), ...backers.slice(18)], []);
 
-      // 控制台二級頁面路由狀態 ('home' | 'console')
+      // 二級頁面路由狀態 ('home' | 'console' | 'deck')
       const [view, setView] = useState(() => {
         try {
-          return (typeof window !== 'undefined' && window.location.hash.startsWith('#/console')) ? 'console' : 'home';
+          if (typeof window !== 'undefined') {
+            if (window.location.hash.startsWith('#/summit-deck')) return 'deck';
+            if (window.location.hash.startsWith('#/console')) return 'console';
+          }
+          return 'home';
         } catch (e) {
           return 'home';
         }
       });
 
-      const getHashParam = (key, defaultVal) => {
-        try {
-          if (typeof window !== 'undefined' && window.location.hash.includes(key + '=')) {
-            const m = window.location.hash.match(new RegExp(key + '=([a-zA-Z0-9_]+)'));
-            if (m && m[1]) return m[1];
-          }
-        } catch (e) {}
-        return defaultVal;
-      };
-
-      const [consoleTab, setConsoleTab] = useState(() => getHashParam('tab', 'wallet'));
-      const [consolePreset, setConsolePreset] = useState(() => getHashParam('preset', 'fxh'));
-
       const openConsole = () => {
         window.location.hash = '#/console';
-        setConsoleTab('wallet');
         setView('console');
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
 
-      const openConsoleWithTab = (tab = 'ppt', preset = 'fxh') => {
-        window.location.hash = `#/console?tab=${tab}&preset=${preset}`;
-        setConsoleTab(tab);
-        setConsolePreset(preset);
-        setView('console');
+      const openSummitDeck = () => {
+        window.location.hash = '#/summit-deck';
+        setView('deck');
         window.scrollTo({ top: 0, behavior: 'instant' });
       };
 
@@ -2478,7 +2756,9 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
 
       useEffect(() => {
         const handleHashChange = () => {
-          if (window.location.hash.startsWith('#/console')) {
+          if (window.location.hash.startsWith('#/summit-deck')) {
+            setView('deck');
+          } else if (window.location.hash.startsWith('#/console')) {
             setView('console');
           } else {
             setView('home');
@@ -2874,19 +3154,26 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
 
       return (
         <div ref={rootRef} className="min-h-screen bg-[#0a1220] text-white selection:bg-white/25">
-          {/* 二級頁面 (個人控制台 ConsoleView) */}
+          {/* 二級頁面 1：非小號曼谷峰會 · 傳統企業招商 PPT 獨立詳情瀏覽頁 */}
+          {view === 'deck' && (
+            <SummitDeckViewer
+              lang={lang}
+              toggleLang={toggleLang}
+              onBack={backToHome}
+            />
+          )}
+
+          {/* 二級頁面 2：個人控制台 (ConsoleView) */}
           {view === 'console' && (
             <ConsoleView
               lang={lang}
               toggleLang={toggleLang}
               onBack={backToHome}
-              initialTab={consoleTab}
-              initialPreset={consolePreset}
             />
           )}
 
-          {/* 首頁 Landing Page (當處於控制台時保持 hidden 保活，GSAP 動效零損毀) */}
-          <div className={view === 'console' ? 'hidden' : 'block'}>
+          {/* 首頁 Landing Page (當處於二級頁面時保持 hidden 保活，GSAP 動效零損毀) */}
+          <div className={view !== 'home' ? 'hidden' : 'block'}>
           <div className="pointer-events-none fixed inset-0 overflow-hidden">
             <div className="absolute inset-0 bg-[linear-gradient(180deg,#0b1322_0%,#0c1424_36%,#0b1220_100%)]" />
           </div>
@@ -3017,15 +3304,16 @@ https://t.me/crypto_alpha_signals` : `+65 8920 1123
                         <span className="mr-1.5 text-sky-500 font-bold">&#10022;</span>
                         {lang === 'zh' ? 'Wallet MPC 門限安全' : 'Wallet MPC Security'}
                       </span>
-                      {/* 用戶紅框指定：點擊非小號峰會，跳轉到 PPT 的非小號招商打開頁面 (傳統企業 PPT) */}
                       <button
-                        onClick={() => openConsoleWithTab('ppt', 'fxh')}
-                        className="inline-flex items-center rounded-full border border-emerald-500/40 bg-white/85 hover:bg-emerald-50 text-[#0f172a] hover:text-emerald-950 px-3.5 py-1 text-xs font-semibold backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
-                        title={lang === 'zh' ? '點擊跳轉：非小號曼谷峰會 · 傳統企業招商 PPT 打開頁面' : 'Click to open Feixiaohao Summit Traditional Enterprise Pitch Deck'}
+                        onClick={openSummitDeck}
+                        title={lang === 'zh' ? '點擊直接打開：2026 非小號曼谷峰會 · 傳統企業招商 PPT 詳情' : 'Click to open Feixiaohao Summit Traditional Enterprise Pitch Deck'}
+                        className="inline-flex items-center rounded-full border border-emerald-500/45 bg-white/90 hover:bg-emerald-50 text-[#0f172a] hover:text-emerald-950 px-3.5 py-1 text-xs font-semibold backdrop-blur-md shadow-sm transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer group"
                       >
                         <span className="mr-1.5 text-emerald-600 font-bold group-hover:scale-125 transition-transform">&#10022;</span>
-                        <span>{lang === 'zh' ? '萬人國際盛會交付 (非小號峰會)' : '10,000+ Summit Delivery (Feixiaohao)'}</span>
-                        <span className="ml-1.5 rounded-full bg-emerald-500/15 text-emerald-800 text-[10px] px-1.5 py-0.2 font-mono group-hover:bg-emerald-600 group-hover:text-white transition-colors">PPT 招商 ↗</span>
+                        <span>{lang === 'zh' ? '萬人國際盛會交付' : '10,000+ Summit Delivery'}</span>
+                        <span className="ml-1.5 rounded-full bg-emerald-500/15 text-emerald-800 text-[10px] px-1.5 py-0.2 font-mono group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                          {lang === 'zh' ? '查看招商 PPT ↗' : 'View PPT ↗'}
+                        </span>
                       </button>
                     </div>
 
